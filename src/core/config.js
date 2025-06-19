@@ -15,8 +15,8 @@
 function parseWidthHeight(value) {
   // receives configuration option as WIDTHxHEIGHT
   // split based on 'x' and assign to objects
-  const w_h = value.split('x')
-  return { width: parseInt(w_h[0]), height: parseInt(w_h[1]) }
+  const w_h = value.split("x");
+  return { width: parseInt(w_h[0]), height: parseInt(w_h[1]) };
 }
 
 /**
@@ -59,8 +59,8 @@ function parseWidthHeight(value) {
  */
 export default {
   mode: import.meta.env.MODE,
-  projectName: import.meta.env.VITE_PROJECT_NAME, // autocompute this on intitialization
-  projectRef: import.meta.env.VITE_DEPLOY_BASE_PATH.slice(1, -1).replace(/\//g, '-'),
+  projectName: import.meta.env.VITE_PROJECT_NAME, // autocompute this on initialization
+  projectRef: import.meta.env.VITE_DEPLOY_BASE_PATH.slice(1, -1).replace(/\//g, "-"),
   codeName: import.meta.env.VITE_CODE_NAME,
   codeNameURL: import.meta.env.VITE_CODE_NAME_DEPLOY_URL,
   localStorageKey: `smilestore-${import.meta.env.VITE_CODE_NAME}`,
@@ -76,7 +76,7 @@ export default {
     }`,
   },
   // browser_exclude: import.meta.env.VITE_BROWSER_EXCLUDE,
-  allowRepeats: import.meta.env.VITE_ALLOW_REPEATS === 'true',
+  allowRepeats: import.meta.env.VITE_ALLOW_REPEATS === "true",
   autoSave: import.meta.env.VITE_AUTO_SAVE_DATA,
   maxWrites: import.meta.env.VITE_MAX_WRITES,
   minWriteInterval: import.meta.env.VITE_MIN_WRITE_INTERVAL,
@@ -87,8 +87,8 @@ export default {
   brandLogoFn: import.meta.env.VITE_BRAND_LOGO_FN,
   googleAnalyticsID: import.meta.env.VITE_GOOGLE_ANALYTICS,
   windowsizerRequest: parseWidthHeight(import.meta.env.VITE_WINDOWSIZER_REQUEST),
-  windowsizerAggressive: import.meta.env.VITE_WINDOWSIZER_AGGRESSIVE === 'true',
-  anonymousMode: import.meta.env.VITE_ANONYMOUS_MODE === 'true',
+  windowsizerAggressive: import.meta.env.VITE_WINDOWSIZER_AGGRESSIVE === "true",
+  anonymousMode: import.meta.env.VITE_ANONYMOUS_MODE === "true",
   firebaseConfig: {
     apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTHDOMAIN,
@@ -97,4 +97,4 @@ export default {
     messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGINGSENDERID,
     appId: import.meta.env.VITE_FIREBASE_APPID,
   },
-}
+};

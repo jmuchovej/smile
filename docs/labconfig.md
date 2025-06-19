@@ -22,20 +22,20 @@ configuration for smile, keep reading.
 Smile glues together several affordable or free web services in order to make
 developing and launching experiments relatively painless.
 
-- **Github** (required).  
+- **Github** (required).
   The project relies heavily on Github for managing code and projects. Github
   not only organizes versions of your code using `git` but also allows you to
   run scripts each time you make a change to the code that can upload the latest
   version of your project to the web.
 
-- **Google Firebase/Firestore** (required).  
+- **Google Firebase/Firestore** (required).
   Smile stores the data from your experiments in a
   [Google Firestore](https://firebase.google.com/docs/firestore) database.
   Firestore is a robust schema-less database solution ideally suited for the
   web. The cost is low for even fairly large experiments and datasets (although
   there are some technical limits, see [here](/datastorage) for more info).
 
-- **Slack** (weakly required).  
+- **Slack** (weakly required).
   In order to notify you and your other lab members when certain tasks are
   complete or if there are errors, Smile uses a slack bot. You need to have a
   Slack account and get API keys to enable this. If you don't want to use Slack
@@ -53,7 +53,7 @@ developing and launching experiments relatively painless.
 
   :::
 
-- **A SSL signed HTTP/web server** (required).  
+- **A SSL signed HTTP/web server** (required).
   Finally, you need to provide a web hosting site to host your experiments. The
   requirements of this website are quite simple, you just need a regular static
   HTTP server with a secure signed certification (SSL). Many web hosting
@@ -99,7 +99,7 @@ granting them access to multiple private and public repositories.
   to request a free "Team" level upgrade to your organization allowing you to
   use several useful and required Github services for free including
   [Github Actions](https://github.com/features/actions). This might be preferred
-  if you anticipate heavy useage of your organization's github page. However,
+  if you anticipate heavy usage of your organization's github page. However,
   even the free level (called Github Free) works!
 - Finally you can locate the organization in Github and
   [invite the members of your lab to be members of the organization](https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization).
@@ -156,7 +156,7 @@ repository/folder will now serve as a template for each new project/experiment.
 
 Data storage and recording is provided using Firebase cloud services
 (specifically Firestore, which is a database service provided under the general
-Firebase sytem). You need to create a Firebase account and a Firestore project.
+Firebase system). You need to create a Firebase account and a Firestore project.
 
 First, go to https://console.firebase.google.com and create an account. After
 your account is created, you are presented with a page that looks like this:
@@ -177,7 +177,7 @@ icon that looks like `<\>`):
 ![Firebase project overview](/images/labconfig-firebase-console-4.png)
 
 Register the new web app giving it a nickname (something like `smile-db` might
-make sense, but up to you).  
+make sense, but up to you).
 You do **not** need to also set up Firebase Hosting.
 
 ![Firebase add sdk](/images/labconfig-firebase-addwebapp-5.png)
@@ -211,7 +211,7 @@ Here is an example of the rules file that works well with Smile experiments (in
 
 When you're developing an experiment and push changed to Github, your experiment
 code goes through a pre-processing step, which optimizes the speed at which the
-code is delievered to participants. Also, when your code builds successfully it
+code is delivered to participants. Also, when your code builds successfully it
 is deployed to a unique URL (see [deploy](/deploying) docs for full details). If
 things go wrong in this process, it is helpful to get a notification.
 
@@ -313,7 +313,7 @@ VITE_GOOGLE_ANALYTICS            = xxxx
 
 ```
 
-You will want to replace the values for the entires that contain the word
+You will want to replace the values for the entries that contain the word
 `FIREBASE` with the corresponding values you obtained above when setting up your
 Firebase (you should have copied them down, but it is possible to look them up
 again on your Firebase project page). The `VITE_GOOGLE_ANALYTICS` field can be
@@ -325,7 +325,7 @@ The content of that file should look like this:
 
 ```
 # this file is not tracked by github and contains
-# sensitive information inluding write access to our experiment
+# sensitive information including write access to our experiment
 # hosting web server!
 
 # enter experiment hosting web server information here

@@ -1,14 +1,15 @@
 <script setup>
-import { ref } from 'vue'
-// import and initalize smile API
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
-const ntrials = ref(1)
+  import { ref } from "vue";
 
-function finish() {
-  // do stuff if you want
-  api.goNextView()
-}
+  // import and initialize smile API
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
+  const ntrials = ref(1);
+
+  function finish() {
+    // do stuff if you want
+    api.goNextView();
+  }
 </script>
 
 <template>
@@ -23,8 +24,7 @@ function finish() {
         placeholder="Enter zip or postal code"
         validation="optional"
         v-model="ntrials"
-        help="How many trials do you want to do?"
-      />
+        help="How many trials do you want to do?" />
 
       <div class="formbutton">
         <button class="button is-success" id="finish" @click="finish()">
@@ -37,17 +37,17 @@ function finish() {
 </template>
 
 <style scoped>
-.formcontent {
-  width: 25%;
-  margin: auto;
-  margin-bottom: 40px;
-  padding-bottom: 200px;
-  text-align: left;
-}
+  .formcontent {
+    width: 25%;
+    margin: auto;
+    margin-bottom: 40px;
+    padding-bottom: 200px;
+    text-align: left;
+  }
 
-.formbutton {
-  margin-top: 1px solid #ccc;
-  padding-top: 10px;
-  text-align: right;
-}
+  .formbutton {
+    margin-top: 1px solid #ccc;
+    padding-top: 10px;
+    text-align: right;
+  }
 </style>

@@ -1,7 +1,7 @@
 <script setup>
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
-//import InformedConsentText from '@/user/components/InformedConsentText.vue'
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
+  //import InformedConsentText from '@/user/components/InformedConsentText.vue'
 </script>
 
 <template>

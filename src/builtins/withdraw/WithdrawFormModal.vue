@@ -1,23 +1,24 @@
 <script setup>
-import { reactive, onMounted } from 'vue'
-// import and initalize smile API
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
-// get access to the global store
-const emit = defineEmits(['toggleWithdraw', 'submitWithdraw'])
-const props = defineProps(['prefillEmail'])
+  import { reactive, onMounted } from "vue";
 
-const forminfo = reactive({
-  reason_select: '',
-  reason_comments: '',
-  email: '',
-})
+  // import and initialize smile API
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
+  // get access to the global store
+  const emit = defineEmits(["toggleWithdraw", "submitWithdraw"]);
+  const props = defineProps(["prefillEmail"]);
 
-function withdraw() {
-  api.setWithdrawn(forminfo) // set withdraw data fields
-  api.saveData(true) // force a data save
-  emit('submit-withdraw')
-}
+  const forminfo = reactive({
+    reason_select: "",
+    reason_comments: "",
+    email: "",
+  });
+
+  function withdraw() {
+    api.setWithdrawn(forminfo); // set withdraw data fields
+    api.saveData(true); // force a data save
+    emit("submit-withdraw");
+  }
 </script>
 
 <template>
@@ -28,10 +29,11 @@ function withdraw() {
     <div class="message-body has-text-left">
       <p class="has-text-left">
         <b>
-          You are free to withdraw from this study at any time. Withdrawing from the study may affect the total amount
-          of your compensation. Please complete the following form to complete your withdraw. We will follow up with you
-          about partial compensation. You do not have to answer any particular question but we appreciate understanding
-          the reasons for your withdraw.
+          You are free to withdraw from this study at any time. Withdrawing from the study may
+          affect the total amount of your compensation. Please complete the following form to
+          complete your withdraw. We will follow up with you about partial compensation. You do not
+          have to answer any particular question but we appreciate understanding the reasons for
+          your withdraw.
         </b>
       </p>
       <br />
@@ -52,16 +54,14 @@ function withdraw() {
           ]"
           decorator-icon="happy"
           help="Select all that apply."
-          validation="required|min:3"
-        />
+          validation="required|min:3" />
         <FormKit
           v-model="forminfo.reason_comments"
           type="textarea"
           label="Additional comments. (Optional)"
           rows="5"
           placeholder="Enter your comments here."
-          help="Please let us know any additional information you would like to share."
-        />
+          help="Please let us know any additional information you would like to share." />
         <FormKit
           v-model="props.prefillEmail"
           type="email"
@@ -69,8 +69,7 @@ function withdraw() {
           help="Please enter your email address so we can follow up with you.  This is optional and we otherwise will try to figure out how to reach you.  However, this can help avoid any potential problems.  Feel free to use an anonymized email like your Prolific contact email, Hide my email (Apple), or create a free alias on SimpleLogin.  We will not associate this email with your data nor use it for any purpose other than contacting you to resolve the issue."
           validation="email"
           validation-visibility="live"
-          placeholder="participant@gmail.com"
-        />
+          placeholder="participant@gmail.com" />
       </p>
       <div class="has-text-right mt-6">
         <button class="button mr-4" id="nevermind" @click="$emit('toggleWithdraw')">

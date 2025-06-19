@@ -1,98 +1,98 @@
 <script setup>
-// A Basic Stroop Experiment
+  // A Basic Stroop Experiment
 
-// import and initalize smile API
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  // import and initialize smile API
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
 
-// define the trials for the experiment as a spec
-const trials = api.steps.append([
-  {
-    id: 'stroop',
-    rt: () => api.faker.rnorm(500, 50), // add the autofill/expected data fields
-    hit: () => api.faker.rbinom(1, 0.8),
-    response: () => api.faker.rchoice(['r', 'g', 'b']),
-  },
-])
+  // define the trials for the experiment as a spec
+  const trials = api.steps.append([
+    {
+      id: "stroop",
+      rt: () => api.faker.rnorm(500, 50), // add the autofill/expected data fields
+      hit: () => api.faker.rbinom(1, 0.8),
+      response: () => api.faker.rchoice(["r", "g", "b"]),
+    },
+  ]);
 
-trials[0]
-  .append([
-    { id: 'a', word: 'SHIP', color: 'red', condition: 'unrelated' },
-    { id: 'b', word: 'MONKEY', color: 'green', condition: 'unrelated' },
-    { id: 'c', word: 'ZAMBONI', color: 'blue', condition: 'unrelated' },
-    { id: 'd', word: 'RED', color: 'red', condition: 'congruent' },
-    { id: 'e', word: 'GREEN', color: 'green', condition: 'congruent' },
-    { id: 'f', word: 'BLUE', color: 'blue', condition: 'congruent' },
-    { id: 'g', word: 'GREEN', color: 'red', condition: 'incongruent' },
-    { id: 'h', word: 'BLUE', color: 'green', condition: 'incongruent' },
-    { id: 'i', word: 'RED', color: 'blue', condition: 'incongruent' },
-  ])
-  .shuffle()
+  trials[0]
+    .append([
+      { id: "a", word: "SHIP", color: "red", condition: "unrelated" },
+      { id: "b", word: "MONKEY", color: "green", condition: "unrelated" },
+      { id: "c", word: "ZAMBONI", color: "blue", condition: "unrelated" },
+      { id: "d", word: "RED", color: "red", condition: "congruent" },
+      { id: "e", word: "GREEN", color: "green", condition: "congruent" },
+      { id: "f", word: "BLUE", color: "blue", condition: "congruent" },
+      { id: "g", word: "GREEN", color: "red", condition: "incongruent" },
+      { id: "h", word: "BLUE", color: "green", condition: "incongruent" },
+      { id: "i", word: "RED", color: "blue", condition: "incongruent" },
+    ])
+    .shuffle();
 
-trials.append([{ id: 'summary' }])
+  trials.append([{ id: "summary" }]);
 
-// if hits not defined yet then initialize it and timer.
-if (!api.persist.isDefined('hits')) {
-  api.persist.hits = 0
-  api.persist.attempts = 0
-  api.persist.finalScore = 0
-}
-
-// this is the persistent timer
-// if you want to start timer since last reload then just
-// write api.startTimer()
-if (!api.isTimerStarted()) {
-  api.startTimer()
-}
-
-// autofill all the trials
-function autofill() {
-  while (api.stepIndex < api.nSteps) {
-    // api.faker.render() will autofill the trial with the expected data
-    // if the trial has already been filled by user it will not be changed
-    api.faker.render(api.stepData)
-    api.persist.hits = api.persist.hits + api.stepData.hit.val
-    api.persist.attempts = api.persist.attempts + 1
-    api.recordStep()
-    api.goNextStep()
+  // if hits not defined yet then initialize it and timer.
+  if (!api.persist.isDefined("hits")) {
+    api.persist.hits = 0;
+    api.persist.attempts = 0;
+    api.persist.finalScore = 0;
   }
-  updateScore()
-}
 
-api.setAutofill(autofill)
+  // this is the persistent timer
+  // if you want to start timer since last reload then just
+  // write api.startTimer()
+  if (!api.isTimerStarted()) {
+    api.startTimer();
+  }
 
-function updateScore() {
-  api.persist.finalScore = (api.persist.hits / api.persist.attempts) * 100
-}
-
-// Handle the key presses for the task
-const stop = api.onKeyDown(
-  ['r', 'R', 'g', 'G', 'b', 'B'], // list of keys to listen for
-  (e) => {
-    if (api.stepIndex < api.nSteps) {
-      e.preventDefault()
-      const reactionTime = api.elapsedTime()
-      const hit = api.stepData.color[0] === e.key ? 1 : 0
-      api.stepData.hit = hit
-      api.persist.hits += hit
-      api.persist.attempts = api.persist.attempts + 1
-      api.stepData.rt = reactionTime
-      api.stepData.response = e.key
-      api.recordStep()
-      api.goNextStep()
-      // if we are at the end of the trials, compute a final score
-      if (api.path[0] == 'summary') {
-        stop() // This removes the keydown listener
-        updateScore()
-      }
+  // autofill all the trials
+  function autofill() {
+    while (api.stepIndex < api.nSteps) {
+      // api.faker.render() will autofill the trial with the expected data
+      // if the trial has already been filled by user it will not be changed
+      api.faker.render(api.stepData);
+      api.persist.hits = api.persist.hits + api.stepData.hit.val;
+      api.persist.attempts = api.persist.attempts + 1;
+      api.recordStep();
+      api.goNextStep();
     }
-  },
-  { dedupe: true }
-)
+    updateScore();
+  }
 
-function finish() {
-  api.goNextView()
-}
+  api.setAutofill(autofill);
+
+  function updateScore() {
+    api.persist.finalScore = (api.persist.hits / api.persist.attempts) * 100;
+  }
+
+  // Handle the key presses for the task
+  const stop = api.onKeyDown(
+    ["r", "R", "g", "G", "b", "B"], // list of keys to listen for
+    (e) => {
+      if (api.stepIndex < api.nSteps) {
+        e.preventDefault();
+        const reactionTime = api.elapsedTime();
+        const hit = api.stepData.color[0] === e.key ? 1 : 0;
+        api.stepData.hit = hit;
+        api.persist.hits += hit;
+        api.persist.attempts = api.persist.attempts + 1;
+        api.stepData.rt = reactionTime;
+        api.stepData.response = e.key;
+        api.recordStep();
+        api.goNextStep();
+        // if we are at the end of the trials, compute a final score
+        if (api.path[0] == "summary") {
+          stop(); // This removes the keydown listener
+          updateScore();
+        }
+      }
+    },
+    { dedupe: true },
+  );
+
+  function finish() {
+    api.goNextView();
+  }
 </script>
 
 <template>
@@ -119,16 +119,16 @@ function finish() {
 </template>
 
 <style scoped>
-/*  pick your colors for the stroop design here */
-.red {
-  color: rgb(240, 75, 75);
-}
+  /*  pick your colors for the stroop design here */
+  .red {
+    color: rgb(240, 75, 75);
+  }
 
-.blue {
-  color: rgb(118, 193, 237);
-}
+  .blue {
+    color: rgb(118, 193, 237);
+  }
 
-.green {
-  color: rgb(123, 199, 123);
-}
+  .green {
+    color: rgb(123, 199, 123);
+  }
 </style>

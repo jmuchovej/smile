@@ -97,7 +97,7 @@ stored.
         <tr>
             <td class="label">
                 <label for="projectname">Project name</label><br>
-                We highly recommend you use underscores for spaces and name your project based on 
+                We highly recommend you use underscores for spaces and name your project based on
         the science (e.g., `question_asking`).
             </td>
             <td class="data">
@@ -193,7 +193,7 @@ env/.env.local
 
 and place them in your local `env/` directory. These will be ignored by git via
 the .gitignore and should be treated carefully (e.g., don't put them on github
-or in a publically accessible spot)
+or in a publicly accessible spot)
 
 **Only on first setup:** After all the necessary files are in the `env` folder
 run:

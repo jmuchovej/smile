@@ -1,45 +1,50 @@
 <script setup>
-import { computed } from 'vue'
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+  import { computed } from "vue";
 
-import CircleProgress from '@/dev/developer_mode/CircleProgress.vue'
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
 
-// if in dev mode (which should always be true on this page), set known
-// if not a known user
+  import CircleProgress from "@/dev/developer_mode/CircleProgress.vue";
 
-const database_tooltip = computed(() => {
-  var msg = ''
-  if (api.store.browserEphemeral.dbConnected == true) {
-    msg += 'Database connected | '
-  } else {
-    msg += 'Database not connected | '
-  }
-  if (api.store.browserEphemeral.dbChanges == true) {
-    msg += 'Unsynced data '
-  } else {
-    msg += 'Data in sync '
-  }
-  if (api.store.browserEphemeral.dbConnected == true) {
-    msg += '| '
-    msg += Math.round((api.store.browserPersisted.approxDataSize / 1048576) * 1000) / 1000 + '% data used'
-  }
-  return msg
-})
+  // if in dev mode (which should always be true on this page), set known
+  // if not a known user
+
+  const database_tooltip = computed(() => {
+    var msg = "";
+    if (api.store.browserEphemeral.dbConnected == true) {
+      msg += "Database connected | ";
+    } else {
+      msg += "Database not connected | ";
+    }
+    if (api.store.browserEphemeral.dbChanges == true) {
+      msg += "Unsynced data ";
+    } else {
+      msg += "Data in sync ";
+    }
+    if (api.store.browserEphemeral.dbConnected == true) {
+      msg += "| ";
+      msg +=
+        Math.round((api.store.browserPersisted.approxDataSize / 1048576) * 1000) / 1000 +
+        "% data used";
+    }
+    return msg;
+  });
 </script>
 
 <template>
-  <button class="button devbar-button has-tooltip-arrow has-tooltip-bottom" :data-tooltip="database_tooltip">
+  <button
+    class="button devbar-button has-tooltip-arrow has-tooltip-bottom"
+    :data-tooltip="database_tooltip">
     <FAIcon
       icon="fa-solid fa-database"
       class="disconnected"
-      :class="{ connected: api.store.browserEphemeral.dbConnected == true }"
-    />
+      :class="{ connected: api.store.browserEphemeral.dbConnected == true }" />
     &nbsp;&nbsp;|&nbsp;&nbsp;
     <template v-if="!api.store.browserEphemeral.dbConnected">
       <FAIcon icon="fa-solid fa-rotate" class="has-text-grey" />
     </template>
-    <template v-else-if="api.store.browserEphemeral.dbChanges && api.store.browserEphemeral.dbConnected">
+    <template
+      v-else-if="api.store.browserEphemeral.dbChanges && api.store.browserEphemeral.dbConnected">
       <FAIcon icon="fa-solid fa-rotate" class="outofsync" />
     </template>
     <template v-else>
@@ -53,8 +58,7 @@ const database_tooltip = computed(() => {
           :size="12"
           :strokeWidth="40"
           slicecolor="#aaa"
-          basecolor="#aaa"
-        />
+          basecolor="#aaa" />
       </div>
     </template>
     <template v-else>
@@ -65,27 +69,26 @@ const database_tooltip = computed(() => {
           :size="12"
           :strokeWidth="40"
           slicecolor="hsl(var(--bulma-button-h), var(--bulma-button-s), calc(var(--bulma-button-background-l) + var(--bulma-button-background-l-delta)))"
-          basecolor="var(--status-green)"
-        />
+          basecolor="var(--status-green)" />
       </div>
     </template>
   </button>
 </template>
 
 <style scoped>
-.disconnected {
-  color: var(--status-red);
-}
-.connected {
-  color: var(--status-green);
-}
-.outofsync {
-  color: var(--status-yellow);
-}
-.insync {
-  color: var(--status-green);
-}
-.notconnected {
-  color: var(--darker-grey);
-}
+  .disconnected {
+    color: var(--status-red);
+  }
+  .connected {
+    color: var(--status-green);
+  }
+  .outofsync {
+    color: var(--status-yellow);
+  }
+  .insync {
+    color: var(--status-green);
+  }
+  .notconnected {
+    color: var(--darker-grey);
+  }
 </style>

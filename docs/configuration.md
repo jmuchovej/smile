@@ -69,7 +69,7 @@ to configure your deployment process.
 ## Runtime configuration
 
 Runtime configuration is done using the `api.setRuntimeConfig()` function. This
-is useful for configuation options that are specific to the flow of your
+is useful for configuration options that are specific to the flow of your
 experiment but are not passwords or other sensitive information. The most common
 use case here is to set options in the `src/user/design.js` file.
 
@@ -79,18 +79,18 @@ clear and convenient way to set them (it is also easier to share the design.js
 file).
 
 ```js
-api.setRuntimeConfig('allowRepeats', false)
+api.setRuntimeConfig("allowRepeats", false);
 
-api.setRuntimeConfig('windowsizerRequest', { width: 800, height: 600 })
-api.setRuntimeConfig('windowsizerAggressive', true)
+api.setRuntimeConfig("windowsizerRequest", { width: 800, height: 600 });
+api.setRuntimeConfig("windowsizerAggressive", true);
 
-api.setRuntimeConfig('anonymousMode', false)
-api.setRuntimeConfig('labURL', 'https://gureckislab.org')
-api.setRuntimeConfig('brandLogoFn', 'universitylogo.png')
+api.setRuntimeConfig("anonymousMode", false);
+api.setRuntimeConfig("labURL", "https://gureckislab.org");
+api.setRuntimeConfig("brandLogoFn", "universitylogo.png");
 
-api.setRuntimeConfig('maxWrites', 1000)
-api.setRuntimeConfig('minWriteInterval', 2000)
-api.setRuntimeConfig('autoSave', true)
+api.setRuntimeConfig("maxWrites", 1000);
+api.setRuntimeConfig("minWriteInterval", 2000);
+api.setRuntimeConfig("autoSave", true);
 ```
 
 ::: danger Warning!
@@ -110,15 +110,15 @@ to the `design.js` file as follows:
 
 ```js
 api.setRuntimeConfig(
-  'payrate',
-  '$15USD/hour prorated for estimated completition time + performance related bonus'
-)
+  "payrate",
+  "$15USD/hour prorated for estimated completion time + performance related bonus",
+);
 ```
 
 Then in your component you can access this configuration option as follows:
 
 ```js
-const payrate = api.getRuntimeConfig('payrate')
+const payrate = api.getRuntimeConfig("payrate");
 ```
 
 Runtime configuration options override the values in the `.env` files if they
@@ -164,7 +164,7 @@ Some files end in `.local` as the file extension. These files are by default
 ignored by git (via the `.gitignore` file) and so are not version tracked. This
 is necessary because some configuration options which go in those files are
 considered "secret" and we don't want them easily searched in GitHub when/if
-your project repository becomes publically shared.
+your project repository becomes publicly shared.
 
 Note that if you change the value of any configuration options, you must stop
 your development server and start it again (running `npm run dev`) to see
@@ -350,7 +350,7 @@ to your Javascript experiment.
 
 ```
 # this file is not tracked by github and contains
-# sensitive information inluding write access to our documentation
+# sensitive information including write access to our documentation
 # web server!
 
 # enter docs web server information here
@@ -375,7 +375,7 @@ experiment.
 
 ```
 # this file is not tracked by github and contains
-# sensitive information inluding write access to our experiment
+# sensitive information including write access to our experiment
 # hosting web server!
 
 # enter experiment hosting web server information here
@@ -400,8 +400,7 @@ EXP_DEPLOY_KEY         = "-----BEGIN RSA PRIVATE KEY-----\n-----END RSA PRIVATE 
 - `EXP_DEPLOY_KEY` is the RSA private key used to access your server via
   passwordless ssh[^rsakey]
 
-[^rsakey]:
-    The key needs to be all on one line with `\n` character coding new lines.
+[^rsakey]: The key needs to be all on one line with `\n` character coding new lines.
 
 ## Configuring your deployment settings on GitHub
 

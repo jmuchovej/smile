@@ -198,8 +198,8 @@ prevented from starting the experiment again or not access the final page.
 A timeline is created like this:
 
 ```js
-import Timeline from '@/core/timeline' // note that the '@' resolves to /src in Smile
-const timeline = new Timeline()
+import Timeline from "@/core/timeline"; // note that the '@' resolves to /src in Smile
+const timeline = new Timeline();
 ```
 
 There are four key methods available on the timeline instance:
@@ -235,38 +235,38 @@ Here is an example configuring three sequential routes and one non-sequential
 route:
 
 ```js
-import Timeline from '@/core/timeline'
-const timeline = new Timeline()
+import Timeline from "@/core/timeline";
+const timeline = new Timeline();
 
 // first route
 timeline.pushSeqView({
-  path: '/',
-  name: 'welcome',
+  path: "/",
+  name: "welcome",
   component: WelcomeComponent,
-})
+});
 
 // second route
 timeline.pushSeqView({
-  path: '/instructions',
-  name: 'instructions',
+  path: "/instructions",
+  name: "instructions",
   component: InstructionsComponent,
-})
+});
 
 // third route
 timeline.pushSeqView({
-  path: '/thanks',
-  name: 'thanks',
+  path: "/thanks",
+  name: "thanks",
   component: ThanksComponent,
-})
+});
 
 // a non-sequential route available for debugging
 timeline.registerView({
-  path: '/config',
-  name: 'config',
+  path: "/config",
+  name: "config",
   component: ConfigComponent,
-})
+});
 
-timeline.build()
+timeline.build();
 ```
 
 During development you can, of course, comment out certain Views to help isolate
@@ -295,31 +295,31 @@ successor using `meta: {next: 'some_name'}` (or predecessor using
 ```js
 // first route
 timeline.pushSeqView({
-  name: 'first',
-  meta: { next: 'second' }, // this should jump to a specific route (by name)
+  name: "first",
+  meta: { next: "second" }, // this should jump to a specific route (by name)
   component: FirstComponent,
-})
+});
 
 // alternative first route
 timeline.pushSeqView({
-  name: 'first_alternate',
-  meta: { next: 'second' }, // this should jump to a specific route (by name)
+  name: "first_alternate",
+  meta: { next: "second" }, // this should jump to a specific route (by name)
   component: AlternativeFirstCompomnet,
-})
+});
 
 // second route
 timeline.pushSeqView({
-  name: 'second',
+  name: "second",
   component: SecondComponent,
-})
+});
 
 // third route
 timeline.pushSeqView({
-  name: 'third',
+  name: "third",
   component: ThirdComponent,
-})
+});
 
-timeline.build()
+timeline.build();
 ```
 
 Using this approach, you can configure fairly complex branching flows through
@@ -355,43 +355,43 @@ After the two tasks, you want to show the debrief View. Here's what your
 `src/design.js` file might look like:
 
 ```js
-import RandomSubTimeline from '@/core/subtimeline'
-import Timeline from '@/core/timeline'
-const timeline = new Timeline()
+import RandomSubTimeline from "@/core/subtimeline";
+import Timeline from "@/core/timeline";
+const timeline = new Timeline();
 
 // push instructions
 timeline.pushSeqView({
-  name: 'instructions',
+  name: "instructions",
   component: Instructions,
-})
+});
 
 // register tasks
 randTimeline.registerView({
-  name: 'task1',
+  name: "task1",
   component: Task1,
-})
+});
 
 randTimeline.registerView({
-  name: 'task2',
+  name: "task2",
   component: Task2,
-})
+});
 
 // push randomized node with the two orderings
 timeline.pushRandomizedNode({
-  name: 'randomOrder',
+  name: "randomOrder",
   options: [
-    ['task1', 'task2'],
-    ['task2', 'task1'],
+    ["task1", "task2"],
+    ["task2", "task1"],
   ],
-})
+});
 
 // push debriefing form
 timeline.pushSeqView({
-  name: 'debrief',
+  name: "debrief",
   component: Debrief,
-})
+});
 
-timeline.build()
+timeline.build();
 ```
 
 Note that the Views that make up each path are <i>registered</i> (added with the
@@ -405,13 +405,13 @@ do that like this:
 
 ```js
 timeline.pushRandomizedNode({
-  name: 'randomOrder',
+  name: "randomOrder",
   options: [
-    ['task1', 'task2'],
-    ['task2', 'task1'],
+    ["task1", "task2"],
+    ["task2", "task1"],
   ],
   weights: [2, 1],
-})
+});
 ```
 
 Note that the weights are automatically normalized, so [2/3, 1/3] or [4, 2]
@@ -425,40 +425,40 @@ than a simple randomized node if other aspects of the experiment will depend on
 the condition. Here's an example:
 
 ```js
-import Timeline from '@/core/timeline'
-const timeline = new Timeline()
+import Timeline from "@/core/timeline";
+const timeline = new Timeline();
 
 // assign participants to condition specifying task order
 api.randomAssignCondition({
-  taskOrder: ['AB', 'BA'],
-})
+  taskOrder: ["AB", "BA"],
+});
 
 // push instructions
 timeline.pushSeqView({
-  name: 'instructions',
+  name: "instructions",
   component: Instructions,
-})
+});
 
 // push tasks into timeline as "non-sequential" routes
 randTimeline.registerView({
-  name: 'taskA',
+  name: "taskA",
   component: TaskA,
-})
+});
 
 randTimeline.registerView({
-  name: 'taskB',
+  name: "taskB",
   component: TaskB,
-})
+});
 
 timeline.pushConditionalNode({
-  name: 'ConditionalRandom',
+  name: "ConditionalRandom",
   taskOrder: {
-    AB: ['taskA', 'taskB'],
-    BA: ['taskB', 'taskA'],
+    AB: ["taskA", "taskB"],
+    BA: ["taskB", "taskA"],
   },
-})
+});
 
-timeline.build()
+timeline.build();
 ```
 
 It's also possible to have nested nodes. In the example below, there are two
@@ -468,56 +468,56 @@ participants are randomly assigned to see either task C or task D afterwards
 (based on the variation condition):
 
 ```js
-import Timeline from '@/core/timeline'
-const timeline = new Timeline()
+import Timeline from "@/core/timeline";
+const timeline = new Timeline();
 
 api.randomAssignCondition({
-  taskOrder: ['AB', 'BA'],
-})
+  taskOrder: ["AB", "BA"],
+});
 
 api.randomAssignCondition({
-  variation: ['C', 'D'],
-})
+  variation: ["C", "D"],
+});
 
 // the tasks (registered)
 timeline.registerView({
-  name: 'taskA',
+  name: "taskA",
   component: TaskA,
-})
+});
 
 timeline.registerView({
-  name: 'taskB',
+  name: "taskB",
   component: TaskB,
-})
+});
 
 timeline.registerView({
-  name: 'taskC',
+  name: "taskC",
   component: TaskC,
-})
+});
 
 timeline.registerView({
-  name: 'taskD',
+  name: "taskD",
   component: TaskD,
-})
+});
 
 timeline.registerConditionalNode({
-  name: 'InnerConditionalRandom',
+  name: "InnerConditionalRandom",
   variation: {
-    C: ['taskC'],
-    D: ['taskD'],
+    C: ["taskC"],
+    D: ["taskD"],
   },
-})
+});
 
 // the outer node (pushed)
 timeline.pushConditionalNode({
-  name: 'ConditionalRandom',
+  name: "ConditionalRandom",
   taskOrder: {
-    AB: ['taskA', 'taskB', 'InnerConditionalRandom'],
-    BA: ['taskB', 'taskA', 'InnerConditionalRandom'],
+    AB: ["taskA", "taskB", "InnerConditionalRandom"],
+    BA: ["taskB", "taskA", "InnerConditionalRandom"],
   },
-})
+});
 
-timeline.build()
+timeline.build();
 ```
 
 ## Using the Timeline
@@ -539,12 +539,12 @@ the `finish()` method):
 
 ```vue
 <script setup>
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
 
-function finish(goto) {
-  api.goNextView()
-}
+  function finish(goto) {
+    api.goNextView();
+  }
 </script>
 
 <template>
@@ -593,12 +593,12 @@ link was implemented using an internal API navigation function it would be
 always allowed:
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
 function go_to_instructions() {
-  console.log('go')
-  api.goToView('instructions')
+  console.log("go");
+  api.goToView("instructions");
 }
 ```
 
@@ -609,7 +609,7 @@ function go_to_instructions() {
 ```
 
 The premise here is that if the programmer set up a situation where navigation
-was requested progamatically, it should be allowed. For the first link type, it
+was requested programmatically, it should be allowed. For the first link type, it
 is unclear whether the programmer or the participant constructed the request. As
 a result, it should be disallowed.
 
@@ -627,13 +627,13 @@ Then, in the last View of your experiment, you can set the `resetApp` field.
 ```js
 // thanks/submit page
 timeline.pushSeqView({
-  name: 'thanks',
+  name: "thanks",
   component: Thanks,
   meta: {
     requiresDone: true,
     resetApp: smilestore.config.allowRepeats,
   },
-})
+});
 ```
 
 When this is set, the _next_ request to the app will reset the app to the start
@@ -653,12 +653,12 @@ Timeline object.
 ```js
 // welcome screen
 timeline.pushSeqView({
-  name: 'welcome',
+  name: "welcome",
   component: Advertisement,
   beforeEnter: (to, from) => {
-    console.log(to, from)
+    console.log(to, from);
   },
-})
+});
 ```
 
 The `beforeEnter` method will run before the View is loaded. This can be helpful

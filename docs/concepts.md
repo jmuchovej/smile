@@ -52,7 +52,7 @@ view called `MyView.vue`, you would create a new file in the
 
 A default Vue component has three parts:
 
-- A script (javscript or typescript)
+- A script (javascript or typescript)
 - A template (HTML + Vue syntax)
 - A style (CSS)
 
@@ -345,21 +345,21 @@ timeline is defined. For example, look for a code section like this:
 ```js
 // demographic survey
 timeline.pushSeqView({
-  name: 'demograph',
+  name: "demograph",
   component: DemographicSurvey,
-})
+});
 
 // windowsizer
 timeline.pushSeqView({
-  name: 'windowsizer',
+  name: "windowsizer",
   component: WindowSizer,
-})
+});
 
 // instructions
 timeline.pushSeqView({
-  name: 'instructions',
+  name: "instructions",
   component: Instructions,
-})
+});
 ```
 
 This shows the three Views that are currently defined in the experiment. The

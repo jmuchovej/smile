@@ -47,11 +47,11 @@ use the `useHStepper` method to get the stepper:
 
 ```vue
 <script setup>
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
 
-// Get the stepper
-const stepper = api.useHStepper()
+  // Get the stepper
+  const stepper = api.useHStepper();
 </script>
 ```
 
@@ -70,52 +70,52 @@ The `stepper` object provides methods for controlling trial navigation:
 For example:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 // Create and push some trials
 const trials = stepper.t.append([
-  { shape: 'circle', color: 'red' },
-  { shape: 'square', color: 'blue' },
-])
-stepper.addSpec(trials)
+  { shape: "circle", color: "red" },
+  { shape: "square", color: "blue" },
+]);
+stepper.addSpec(trials);
 
 // After push(), we're at the first trial
-console.log(stepper.current) // [{ shape: 'circle', color: 'red' }]
-console.log(stepper.index) // "0"
+console.log(stepper.current); // [{ shape: 'circle', color: 'red' }]
+console.log(stepper.index); // "0"
 
 // Move to next trial
-stepper.goNextStep()
-console.log(stepper.current) // [{ shape: 'square', color: 'blue' }]
-console.log(stepper.index) // "1"
+stepper.goNextStep();
+console.log(stepper.current); // [{ shape: 'square', color: 'blue' }]
+console.log(stepper.index); // "1"
 
 // Go back
-stepper.goPrevStep()
-console.log(stepper.current) // [{ shape: 'circle', color: 'red' }]
-console.log(stepper.index) // "0"
+stepper.goPrevStep();
+console.log(stepper.current); // [{ shape: 'circle', color: 'red' }]
+console.log(stepper.index); // "0"
 
 // Reset always goes to the first trial
-stepper.goFirstStep()
-console.log(stepper.current) // [{ shape: 'circle', color: 'red' }]
-console.log(stepper.index) // "0"
+stepper.goFirstStep();
+console.log(stepper.current); // [{ shape: 'circle', color: 'red' }]
+console.log(stepper.index); // "0"
 ```
 
 With nested trials, the `index` property shows the full path:
 
 ```js
-const stepper = api.useHStepper()
-const trials = stepper.spec().range(2) // Create parent trials
+const stepper = api.useHStepper();
+const trials = stepper.spec().range(2); // Create parent trials
 
 // Add nested trials to first parent
-trials[0].spec().append([{ type: 'stim' }, { type: 'feedback' }])
+trials[0].spec().append([{ type: "stim" }, { type: "feedback" }]);
 
-trials.push()
+trials.push();
 
-console.log(stepper.current) // [{ range: 0 }, { type: 'stim' }]
-console.log(stepper.index) // "0-0"
+console.log(stepper.current); // [{ range: 0 }, { type: 'stim' }]
+console.log(stepper.index); // "0-0"
 
-stepper.goNextStep()
-console.log(stepper.current) // [{ range: 0 }, { type: 'feedback' }]
-console.log(stepper.index) // "0-1"
+stepper.goNextStep();
+console.log(stepper.current); // [{ range: 0 }, { type: 'feedback' }]
+console.log(stepper.index); // "0-1"
 ```
 
 Both `current` and `index` are reactive properties that automatically update
@@ -143,16 +143,16 @@ sequences. You start by calling `table()` or `t()` to create a fresh table, then
 use various chainable methods to build up your sequence:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 // Create a new table and append some trials
 const trials = stepper.spec().append([
-  { shape: 'circle', color: 'red' },
-  { shape: 'square', color: 'green' },
-])
+  { shape: "circle", color: "red" },
+  { shape: "square", color: "green" },
+]);
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 The API for building tables is similar to libraries like [D3](https://d3js.org/)
@@ -166,12 +166,12 @@ machine. Think of it as a "save" or "commit" operation that writes your trial
 sequence into the stepper's state:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
-  .append({ shape: 'circle', color: 'red' })
-  .append({ shape: 'square', color: 'green' })
-  .push() // Save the trials to the state machine
+  .append({ shape: "circle", color: "red" })
+  .append({ shape: "square", color: "green" })
+  .push(); // Save the trials to the state machine
 ```
 
 ::: warning Read-Only After Push
@@ -200,12 +200,12 @@ The `length` property behaves differently for tables and entries:
 For example:
 
 ```js
-const trials = stepper.spec().range(2)
-trials[0].spec().append([{ type: 'stim' }, { type: 'feedback' }])
+const trials = stepper.spec().range(2);
+trials[0].spec().append([{ type: "stim" }, { type: "feedback" }]);
 
-console.log(trials.length) // 2 (number of rows in parent table)
-console.log(trials[0].length) // 2 (number of rows in nested table)
-console.log(trials[0][0].length) // null (single node, not a list)
+console.log(trials.length); // 2 (number of rows in parent table)
+console.log(trials[0].length); // 2 (number of rows in nested table)
+console.log(trials[0][0].length); // null (single node, not a list)
 ```
 
 :::
@@ -237,24 +237,24 @@ Each row in a table can have its own nested table, which you can access using
 array-like indexing:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 // Create a parent table with 3 trials
-const trials = stepper.spec().range(3)
+const trials = stepper.spec().range(3);
 
 // Create nested tables for specific trials
-trials[0].spec().range(3) // First trial gets 3 sub-trials
-trials[1].spec().range(5) // Second trial gets 5 sub-trials
+trials[0].spec().range(3); // First trial gets 3 sub-trials
+trials[1].spec().range(5); // Second trial gets 5 sub-trials
 
 // Access nested table rows using array indexing
-console.log(trials[0][0]) // First row of first trial's nested table
-console.log(trials[1][2]) // Third row of second trial's nested table
+console.log(trials[0][0]); // First row of first trial's nested table
+console.log(trials[1][2]); // Third row of second trial's nested table
 
 // You can chain operations on nested tables
 trials[0].t
   .range(3)
-  .forEach((row) => ({ ...row, type: 'test' }))
-  .append([{ index: 3, type: 'extra' }])
+  .forEach((row) => ({ ...row, type: "test" }))
+  .append([{ index: 3, type: "extra" }]);
 ```
 
 ::: tip Multiple Nested Tables
@@ -263,17 +263,17 @@ Each row can only have one nested table at a time. Creating a new nested table
 will overwrite any existing one:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 // Create two nested tables for the first trial
-const trials = stepper.spec().range(2)
-trials[0].spec().range(2) // First nested table
-trials[0].spec().range(3) // Second nested table overwrites the first
+const trials = stepper.spec().range(2);
+trials[0].spec().range(2); // First nested table
+trials[0].spec().range(3); // Second nested table overwrites the first
 
 // The second table (with 3 rows) is now accessible
-console.log(trials[0][0]) // First row of the nested table
-console.log(trials[0][1]) // Second row of the nested table
-console.log(trials[0][2]) // Third row of the nested table
+console.log(trials[0][0]); // First row of the nested table
+console.log(trials[0][1]); // Second row of the nested table
+console.log(trials[0][2]); // Third row of the nested table
 ```
 
 :::
@@ -307,27 +307,27 @@ finalize your parent table's structure before creating any nested tables.
 Tables provide array-like access to their rows:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().append([
-  { shape: 'circle', color: 'red' },
-  { shape: 'square', color: 'green' },
-])
+  { shape: "circle", color: "red" },
+  { shape: "square", color: "green" },
+]);
 
 // Access rows by index
-console.log(trials[0]) // { shape: 'circle', color: 'red' }
+console.log(trials[0]); // { shape: 'circle', color: 'red' }
 
 // Get length
-console.log(trials.length) // 2
+console.log(trials.length); // 2
 
 // Iterate over rows
 for (const row of trials) {
-  console.log(row)
+  console.log(row);
 }
 
 // Use array methods
-console.log(trials.indexOf({ shape: 'circle', color: 'red' })) // 0
-console.log(trials.slice(0, 1)) // [{ shape: 'circle', color: 'red' }]
+console.log(trials.indexOf({ shape: "circle", color: "red" })); // 0
+console.log(trials.slice(0, 1)); // [{ shape: 'circle', color: 'red' }]
 ```
 
 #### Combining Trials with zip()
@@ -336,12 +336,12 @@ The `zip()` method combines multiple arrays of values into trial objects,
 pairing values by their position:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().zip({
-  shape: ['circle', 'square', 'triangle'],
-  color: ['red', 'green', 'blue'],
-})
+  shape: ["circle", "square", "triangle"],
+  color: ["red", "green", "blue"],
+});
 
 // Results in:
 // [
@@ -351,7 +351,7 @@ const trials = stepper.spec().zip({
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 By default, `zip()` requires all arrays to have the same length. If the arrays
@@ -359,16 +359,16 @@ have different lengths, you must specify how to handle this using the `method`
 option:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 // Loop shorter arrays
 const trials1 = stepper.spec().zip(
   {
-    shape: ['circle', 'square'],
-    color: ['red', 'green', 'blue'],
+    shape: ["circle", "square"],
+    color: ["red", "green", "blue"],
   },
-  { method: 'loop' }
-)
+  { method: "loop" },
+);
 // Results in:
 // [
 //   { shape: 'circle', color: 'red' },
@@ -379,11 +379,11 @@ const trials1 = stepper.spec().zip(
 // Pad with a specific value
 const trials2 = stepper.spec().zip(
   {
-    shape: ['circle', 'square'],
-    color: ['red', 'green', 'blue'],
+    shape: ["circle", "square"],
+    color: ["red", "green", "blue"],
   },
-  { method: 'pad', padValue: 'unknown' }
-)
+  { method: "pad", padValue: "unknown" },
+);
 // Results in:
 // [
 //   { shape: 'circle', color: 'red' },
@@ -394,11 +394,11 @@ const trials2 = stepper.spec().zip(
 // Repeat the last value
 const trials3 = stepper.spec().zip(
   {
-    shape: ['circle', 'square'],
-    color: ['red', 'green', 'blue'],
+    shape: ["circle", "square"],
+    color: ["red", "green", "blue"],
   },
-  { method: 'last' }
-)
+  { method: "last" },
+);
 // Results in:
 // [
 //   { shape: 'circle', color: 'red' },
@@ -425,15 +425,15 @@ The `zip()` method can handle non-array values by treating them as
 single-element arrays:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().zip(
   {
-    shape: 'circle', // Treated as ['circle']
-    color: ['red', 'green', 'blue'],
+    shape: "circle", // Treated as ['circle']
+    color: ["red", "green", "blue"],
   },
-  { method: 'loop' }
-)
+  { method: "loop" },
+);
 
 // Results in:
 // [
@@ -443,7 +443,7 @@ const trials = stepper.spec().zip(
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 :::
@@ -453,12 +453,12 @@ trials.push()
 The `outer()` method creates all possible combinations of values:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().outer({
-  shape: ['circle', 'square'],
-  color: ['red', 'green'],
-})
+  shape: ["circle", "square"],
+  color: ["red", "green"],
+});
 
 // Results in:
 // [
@@ -469,7 +469,7 @@ const trials = stepper.spec().outer({
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 ::: warning Safety Limit
@@ -486,12 +486,12 @@ Like `zip()`, the `outer()` method can handle non-array values by treating them
 as single-element arrays:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().outer({
-  shape: 'circle', // Treated as ['circle']
-  color: ['red', 'green'],
-})
+  shape: "circle", // Treated as ['circle']
+  color: ["red", "green"],
+});
 
 // Results in:
 // [
@@ -500,7 +500,7 @@ const trials = stepper.spec().outer({
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 :::
@@ -511,14 +511,14 @@ The `repeat()` method allows you to repeat all trials a specified number of
 times, in order:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
   .append([
-    { shape: 'circle', color: 'red' },
-    { shape: 'square', color: 'green' },
+    { shape: "circle", color: "red" },
+    { shape: "square", color: "green" },
   ])
-  .repeat(2)
+  .repeat(2);
 
 // Results in:
 // [
@@ -529,7 +529,7 @@ const trials = stepper.t
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 #### Creating Sequences with range()
@@ -539,9 +539,9 @@ index values. This is particularly useful when you need to create a series of
 numbered trials or when you want to build a sequence that you'll modify later:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
-const trials = stepper.spec().range(3)
+const trials = stepper.spec().range(3);
 
 // Results in:
 // [
@@ -551,22 +551,22 @@ const trials = stepper.spec().range(3)
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 You can combine `range()` with other methods like `forEach()` to create more
 complex sequences:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper
   .spec()
   .range(2)
   .forEach((row) => ({
     ...row,
-    condition: row.range % 2 === 0 ? 'A' : 'B',
-  }))
+    condition: row.range % 2 === 0 ? "A" : "B",
+  }));
 
 // Results in:
 // [
@@ -575,7 +575,7 @@ const trials = stepper
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 ::: warning Positive Numbers Only
@@ -592,36 +592,36 @@ trial table, including any nested tables. This is particularly useful during
 development and debugging:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().append([
-  { shape: 'circle', color: 'red' },
-  { shape: 'square', color: 'blue' },
-])
+  { shape: "circle", color: "red" },
+  { shape: "square", color: "blue" },
+]);
 
-trials.print()
+trials.print();
 // Output:
 // Table with 2 rows:
 // [0]: { shape: 'circle', color: 'red' }
 // [1]: { shape: 'square', color: 'blue' }
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 The `print()` method also handles nested tables with proper indentation:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
-const trials = stepper.spec().range(2)
+const trials = stepper.spec().range(2);
 trials[0].spec().append([
-  { type: 'stim', value: 1 },
-  { type: 'feedback', value: 2 },
-])
-trials[1].spec().append([{ type: 'stim', value: 3 }])
+  { type: "stim", value: 1 },
+  { type: "feedback", value: 2 },
+]);
+trials[1].spec().append([{ type: "stim", value: 3 }]);
 
-trials.print()
+trials.print();
 // Output:
 // Table with 2 rows:
 // [0]: { range: 0 }
@@ -633,7 +633,7 @@ trials.print()
 //   [0]: { type: 'stim', value: 3 }
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 ::: tip Method Chaining
@@ -642,16 +642,16 @@ The `print()` method returns the table object, allowing it to be chained with
 other methods:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
-  .append({ shape: 'circle' })
+  .append({ shape: "circle" })
   .print() // Print current state
-  .append({ shape: 'square' })
-  .print() // Print updated state
+  .append({ shape: "square" })
+  .print(); // Print updated state
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 :::
@@ -663,19 +663,19 @@ them. This is useful when you want to create a sequence that alternates between
 different trial types:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials1 = stepper.spec().append([
-  { type: 'stim', id: 1 },
-  { type: 'stim', id: 2 },
-])
+  { type: "stim", id: 1 },
+  { type: "stim", id: 2 },
+]);
 
 const trials2 = stepper.spec().append([
-  { type: 'feedback', id: 3 },
-  { type: 'feedback', id: 4 },
-])
+  { type: "feedback", id: 3 },
+  { type: "feedback", id: 4 },
+]);
 
-const trials = trials1.interleave(trials2)
+const trials = trials1.interleave(trials2);
 // Results in:
 // [
 //   { type: 'stim', id: 1 },
@@ -685,27 +685,27 @@ const trials = trials1.interleave(trials2)
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 The method can handle tables of different lengths, arrays, or single objects:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 // Different length tables
 const trials1 = stepper.spec().append([
-  { type: 'stim', id: 1 },
-  { type: 'stim', id: 2 },
-  { type: 'stim', id: 3 },
-])
+  { type: "stim", id: 1 },
+  { type: "stim", id: 2 },
+  { type: "stim", id: 3 },
+]);
 
 const trials2 = stepper.spec().append([
-  { type: 'feedback', id: 4 },
-  { type: 'feedback', id: 5 },
-])
+  { type: "feedback", id: 4 },
+  { type: "feedback", id: 5 },
+]);
 
-const trials = trials1.interleave(trials2)
+const trials = trials1.interleave(trials2);
 // Results in:
 // [
 //   { type: 'stim', id: 1 },
@@ -716,16 +716,16 @@ const trials = trials1.interleave(trials2)
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 
 // Array input
 const trialsWithArray = trials1.interleave([
-  { type: 'feedback', id: 4 },
-  { type: 'feedback', id: 5 },
-])
+  { type: "feedback", id: 4 },
+  { type: "feedback", id: 5 },
+]);
 
 // Single object
-const trialsWithObject = trials1.interleave({ type: 'feedback', id: 4 })
+const trialsWithObject = trials1.interleave({ type: "feedback", id: 4 });
 ```
 
 ::: warning Safety Limit
@@ -742,21 +742,21 @@ The `interleave()` method returns the table object, allowing it to be chained
 with other methods:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
   .append([
-    { type: 'stim', id: 1 },
-    { type: 'stim', id: 2 },
+    { type: "stim", id: 1 },
+    { type: "stim", id: 2 },
   ])
   .interleave([
-    { type: 'feedback', id: 3 },
-    { type: 'feedback', id: 4 },
+    { type: "feedback", id: 3 },
+    { type: "feedback", id: 4 },
   ])
-  .forEach((row) => ({ ...row, condition: 'test' }))
+  .forEach((row) => ({ ...row, condition: "test" }));
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 :::
@@ -767,10 +767,10 @@ The `head()` and `tail()` methods allow you to take a subset of trials from the
 beginning or end of your trial table:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 // Take the first 3 trials
-const trials1 = stepper.spec().range(5).head(3)
+const trials1 = stepper.spec().range(5).head(3);
 
 // Results in:
 // [
@@ -780,10 +780,10 @@ const trials1 = stepper.spec().range(5).head(3)
 // ]
 
 // Push the trials
-trials1.push()
+trials1.push();
 
 // Take the last 3 trials
-const trials2 = stepper.spec().range(5).tail(3)
+const trials2 = stepper.spec().range(5).tail(3);
 
 // Results in:
 // [
@@ -793,7 +793,7 @@ const trials2 = stepper.spec().range(5).tail(3)
 // ]
 
 // Push the trials
-trials2.push()
+trials2.push();
 ```
 
 Both methods maintain the original order of the trials. When using `tail()`, the
@@ -802,12 +802,12 @@ last n elements are returned in their original sequence (not reversed).
 You can combine these methods with other operations:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
   .range(5)
   .tail(3)
-  .forEach((row) => ({ ...row, condition: 'test' }))
+  .forEach((row) => ({ ...row, condition: "test" }));
 
 // Results in:
 // [
@@ -817,7 +817,7 @@ const trials = stepper.t
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 ::: warning Positive Numbers Only
@@ -843,19 +843,19 @@ In both cases, the original order of trials is preserved.
 The `forEach()` method allows you to modify each trial:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
   .append([
-    { shape: 'circle', color: 'red' },
-    { shape: 'square', color: 'green' },
+    { shape: "circle", color: "red" },
+    { shape: "square", color: "green" },
   ])
   .forEach((row, index) => {
     if (index === 0) {
-      return { ...row, color: 'blue' }
+      return { ...row, color: "blue" };
     }
-    return row
-  })
+    return row;
+  });
 
 // Results in:
 // [
@@ -864,7 +864,7 @@ const trials = stepper.t
 // ]
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 #### Shuffling Trials
@@ -875,41 +875,41 @@ shuffle operation respects the seeded random number generation system (see
 [Randomization](/randomization) for more details).
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
   .append([
-    { shape: 'circle', color: 'red' },
-    { shape: 'square', color: 'green' },
-    { shape: 'triangle', color: 'blue' },
+    { shape: "circle", color: "red" },
+    { shape: "square", color: "green" },
+    { shape: "triangle", color: "blue" },
   ])
-  .shuffle()
+  .shuffle();
 
 // Results in a randomly ordered array of the same trials
 // The order will be deterministic based on the current seed
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 You can also provide a specific seed to the shuffle operation for custom
 randomization:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.t
   .append([
-    { shape: 'circle', color: 'red' },
-    { shape: 'square', color: 'green' },
-    { shape: 'triangle', color: 'blue' },
+    { shape: "circle", color: "red" },
+    { shape: "square", color: "green" },
+    { shape: "triangle", color: "blue" },
   ])
-  .shuffle('custom-seed-123')
+  .shuffle("custom-seed-123");
 
 // Results in a deterministically ordered array based on the provided seed
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 ::: tip Seeded Randomization
@@ -932,17 +932,17 @@ which respect Smile's seeded randomization system (see
 sampling types:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().append([
-  { id: 1, shape: 'circle', color: 'red' },
-  { id: 2, shape: 'square', color: 'green' },
-  { id: 3, shape: 'triangle', color: 'blue' },
-  { id: 4, shape: 'star', color: 'yellow' },
-])
+  { id: 1, shape: "circle", color: "red" },
+  { id: 2, shape: "square", color: "green" },
+  { id: 3, shape: "triangle", color: "blue" },
+  { id: 4, shape: "star", color: "yellow" },
+]);
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 #### Special Data Fields
@@ -954,13 +954,13 @@ to explicitly control the node identifiers in the state machine. This is useful
 when you need specific path values rather than the default sequential numbering:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
 const trials = stepper.spec().append([
-  { id: 'intro', type: 'instruction' },
-  { id: 'practice', type: 'trial' },
-  { id: 'main', type: 'trial' },
-])
+  { id: "intro", type: "instruction" },
+  { id: "practice", type: "trial" },
+  { id: "main", type: "trial" },
+]);
 
 // Results in nodes with paths:
 // - "intro"
@@ -972,26 +972,26 @@ const trials = stepper.spec().append([
 // - "2"
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 This also works with nested tables:
 
 ```js
-const stepper = api.useHStepper()
+const stepper = api.useHStepper();
 
-const trials = stepper.spec().append({ id: 'block1' })
+const trials = stepper.spec().append({ id: "block1" });
 trials[0].spec().append([
-  { id: 'stim', type: 'stimulus' },
-  { id: 'feedback', type: 'feedback' },
-])
+  { id: "stim", type: "stimulus" },
+  { id: "feedback", type: "feedback" },
+]);
 
 // Results in paths:
 // - "block1/stim"
 // - "block1/feedback"
 
 // Push the trials
-trials.push()
+trials.push();
 ```
 
 If no `path` field is provided, the stepper will use default sequential

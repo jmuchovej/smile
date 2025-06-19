@@ -155,7 +155,7 @@ distributed into different modules which generally have different properties.
 
 ![overview ](/images/storage-statediagram.png)
 
-### Local states, global state, and persistance
+### Local states, global state, and persistence
 
 A <SmileText /> experiment is made up of various [components](/components) which
 are controlled programmatically. Each component has what is known as **state**
@@ -177,18 +177,18 @@ state is known as a **store** and is managed by the
 state because while they maintain a global state, they provide methods for
 manipulating that state as well as additional debugging tools (see Pinia).
 
-A final issue concerns the **persistance of state**. Some state information
+A final issue concerns the **persistence of state**. Some state information
 (e.g., information local to a component) is "in memory" in the sense that it
 only exists inside the temporary memory storage of the browser while it is
 viewing your experiment. If you close the browser window, press reload, navigate
 to a new page then press back, or the browser unexpectedly crashes, the state is
 lost. Another name for this type of state information is **ephemeral**. In
-contrast we can make some types of state **persistant** by synchronizing it with
+contrast we can make some types of state **persistent** by synchronizing it with
 various tools for data storage. In <SmileText />, we set up a system that
 persists the global application state in several ways but the most important one
 is storing data from our participant's behavior in Google Firestore (which is a
 NoSQL database solution hosted on the Google Cloud). We also make use of state
-persistance features of the browser such as
+persistence features of the browser such as
 [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 which is similar to cookies.
 
@@ -239,7 +239,7 @@ You can also add custom setter and getter methods for your data type in
 `src/core/stores/smilestore.js`. For example, in that file
 
 ```js
-isConsented: (state) => state.data.consented
+isConsented: (state) => state.data.consented;
 ```
 
 which returns the value of `state.data.consented`. In your component code then
@@ -344,7 +344,7 @@ This describes this method
 
 - **Details**
 
-Somethign about it
+Something about it
 
 ### saveData
 

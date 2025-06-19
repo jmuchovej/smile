@@ -22,7 +22,7 @@ jobs:
         with:
           # This data can be any valid JSON from a previous step in the GitHub Action
           payload: |
-            { 
+            {
               "github_username": "${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}",
               "message": "I'm sorry to report there was an error building and deploying your site.  Please see https://smile.gureckislab.org/deploying.html#debugging-deployment-issues"
             }

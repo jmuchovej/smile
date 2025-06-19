@@ -72,24 +72,24 @@ word itself. You might configure several trials like this:
 
 ```js
 const trialTypes = [
-  { word: 'SHIP', color: 'red', condition: 'unrelated' },
+  { word: "SHIP", color: "red", condition: "unrelated" },
   {
-    word: 'MONKEY',
-    color: 'green',
-    condition: 'unrelated',
+    word: "MONKEY",
+    color: "green",
+    condition: "unrelated",
   },
-  { word: 'ZAMBONI', color: 'blue', condition: 'unrelated' },
-  { word: 'RED', color: 'red', condition: 'congruent' },
-  { word: 'GREEN', color: 'green', condition: 'congruent' },
+  { word: "ZAMBONI", color: "blue", condition: "unrelated" },
+  { word: "RED", color: "red", condition: "congruent" },
+  { word: "GREEN", color: "green", condition: "congruent" },
   {
-    word: 'BLUE',
-    color: 'blue',
-    condition: 'congruent',
+    word: "BLUE",
+    color: "blue",
+    condition: "congruent",
   },
-  { word: 'GREEN', color: 'red', condition: 'incongruent' },
-  { word: 'BLUE', color: 'green', condition: 'incongruent' },
-  { word: 'RED', color: 'blue', condition: 'incongruent' },
-]
+  { word: "GREEN", color: "red", condition: "incongruent" },
+  { word: "BLUE", color: "green", condition: "incongruent" },
+  { word: "RED", color: "blue", condition: "incongruent" },
+];
 ```
 
 This could of course be generated programmatically.
@@ -99,7 +99,7 @@ this we will loop through each trial spec and add fields we expect to record in
 our experiment including `reactionTime`, `accuracy`, and `response`:
 
 ```js
-var trials = []
+var trials = [];
 
 // add the data fields
 for (let trialType of trialTypes) {
@@ -107,8 +107,8 @@ for (let trialType of trialTypes) {
     ...trialType,
     reactionTime: () => api.faker.rnorm(500, 50),
     accuracy: () => api.faker.rbinom(1, 0.8),
-    response: () => api.faker.rchoice(['r', 'g', 'b']),
-  })
+    response: () => api.faker.rchoice(["r", "g", "b"]),
+  });
 }
 ```
 
@@ -125,21 +125,21 @@ template and return the result. For example:
 
 ```js
 // next we shuffle the trials
-trials = api.shuffle(trials)
+trials = api.shuffle(trials);
 
 function autofill() {
   while (step.index() < trials.length) {
-    api.debug('auto stepping')
+    api.debug("auto stepping");
 
-    var t = api.faker.render(trials[step.index()])
-    api.debug(t)
-    api.recordData(t)
+    var t = api.faker.render(trials[step.index()]);
+    api.debug(t);
+    api.recordData(t);
 
-    step.next()
+    step.next();
   }
 }
 
-api.setAutofill(autofill)
+api.setAutofill(autofill);
 ```
 
 In this example we first shuffle the abstract trial definitions. Then we define

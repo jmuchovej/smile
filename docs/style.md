@@ -25,7 +25,7 @@ In this document, we will focus mostly on the CSS side of things: how you make
 things look nice by choosing colors, layouts, spacing, and typography for your
 experiments. If you are entirely unfamiliar with the term CSS or Cascading
 Style-Sheets it might help to read this nice chapter from
-[Interneting is Hard](https://www.internetingishard.com/html-and-css/hello-css/)
+[Interesting is Hard](https://www.internetingishard.com/html-and-css/hello-css/)
 before continuing.
 
 ## Global design framework: Bulma
@@ -149,56 +149,56 @@ a plain paragraph of text:
 
 ```html
 <p>
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque
-  accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus
-  dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet
+  iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis
+  harum quibusdam fugiat? Nemo.
 </p>
 ```
 
 <p style="all: revert">
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
 </p>
 
 But using modifiers you can change the alignment to be centered:
 
 ```html
 <p class="has-text-centered">
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque
-  accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus
-  dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet
+  iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis
+  harum quibusdam fugiat? Nemo.
 </p>
 ```
 
 <p class="has-text-centered">
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
 </p>
 
 Making it larger:
 
 ```html
 <p class="has-text-centered is-size-5">
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque
-  accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus
-  dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet
+  iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis
+  harum quibusdam fugiat? Nemo.
 </p>
 ```
 
 <p class="has-text-centered is-size-5">
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
 </p>
 
 Add a large margin on the left to indent and on the top to add space:
 
 ```html
 <p class="has-text-centered is-size-5 ml-6 mt-6">
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque
-  accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus
-  dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet
+  iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis
+  harum quibusdam fugiat? Nemo.
 </p>
 ```
 
 <p class="has-text-centered is-size-5 ml-6 mt-16">
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio nam itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo odio name itaque accusantium amet iste, ipsum, corrupti laudantium vero tempora velit possimus dolorum libero eaque perspiciatis harum quibusdam fugiat? Nemo.
 </p>
 
 There are many other classes provided by Bulma covering spacing, color, and
@@ -315,9 +315,9 @@ section. If you define it like this:
 
 ```vue
 <style scoped>
-.mydivstyle {
-  text-size: 1.1em;
-}
+  .mydivstyle {
+    text-size: 1.1em;
+  }
 </style>
 ```
 
@@ -334,9 +334,9 @@ command:
 
 ```vue
 <style>
-.mydivstyle {
-  text-size: 1.1em;
-}
+  .mydivstyle {
+    text-size: 1.1em;
+  }
 </style>
 ```
 
@@ -346,7 +346,7 @@ application (similar to if it was added to `css/styles.css` or
 
 ## Custom fonts
 
-Fonts are an important part of web design. Although the defaul Bulma theme
+Fonts are an important part of web design. Although the default Bulma theme
 includes some nice, professional-looking font choices you may want to use custom
 fonts in your experiment to highlight certain elements or convey a sense of fun,
 style, etc...
@@ -364,7 +364,7 @@ search and find the correct URL for including a google font in your project:
 The final copied import command is something like this:
 
 ```css
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
 ```
 
 which you can simply paste a the top of either `sass/mystyles.css` (then rebuild
@@ -375,7 +375,7 @@ and set the font accordingly:
 
 ```css
 .mydiv {
-  font-family: 'Pacifico', cursive;
+  font-family: "Pacifico", cursive;
 }
 ```
 
@@ -441,7 +441,7 @@ Finally, you need to import that specific icon into the project. Open
 `src/icons.js`. Add a line like this to important the address book:
 
 ```js
-import { faAddressBook } from '@fortawesome/free-solid-svg-icons'
+import { faAddressBook } from "@fortawesome/free-solid-svg-icons";
 ```
 
 Notice how the FontAwesome website listed the name as `fa-address-book` (known

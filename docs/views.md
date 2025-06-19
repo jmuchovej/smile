@@ -98,10 +98,10 @@ short-hand for the src folder is '@' so for instance '@/builtins' refers to the
 
 ### Recruitment Advertisement
 
-**Base Component**: `@/builtins/recruitment/AdvertisementView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/recruitment/AdvertisementView.vue)  
+**Base Component**: `@/builtins/recruitment/AdvertisementView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/recruitment/AdvertisementView.vue)
 **Side
-effects**: None  
+effects**: None
 **Typical accessibility**: `{allowAlways: true}`
 
 Before a participant can begin a study, they must first be recruited. The
@@ -121,19 +121,19 @@ Example `design.js` entry:
 
 ```js
 // put this at the top of the file
-import Advertisement from '@/builtins/advertisement/AdvertisementView.vue'
+import Advertisement from "@/builtins/advertisement/AdvertisementView.vue";
 
 timeline.pushSeqView({
-  path: '/welcome',
-  name: 'welcome_anonymous',
+  path: "/welcome",
+  name: "welcome_anonymous",
   component: Advertisement,
   meta: {
     prev: undefined,
-    next: 'consent',
+    next: "consent",
     allowAlways: true,
     requiresConsent: false,
   },
-})
+});
 ```
 
 Another `design.js` alternative for studies that use external services like
@@ -141,24 +141,24 @@ Prolific:
 
 ```js
 // put this at the top of the file
-import Advertisement from '@/builtins/advertisement/AdvertisementView.vue'
+import Advertisement from "@/builtins/advertisement/AdvertisementView.vue";
 
 timeline.pushSeqView({
-  path: '/welcome/:service',
-  name: 'welcome_referred',
+  path: "/welcome/:service",
+  name: "welcome_referred",
   component: Advertisement,
   meta: {
     prev: undefined,
-    next: 'consent',
+    next: "consent",
     allowAlways: true,
     requiresConsent: false,
   },
   beforeEnter: (to) => {
     // processes info to get the service-specific
-    // participant info (e.g., Profilic ID)
-    processQuery(to.query, to.params.service)
+    // participant info (e.g., Prolific ID)
+    processQuery(to.query, to.params.service);
   },
-})
+});
 ```
 
 This will automatically save service-specific participant info to your data
@@ -167,10 +167,10 @@ and CloudResearch.
 
 ### MTurk Recruitment
 
-**Base Component**: `@/builtins/mturk/MTurkRecruitView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/mturk/MTurkRecruitView.vue)  
+**Base Component**: `@/builtins/mturk/MTurkRecruitView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/mturk/MTurkRecruitView.vue)
 **Side
-effects**: None  
+effects**: None
 **Typical accessibility**: `{allowAlways: true}`
 
 On the Mechanical Turk, the platform lists possible HITs (Human Intelligence
@@ -193,25 +193,25 @@ experiment in a new browser window.
 
 ```js
 // put this at the top of the file
-import MTurk from '@/builtins/mturk/MTurkRecruitView.vue'
+import MTurk from "@/builtins/mturk/MTurkRecruitView.vue";
 
 this.registerView({
-  path: '/mturk',
-  name: 'mturk',
+  path: "/mturk",
+  name: "mturk",
   component: MTurk,
   meta: { allowAlways: true, requiresConsent: false },
   beforeEnter: (to) => {
-    processQuery(to.query, 'mturk')
+    processQuery(to.query, "mturk");
   },
-})
+});
 ```
 
 ### Simple Informed Consent
 
-**Base Component**: `@/builtins/simple_consent/InformedConsentView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/simple_consent/InformedConsentView.vue)  
+**Base Component**: `@/builtins/simple_consent/InformedConsentView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/simple_consent/InformedConsentView.vue)
 **Side
-effects**: Sets the `consent` key in the `localStorage` to `true.`  
+effects**: Sets the `consent` key in the `localStorage` to `true.`
 **Typical accessibility**: `{requiresConsent: false, requiresDone: false}`
 
 Most studies require some type of informed consent from participants. This is
@@ -233,25 +233,25 @@ consent (also `@/builtins/simple_consent/InformedConsentText.vue`).
 
 ```js
 // put this at the top of the file
-import Consent from '@/builtins/simple_consent/InformedConsentView.vue'
+import Consent from "@/builtins/simple_consent/InformedConsentView.vue";
 
 // consent
 timeline.pushSeqView({
-  name: 'consent',
+  name: "consent",
   component: Consent,
   meta: {
     requiresConsent: false,
-    setConsented: true, // set the status to consented ater this route
+    setConsented: true, // set the status to consented after this route
   },
-})
+});
 ```
 
 ### The Smile CAPTCHA
 
-**Base Component**: `@/builtins/captcha/CaptchaView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/captcha/CaptchaView.vue)  
+**Base Component**: `@/builtins/captcha/CaptchaView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/captcha/CaptchaView.vue)
 **Side
-effects**: Yes, saves the data from the tasks.  
+effects**: Yes, saves the data from the tasks.
 **Typical accessibility**: `{requiresConsent: true, requiresDone: false}`
 
 CAPTHCAs (Completely Automated Public Turing test to tell Computers and Humans
@@ -274,18 +274,18 @@ but difficult for computers.
 ```js
 // captcha
 timeline.pushSeqView({
-  path: '/captcha',
-  name: 'captcha',
+  path: "/captcha",
+  name: "captcha",
   component: Captcha,
-})
+});
 ```
 
 ### Window Sizer
 
-**Base Component**: `@/builtins/window_sizer/WindowSizerView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/window_sizer/WindowSizerView.vue)  
+**Base Component**: `@/builtins/window_sizer/WindowSizerView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/window_sizer/WindowSizerView.vue)
 **Side
-effects**: Yes, sets the is verifiedVisibility key in the [API](/api) to true.  
+effects**: Yes, sets the is verifiedVisibility key in the [API](/api) to true.
 **Typical accessibility**: `{requiresConsent: true, requiresDone: false}`
 
 The window sizer is a small component `src/components/pages/WindowSizerView.vue`
@@ -311,14 +311,14 @@ To add it to the timeline just add this in the appropriate place inside
 
 ```js
 // put this at the top of the file
-import WindowSizer from '@/builtins/window_sizer/WindowSizerView.vue'
+import WindowSizer from "@/builtins/window_sizer/WindowSizerView.vue";
 
 // windowsizer
 timeline.pushSeqView({
-  path: '/windowsizer',
-  name: 'windowsizer',
+  path: "/windowsizer",
+  name: "windowsizer",
   component: WindowSizer,
-})
+});
 ```
 
 ### Simple Instructions
@@ -330,8 +330,8 @@ with custom weights so that the Instructions View displays the correct text.
 This page is also always accessible such that the user is able to return to it
 if they do not pass the instructions quiz.
 
-**Base Component**: `@/builtins/instructions/InstructionsView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/instructions/InstructionsView.vue)  
+**Base Component**: `@/builtins/instructions/InstructionsView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/instructions/InstructionsView.vue)
 **Side
 effects**: None **Typical accessibility**:
 `{requiresConsent: true, requiresDone: false}`
@@ -340,30 +340,30 @@ effects**: None **Typical accessibility**:
 
 ```js
 // put this at the top of the file
-import Instructions from '@/builtins/instructions/InstructionsView.vue'
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import Instructions from "@/builtins/instructions/InstructionsView.vue";
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
 // assign instruction condition
 api.randomAssignCondition({
-  instructionsVersion: ['1', '2', '3'],
+  instructionsVersion: ["1", "2", "3"],
   weights: [2, 1, 1],
-})
+});
 
 // instructions
 timeline.pushSeqView({
-  name: 'instructions',
+  name: "instructions",
   component: Instructions,
   meta: {
     allowAlways: true,
   },
-})
+});
 ```
 
 ### Instructions Quiz
 
-**Component**: `@/builtins/instructions_quiz/InstructionsQuiz.vue`  
-**Side effects**: Saves the data from the quiz  
+**Component**: `@/builtins/instructions_quiz/InstructionsQuiz.vue`
+**Side effects**: Saves the data from the quiz
 **Typical accessibility**: Always
 
 The instructions quiz is a simple quiz that makes sure the participant has read
@@ -385,18 +385,18 @@ export const QUIZ_QUESTIONS = [
     page: 1,
     questions: [
       {
-        id: 'example1',
-        question: 'What color is the sky?',
+        id: "example1",
+        question: "What color is the sky?",
         multiSelect: false,
-        answers: ['red', 'blue', 'yellow', 'rainbow'],
-        correctAnswer: ['blue'],
+        answers: ["red", "blue", "yellow", "rainbow"],
+        correctAnswer: ["blue"],
       },
       {
-        id: 'example2',
-        question: 'How many days are in a non-leap year?',
+        id: "example2",
+        question: "How many days are in a non-leap year?",
         multiSelect: false,
-        answers: ['365', '100', '12', '31', '60'],
-        correctAnswer: ['365'],
+        answers: ["365", "100", "12", "31", "60"],
+        correctAnswer: ["365"],
       },
     ],
   },
@@ -404,22 +404,22 @@ export const QUIZ_QUESTIONS = [
     page: 2,
     questions: [
       {
-        id: 'example3',
-        question: 'What comes next: North, South, East, ___',
+        id: "example3",
+        question: "What comes next: North, South, East, ___",
         multiSelect: false,
-        answers: ['Southeast', 'Left', 'West'],
-        correctAnswer: ['West'],
+        answers: ["Southeast", "Left", "West"],
+        correctAnswer: ["West"],
       },
       {
-        id: 'example4',
+        id: "example4",
         question: "What's 7 x 7?",
         multiSelect: false,
-        answers: ['63', '59', '49', '14'],
-        correctAnswer: ['49'],
+        answers: ["63", "59", "49", "14"],
+        correctAnswer: ["49"],
       },
     ],
   },
-]
+];
 ```
 
 The questions from `@/user/components/quizQuestions.js` are then imported and
@@ -432,25 +432,25 @@ questions will be randomized in the same way each time the quiz is taken.
 
 ```js
 // import the quiz questions
-import { QUIZ_QUESTIONS } from './components/quizQuestions'
+import { QUIZ_QUESTIONS } from "./components/quizQuestions";
 // instructions quiz
 timeline.pushSeqView({
-  name: 'quiz',
+  name: "quiz",
   component: InstructionsQuiz,
   props: {
     quizQuestions: QUIZ_QUESTIONS,
-    returnTo: 'instructions',
+    returnTo: "instructions",
     randomizeQuestionsAndAnswers: true,
   },
-})
+});
 ```
 
 ### Demographic Survey
 
-**Base Component**: `@/builtins/demographic_survey/DemographicSurveyView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/demographic_survey/DemographicSurveyView.vue)  
+**Base Component**: `@/builtins/demographic_survey/DemographicSurveyView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/demographic_survey/DemographicSurveyView.vue)
 **Side
-effects**: Yes, saves the data from the form.  
+effects**: Yes, saves the data from the form.
 **Typical accessibility**: `{requiresConsent: true, requiresDone: false}`
 
 The demographic survey is a simple survey that asks participants to provide some
@@ -462,24 +462,24 @@ relies on color information. The demongr
 
 ```js
 // put this at the top of the file
-import DemographicSurvey from '@/builtins/demographic_survey/DemographicSurveyView.vue'
+import DemographicSurvey from "@/builtins/demographic_survey/DemographicSurveyView.vue";
 
 timeline.pushSeqView({
-  path: '/demograph',
-  name: 'demograph',
+  path: "/demograph",
+  name: "demograph",
   component: DemographicSurvey,
-})
+});
 ```
 
 ### Device Survey
 
-**Base Component**: `@/builtins/device_survey/DeviceSurveyView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/device_survey/DeviceSurveyView.vue)  
+**Base Component**: `@/builtins/device_survey/DeviceSurveyView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/device_survey/DeviceSurveyView.vue)
 **Side
-effects**: Yes, saves the data from the form.  
+effects**: Yes, saves the data from the form.
 **Typical accessibility**: `{requiresConsent: true, requiresDone: false}`
 
-The device survey askes participants to provide some information about their
+The device survey asks participants to provide some information about their
 computer/tablet/etc... This is important because sometimes the information
 obtained automatically from the browser is incorrect. It is also sometimes
 impossible to know aspects of a users computer setup. For instance, it might be
@@ -504,22 +504,22 @@ field.
 
 ```js
 // put this at the top of the file
-import DeviceSurvey from '@/builtins/device_survey/DeviceSurveyView.vue'
+import DeviceSurvey from "@/builtins/device_survey/DeviceSurveyView.vue";
 
 timeline.pushSeqView({
-  path: '/demograph',
-  name: 'demograph',
+  path: "/demograph",
+  name: "demograph",
   component: DeviceSurvey,
   meta: { setDone: true }, // optional if this is the last form
-})
+});
 ```
 
 ### Withdraw
 
-**Component**: `@/builtins/withdraw/WithdrawView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/withdraw/WithdrawView.vue)  
+**Component**: `@/builtins/withdraw/WithdrawView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/withdraw/WithdrawView.vue)
 **Side
-effects**: Sets the `consent` key in the `localStorage` to `true.`  
+effects**: Sets the `consent` key in the `localStorage` to `true.`
 **Typical accessibility**: `{ requiresWithdraw: true }`
 
 As part of most IRB protocols, participants should be able to withdraw from a
@@ -542,23 +542,23 @@ compensation.
 
 ```js
 // put this at the top of the file
-import Withdraw from '@/builtins/withdraw/WithdrawView.vue'
+import Withdraw from "@/builtins/withdraw/WithdrawView.vue";
 
 // withdraw
 timeline.registerView({
-  name: 'withdraw',
+  name: "withdraw",
   meta: {
     requiresWithdraw: true,
-    resetApp: api.getConfig('allowRepeats'),
+    resetApp: api.getConfig("allowRepeats"),
   },
   component: Withdraw,
-})
+});
 ```
 
 ### Debrief
 
-**Component**: `@/builtins/debrief/DebriefView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/debrief/DebriefView.vue)  
+**Component**: `@/builtins/debrief/DebriefView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/debrief/DebriefView.vue)
 **Side
 effects**: None **Typical accessibility**: Always
 
@@ -570,48 +570,48 @@ their post-experiment surveys.
 
 ```js
 // put this at the top of the file
-import Debrief from '@/builtins/debrief/DebriefView.vue'
+import Debrief from "@/builtins/debrief/DebriefView.vue";
 
 // debrief
-import DebriefText from '@/user/components/DebriefText.vue' // get access to the global store
+import DebriefText from "@/user/components/DebriefText.vue"; // get access to the global store
 timeline.pushSeqView({
-  name: 'debrief',
+  name: "debrief",
   component: Debrief,
   props: {
     debriefText: markRaw(DebriefText),
   },
-})
+});
 ```
 
 ### Thanks
 
-**Component**: `@/builtins/thanks/ThanksView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/thanks/ThanksView.vue)  
+**Component**: `@/builtins/thanks/ThanksView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/thanks/ThanksView.vue)
 **Side
-effects**: Yes, saves the data from the form.  
+effects**: Yes, saves the data from the form.
 **Typical accessibility**: `{requiresDone: true}`
 
 ```js
 // put this at the top of the file
-import Thanks from '@/builtins/thanks/ThanksView.vue'
+import Thanks from "@/builtins/thanks/ThanksView.vue";
 
 // thanks
 timeline.pushSeqView({
-  name: 'thanks',
+  name: "thanks",
   component: Thanks,
   meta: {
     requiresDone: true,
-    resetApp: api.getConfig('allowRepeats'),
+    resetApp: api.getConfig("allowRepeats"),
   },
-})
+});
 ```
 
 ### Feedback Survey
 
-**Component**: `src/builtins/task_survey/TaskFeedbackSurveyView.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/task_survey/TaskFeedbackSurveyView.vue)  
+**Component**: `src/builtins/task_survey/TaskFeedbackSurveyView.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/task_survey/TaskFeedbackSurveyView.vue)
 **Side
-effects**: Yes, saves the data from the form.  
+effects**: Yes, saves the data from the form.
 **Typical accessibility**: `{requiresConsent: true, requiresDone: false}`
 
 The task survey asks some simple questions about the participant's experience in
@@ -624,14 +624,14 @@ meta field.
 
 ```js
 // put this at the top of the file
-import TaskFeedbackSurvey from '@/builtins/device_survey/TaskFeedbackSurveyView.vue'
+import TaskFeedbackSurvey from "@/builtins/device_survey/TaskFeedbackSurveyView.vue";
 
 // feedback
 timeline.pushSeqView({
-  name: 'feedback',
+  name: "feedback",
   component: TaskFeedbackSurvey,
   meta: { setDone: true }, // optional if this is the last form
-})
+});
 ```
 
 ### Report Issue
@@ -656,19 +656,19 @@ them as needed for your study.
 
 ### Status Bar
 
-**Base Component**: `@/builtins/navbars/StatusBar.vue`  
+**Base Component**: `@/builtins/navbars/StatusBar.vue`
 **Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/navbars/StatusBar.vue)
 
 ### Progress Bar
 
-**Base Component**: `@/builtins/navbars/ProgressBar.vue`  
+**Base Component**: `@/builtins/navbars/ProgressBar.vue`
 **Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/navbars/ProgressBar.vue)
 
 Not implemented fully.
 
 ### Withdraw Modal
 
-**Base Component**: `@/builtins/withdraw/WithdrawFormModal.vue`  
-**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/withdraw/WithdrawFormModal)  
+**Base Component**: `@/builtins/withdraw/WithdrawFormModal.vue`
+**Code**: [source](https://github.com/NYUCCL/smile/blob/main/src/builtins/withdraw/WithdrawFormModal)
 **Side
 effects**: Yes

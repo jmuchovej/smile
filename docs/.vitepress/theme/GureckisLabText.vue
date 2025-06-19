@@ -5,9 +5,9 @@
 </template>
 
 <style lang="css">
-.gureckislab {
-  font-family: 'consolas', monospace;
-  font-size: 0.95em;
-  text-decoration: underline dotted;
-}
+  .gureckislab {
+    font-family: "consolas", monospace;
+    font-size: 0.95em;
+    text-decoration: underline dotted;
+  }
 </style>

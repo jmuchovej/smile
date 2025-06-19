@@ -1,10 +1,11 @@
+import { createTestingPinia } from "@pinia/testing";
+import { mount, flushPromises } from "@vue/test-utils";
+import { vi, describe, beforeEach, afterEach, it, expect } from "vitest";
 /* eslint-disable no-undef */
-import { defineComponent, h } from 'vue'
-import { createTestingPinia } from '@pinia/testing'
-import { createRouter, createWebHashHistory } from 'vue-router'
-import { mount, flushPromises } from '@vue/test-utils'
-import useTimeline from '@/core/composables/useTimeline'
-import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest'
+import { defineComponent, h } from "vue";
+import { createRouter, createWebHashHistory } from "vue-router";
+
+import useTimeline from "@/core/composables/useTimeline";
 
 // Create mock stores
 const mockSmilestore = {
@@ -18,83 +19,83 @@ const mockSmilestore = {
     autoSave: false,
   },
   saveData: vi.fn(),
-}
+};
 
 const mockLog = {
   log: vi.fn(),
-}
+};
 
 // Mock the stores
-vi.mock('@/core/stores/smilestore', () => ({
+vi.mock("@/core/stores/smilestore", () => ({
   default: () => mockSmilestore,
-}))
+}));
 
-vi.mock('@/core/stores/log', () => ({
+vi.mock("@/core/stores/log", () => ({
   default: () => mockLog,
-}))
+}));
 
 // Create a test component that uses the composable
 const TestComponent = defineComponent({
   setup() {
-    const timeline = useTimeline()
-    return { timeline }
+    const timeline = useTimeline();
+    return { timeline };
   },
   render() {
-    return h('div')
+    return h("div");
   },
-})
+});
 
 // Create mock route components
 const MockComponent = defineComponent({
   render() {
-    return h('div', 'Mock Page')
+    return h("div", "Mock Page");
   },
-})
+});
 
-let router
-let wrapper
-let pinia
+let router;
+let wrapper;
+let pinia;
 
 // Define test routes
 const routes = [
   {
-    path: '/',
-    name: 'home',
+    path: "/",
+    name: "home",
     component: MockComponent,
-    meta: { next: 'about' },
+    meta: { next: "about" },
   },
   {
-    path: '/about',
-    name: 'about',
+    path: "/about",
+    name: "about",
     component: MockComponent,
-    meta: { prev: 'home', next: 'contact' },
+    meta: { prev: "home", next: "contact" },
   },
   {
-    path: '/contact',
-    name: 'contact',
+    path: "/contact",
+    name: "contact",
     component: MockComponent,
-    meta: { prev: 'about' },
+    meta: { prev: "about" },
   },
-]
+];
 
-describe('useTimeline composable', () => {
+describe("useTimeline composable", () => {
   beforeEach(() => {
     // Reset mock state
-    mockSmilestore.browserEphemeral.forceNavigate = false
-    mockSmilestore.dev.currentViewDone = false
-    mockSmilestore.config.autoSave = false
-    vi.clearAllMocks()
+    mockSmilestore.browserEphemeral.forceNavigate = false;
+    mockSmilestore.dev.currentViewDone = false;
+    mockSmilestore.config.autoSave = false;
+    vi.clearAllMocks();
 
     // Create a fresh router for each test
     router = createRouter({
       history: createWebHashHistory(),
       routes,
-    })
+    });
 
     // Create a fresh pinia for each test
     pinia = createTestingPinia({
       createSpy: vi.fn,
-    })
+    });
 
     // Mount the test component
     wrapper = mount(TestComponent, {
@@ -104,136 +105,138 @@ describe('useTimeline composable', () => {
           RouterLink: true,
         },
       },
-    })
-  })
+    });
+  });
 
   afterEach(() => {
-    wrapper.unmount()
-  })
+    wrapper.unmount();
+  });
 
-  it('should provide the expected methods', () => {
-    const { timeline } = wrapper.vm
-    expect(timeline).toBeDefined()
-    expect(timeline.goNextView).toBeInstanceOf(Function)
-    expect(timeline.goPrevView).toBeInstanceOf(Function)
-    expect(timeline.goToView).toBeInstanceOf(Function)
-    expect(timeline.lookupNext).toBeInstanceOf(Function)
-  })
+  it("should provide the expected methods", () => {
+    const { timeline } = wrapper.vm;
+    expect(timeline).toBeDefined();
+    expect(timeline.goNextView).toBeInstanceOf(Function);
+    expect(timeline.goPrevView).toBeInstanceOf(Function);
+    expect(timeline.goToView).toBeInstanceOf(Function);
+    expect(timeline.lookupNext).toBeInstanceOf(Function);
+  });
 
-  it('should navigate to the next view', async () => {
+  it("should navigate to the next view", async () => {
     // Navigate to home first
-    await router.push({ name: 'home' })
+    await router.push({ name: "home" });
 
-    const routerPushSpy = vi.spyOn(router, 'push')
-    const { timeline } = wrapper.vm
+    const routerPushSpy = vi.spyOn(router, "push");
+    const { timeline } = wrapper.vm;
 
-    timeline.goNextView()
+    timeline.goNextView();
 
     expect(routerPushSpy).toHaveBeenCalledWith({
-      name: 'about',
+      name: "about",
       query: {},
-    })
-    expect(mockSmilestore.dev.currentViewDone).toBe(true)
-  })
+    });
+    expect(mockSmilestore.dev.currentViewDone).toBe(true);
+  });
 
-  it('should navigate to the previous view', async () => {
+  it("should navigate to the previous view", async () => {
     // Navigate to about first
-    await router.push({ name: 'about' })
+    await router.push({ name: "about" });
 
-    const routerPushSpy = vi.spyOn(router, 'push')
-    const { timeline } = wrapper.vm
+    const routerPushSpy = vi.spyOn(router, "push");
+    const { timeline } = wrapper.vm;
 
-    timeline.goPrevView()
+    timeline.goPrevView();
 
     expect(routerPushSpy).toHaveBeenCalledWith({
-      name: 'home',
+      name: "home",
       query: {},
-    })
-    expect(mockSmilestore.dev.currentViewDone).toBe(true)
-  })
+    });
+    expect(mockSmilestore.dev.currentViewDone).toBe(true);
+  });
 
-  it('should execute callback function when navigating', async () => {
-    await router.push({ name: 'home' })
+  it("should execute callback function when navigating", async () => {
+    await router.push({ name: "home" });
 
-    const callbackFn = vi.fn()
-    const { timeline } = wrapper.vm
+    const callbackFn = vi.fn();
+    const { timeline } = wrapper.vm;
 
-    timeline.goNextView(callbackFn)
+    timeline.goNextView(callbackFn);
 
-    expect(callbackFn).toHaveBeenCalled()
-  })
+    expect(callbackFn).toHaveBeenCalled();
+  });
 
-  it('should navigate to a specific view with force=true by default', async () => {
-    const routerPushSpy = vi.spyOn(router, 'push')
-    const { timeline } = wrapper.vm
+  it("should navigate to a specific view with force=true by default", async () => {
+    const routerPushSpy = vi.spyOn(router, "push");
+    const { timeline } = wrapper.vm;
 
-    await timeline.goToView('about')
+    await timeline.goToView("about");
 
-    expect(routerPushSpy).toHaveBeenCalledWith({ name: 'about' })
-    expect(mockSmilestore.browserEphemeral.forceNavigate).toBe(false) // Should be reset after navigation
-  })
+    expect(routerPushSpy).toHaveBeenCalledWith({ name: "about" });
+    expect(mockSmilestore.browserEphemeral.forceNavigate).toBe(false); // Should be reset after navigation
+  });
 
-  it('should navigate to a specific view with force=false', async () => {
-    const routerPushSpy = vi.spyOn(router, 'push')
-    const { timeline } = wrapper.vm
+  it("should navigate to a specific view with force=false", async () => {
+    const routerPushSpy = vi.spyOn(router, "push");
+    const { timeline } = wrapper.vm;
 
-    await timeline.goToView('contact', false)
+    await timeline.goToView("contact", false);
 
-    expect(routerPushSpy).toHaveBeenCalledWith({ name: 'contact' })
-    expect(mockSmilestore.browserEphemeral.forceNavigate).toBe(false) // Should remain false
-  })
+    expect(routerPushSpy).toHaveBeenCalledWith({ name: "contact" });
+    expect(mockSmilestore.browserEphemeral.forceNavigate).toBe(false); // Should remain false
+  });
 
-  it('should lookup the next route correctly', async () => {
-    const { timeline } = wrapper.vm
+  it("should lookup the next route correctly", async () => {
+    const { timeline } = wrapper.vm;
 
-    const nextRoute = timeline.lookupNext('home')
+    const nextRoute = timeline.lookupNext("home");
 
     expect(nextRoute).toEqual({
-      name: 'about',
+      name: "about",
       query: {},
-    })
-  })
+    });
+  });
 
-  it('should return null when looking up a non-existent route', () => {
-    const { timeline } = wrapper.vm
+  it("should return null when looking up a non-existent route", () => {
+    const { timeline } = wrapper.vm;
 
-    const nextRoute = timeline.lookupNext('non-existent-route')
+    const nextRoute = timeline.lookupNext("non-existent-route");
 
-    expect(nextRoute).toBeNull()
-  })
+    expect(nextRoute).toBeNull();
+  });
 
-  it('should return null when the route has no next property', async () => {
-    const { timeline } = wrapper.vm
+  it("should return null when the route has no next property", async () => {
+    const { timeline } = wrapper.vm;
 
-    const nextRoute = timeline.lookupNext('contact')
+    const nextRoute = timeline.lookupNext("contact");
 
-    expect(nextRoute).toBeNull()
-  })
+    expect(nextRoute).toBeNull();
+  });
 
-  it('should save data when autoSave is enabled', async () => {
+  it("should save data when autoSave is enabled", async () => {
     // Enable autoSave
-    mockSmilestore.config.autoSave = true
+    mockSmilestore.config.autoSave = true;
 
-    await router.push({ name: 'home' })
+    await router.push({ name: "home" });
 
-    const { timeline } = wrapper.vm
+    const { timeline } = wrapper.vm;
 
-    timeline.goNextView()
+    timeline.goNextView();
 
-    expect(mockSmilestore.saveData).toHaveBeenCalled()
-    expect(mockLog.log).toHaveBeenCalledWith('TIMELINE STEPPER: Attempting auto saving on navigateTo() navigation')
-  })
+    expect(mockSmilestore.saveData).toHaveBeenCalled();
+    expect(mockLog.log).toHaveBeenCalledWith(
+      "TIMELINE STEPPER: Attempting auto saving on navigateTo() navigation",
+    );
+  });
 
-  it('should not save data when autoSave is disabled', async () => {
+  it("should not save data when autoSave is disabled", async () => {
     // Ensure autoSave is disabled
-    mockSmilestore.config.autoSave = false
+    mockSmilestore.config.autoSave = false;
 
-    await router.push({ name: 'home' })
+    await router.push({ name: "home" });
 
-    const { timeline } = wrapper.vm
+    const { timeline } = wrapper.vm;
 
-    timeline.goNextView()
+    timeline.goNextView();
 
-    expect(mockSmilestore.saveData).not.toHaveBeenCalled()
-  })
-})
+    expect(mockSmilestore.saveData).not.toHaveBeenCalled();
+  });
+});

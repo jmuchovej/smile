@@ -16,8 +16,8 @@
  * @description Core Firebase/Firestore database functionality for the application
  */
 
-import { initializeApp } from 'firebase/app'
-import { getAuth, signInAnonymously } from 'firebase/auth'
+import { initializeApp } from "firebase/app";
+import { getAuth, signInAnonymously } from "firebase/auth";
 import {
   getFirestore,
   collection,
@@ -28,51 +28,52 @@ import {
   getDoc,
   Timestamp,
   connectFirestoreEmulator,
-} from 'firebase/firestore'
-import appconfig from '@/core/config'
-import useLog from '@/core/stores/log'
+} from "firebase/firestore";
+
+import appconfig from "@/core/config";
+import useLog from "@/core/stores/log";
 
 // Initialize Firebase connection
-const firebaseApp = initializeApp(appconfig.firebaseConfig)
-const auth = getAuth(firebaseApp)
-let db
+const firebaseApp = initializeApp(appconfig.firebaseConfig);
+const auth = getAuth(firebaseApp);
+let db;
 
-if (appconfig.mode === 'testing') {
-  db = getFirestore()
-  db._setSettings({ ignoreUndefinedProperties: true })
-  connectFirestoreEmulator(db, '127.0.0.1', 8080)
-  console.warn('WARNING: using local firestore emulator')
+if (appconfig.mode === "testing") {
+  db = getFirestore();
+  db._setSettings({ ignoreUndefinedProperties: true });
+  connectFirestoreEmulator(db, "127.0.0.1", 8080);
+  console.warn("WARNING: using local firestore emulator");
 } else {
-  db = getFirestore(firebaseApp)
-  db._setSettings({ ignoreUndefinedProperties: true })
+  db = getFirestore(firebaseApp);
+  db._setSettings({ ignoreUndefinedProperties: true });
 }
 
-let mode = 'real'
-if (appconfig.mode === 'development' || appconfig.mode === 'testing') {
-  mode = 'testing'
+let mode = "real";
+if (appconfig.mode === "development" || appconfig.mode === "testing") {
+  mode = "testing";
 }
 
 /**
  * Get current Firestore timestamp
  * @returns {Timestamp} Current Firestore timestamp
  */
-export const fsnow = () => Timestamp.now()
+export const fsnow = () => Timestamp.now();
 
 /**
  * Authenticate anonymously with Firebase
  * @returns {Promise<Object|null>} Firebase user object if successful, null if failed
  */
 export const anonymousAuth = async () => {
-  const log = useLog()
+  const log = useLog();
   try {
-    const userCredential = await signInAnonymously(auth)
-    log.log('FIRESTORE-DB: Anonymous auth successful')
-    return userCredential.user
+    const userCredential = await signInAnonymously(auth);
+    log.log("FIRESTORE-DB: Anonymous auth successful");
+    return userCredential.user;
   } catch (error) {
-    log.error('FIRESTORE-DB: Error in anonymous authentication:', error)
-    return null
+    log.error("FIRESTORE-DB: Error in anonymous authentication:", error);
+    return null;
   }
-}
+};
 
 /**
  * Validates data structure for Firestore compatibility
@@ -81,60 +82,64 @@ export const anonymousAuth = async () => {
  * @returns {boolean} True if valid
  * @throws {Error} If data structure is invalid for Firestore
  */
-const validateFirestoreData = (data, path = '') => {
+const validateFirestoreData = (data, path = "") => {
   // Check if value is null or undefined
   if (data === null || data === undefined) {
-    return true
+    return true;
   }
 
   // Check data type
   if (
-    typeof data === 'string' ||
-    typeof data === 'number' ||
-    typeof data === 'boolean' ||
+    typeof data === "string" ||
+    typeof data === "number" ||
+    typeof data === "boolean" ||
     data instanceof Date ||
-    (typeof data === 'object' && 'seconds' in data && 'nanoseconds' in data) // Check for Timestamp-like object
+    (typeof data === "object" && "seconds" in data && "nanoseconds" in data) // Check for Timestamp-like object
   ) {
-    return true
+    return true;
   }
 
   // Check arrays
   if (Array.isArray(data)) {
     // Empty arrays are valid
     if (data.length === 0) {
-      return true
+      return true;
     }
     for (let i = 0; i < data.length; i++) {
       if (Array.isArray(data[i])) {
-        throw new Error(`Nested arrays are not allowed in Firestore at path: ${path}[${i}]`)
+        throw new Error(`Nested arrays are not allowed in Firestore at path: ${path}[${i}]`);
       }
-      validateFirestoreData(data[i], `${path}[${i}]`)
+      validateFirestoreData(data[i], `${path}[${i}]`);
     }
-    return true
+    return true;
   }
 
   // Check objects
-  if (typeof data === 'object') {
+  if (typeof data === "object") {
     // Empty objects are valid
     if (Object.keys(data).length === 0) {
-      return true
+      return true;
     }
     for (const [key, value] of Object.entries(data)) {
       if (/[\.\/\[\]\*]/.test(key)) {
-        throw new Error(`Invalid key name "${key}" at path: ${path}. Keys cannot contain ".", "/", "[", "]", or "*"`)
+        throw new Error(
+          `Invalid key name "${key}" at path: ${path}. Keys cannot contain ".", "/", "[", "]", or "*"`,
+        );
       }
 
       if (value instanceof Function || value instanceof Symbol) {
-        throw new Error(`Unsupported data type for key "${key}" at path: ${path}. Value type: ${typeof value}`)
+        throw new Error(
+          `Unsupported data type for key "${key}" at path: ${path}. Value type: ${typeof value}`,
+        );
       }
 
-      validateFirestoreData(value, path ? `${path}.${key}` : key)
+      validateFirestoreData(value, path ? `${path}.${key}` : key);
     }
-    return true
+    return true;
   }
 
-  throw new Error(`Unsupported data type at path: ${path}. Value type: ${typeof data}`)
-}
+  throw new Error(`Unsupported data type at path: ${path}. Value type: ${typeof data}`);
+};
 
 /**
  * Updates a subject's data record
@@ -144,16 +149,16 @@ const validateFirestoreData = (data, path = '') => {
  * @throws {Error} If update fails
  */
 export const updateSubjectDataRecord = async (data, docid) => {
-  const log = useLog()
+  const log = useLog();
   try {
-    validateFirestoreData(data)
-    const docRef = doc(db, `${mode}/${appconfig.projectRef}/data/`, docid)
-    await setDoc(docRef, data, { merge: true })
+    validateFirestoreData(data);
+    const docRef = doc(db, `${mode}/${appconfig.projectRef}/data/`, docid);
+    await setDoc(docRef, data, { merge: true });
   } catch (e) {
-    log.error('FIRESTORE-DB: Error updating document:', e.message)
-    throw e // Re-throw to allow caller to handle the error
+    log.error("FIRESTORE-DB: Error updating document:", e.message);
+    throw e; // Re-throw to allow caller to handle the error
   }
-}
+};
 
 /**
  * Updates a subject's private data record
@@ -163,18 +168,22 @@ export const updateSubjectDataRecord = async (data, docid) => {
  * @throws {Error} If update fails
  */
 export const updatePrivateSubjectDataRecord = async (data, docid) => {
-  const log = useLog()
-  // is it weird to have a aync method that doesn't return anything?
+  const log = useLog();
+  // is it weird to have a async method that doesn't return anything?
   try {
-    const docRef = doc(db, `${mode}/${appconfig.projectRef}/data/${docid}/private/`, 'private_data')
+    const docRef = doc(
+      db,
+      `${mode}/${appconfig.projectRef}/data/${docid}/private/`,
+      "private_data",
+    );
     setDoc(docRef, data, {
       merge: true,
-    })
+    });
   } catch (e) {
-    log.error('FIRESTORE-DB: Error updating private document', e)
-    throw e
+    log.error("FIRESTORE-DB: Error updating private document", e);
+    throw e;
   }
-}
+};
 
 /**
  * Loads a document by ID
@@ -182,31 +191,31 @@ export const updatePrivateSubjectDataRecord = async (data, docid) => {
  * @returns {Promise<Object|undefined>} Document data if found and authorized, undefined otherwise
  */
 export const loadDoc = async (docid) => {
-  const log = useLog()
+  const log = useLog();
 
   try {
-    const user = await anonymousAuth()
-    if (!user) throw new Error('Authentication failed')
+    const user = await anonymousAuth();
+    if (!user) throw new Error("Authentication failed");
 
-    const docRef = doc(db, `${mode}/${appconfig.projectRef}/data/`, docid)
-    const docSnap = await getDoc(docRef)
+    const docRef = doc(db, `${mode}/${appconfig.projectRef}/data/`, docid);
+    const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      const data = docSnap.data()
+      const data = docSnap.data();
       // console.log('Document data:', data)
       if (data.firebaseAnonAuthID === user.uid) {
-        return data
+        return data;
       } else {
-        log.error('FIRESTORE-DB: User does not have access to this document')
-        return undefined
+        log.error("FIRESTORE-DB: User does not have access to this document");
+        return undefined;
       }
     }
-    log.error('FIRESTORE-DB: No such document!')
-    return undefined
+    log.error("FIRESTORE-DB: No such document!");
+    return undefined;
   } catch (e) {
-    log.error('FIRESTORE-DB: Error updating document', e)
-    return undefined
+    log.error("FIRESTORE-DB: Error updating document", e);
+    return undefined;
   }
-}
+};
 
 /**
  * Creates a new document
@@ -214,49 +223,52 @@ export const loadDoc = async (docid) => {
  * @returns {Promise<string|null>} Document ID if created successfully, null if failed
  */
 export const createDoc = async (data) => {
-  const log = useLog()
+  const log = useLog();
   try {
-    const user = await anonymousAuth()
-    if (!user) throw new Error('Authentication failed')
+    const user = await anonymousAuth();
+    if (!user) throw new Error("Authentication failed");
 
-    validateFirestoreData(data)
+    validateFirestoreData(data);
 
-    log.log(`FIRESTORE-DB: trying to create a main document.`, appconfig.projectRef)
+    log.log(`FIRESTORE-DB: trying to create a main document.`, appconfig.projectRef);
 
-    const expRef = doc(db, mode, appconfig.projectRef)
+    const expRef = doc(db, mode, appconfig.projectRef);
     // Check if document exists first
-    const docSnap = await getDoc(expRef)
+    const docSnap = await getDoc(expRef);
     if (!docSnap.exists()) {
       await setDoc(expRef, {
         projectName: appconfig.projectName,
         projectRef: appconfig.projectRef,
         codeName: appconfig.codeName,
         codeNameURL: appconfig.codeNameURL,
-      })
-      log.log('FIRESTORE-DB: New experiment registered with ID: ', `${mode}/${appconfig.projectRef}`)
+      });
+      log.log(
+        "FIRESTORE-DB: New experiment registered with ID: ",
+        `${mode}/${appconfig.projectRef}`,
+      );
     }
 
-    log.log(`FIRESTORE-DB: trying to create a main document.`, appconfig.projectRef)
+    log.log(`FIRESTORE-DB: trying to create a main document.`, appconfig.projectRef);
 
     // Add a new document with a generated id.
     const docRef = await addDoc(collection(db, `${mode}/${appconfig.projectRef}/data`), {
       ...data,
       firebaseAnonAuthID: user.uid,
-    })
+    });
 
     // Update the document with its own ID
     await updateDoc(docRef, {
       firebaseDocID: docRef.id,
-    })
+    });
 
-    data.firebaseAnonAuthID = user.uid
-    log.log(`FIRESTORE-DB: New document written with ID: ${docRef.id} for user ${user.uid})`)
-    return docRef.id
+    data.firebaseAnonAuthID = user.uid;
+    log.log(`FIRESTORE-DB: New document written with ID: ${docRef.id} for user ${user.uid})`);
+    return docRef.id;
   } catch (e) {
-    log.error('FIRESTORE-DB: Error creating document:', e.message)
-    return null
+    log.error("FIRESTORE-DB: Error creating document:", e.message);
+    return null;
   }
-}
+};
 
 /**
  * Creates a private document
@@ -265,28 +277,32 @@ export const createDoc = async (data) => {
  * @returns {Promise<string|null>} Document ID if created successfully, null if failed
  */
 export const createPrivateDoc = async (data, docId) => {
-  const log = useLog()
-  log.log(`FIRESTORE-DB: trying to create a private document in ${docId}`)
+  const log = useLog();
+  log.log(`FIRESTORE-DB: trying to create a private document in ${docId}`);
   try {
-    const user = await anonymousAuth()
-    if (!user) throw new Error('Authentication failed')
+    const user = await anonymousAuth();
+    if (!user) throw new Error("Authentication failed");
 
-    validateFirestoreData(data)
+    validateFirestoreData(data);
     // Add a new document with a generated id.
-    const docRef = doc(db, `${mode}/${appconfig.projectRef}/data/${docId}/private/`, 'private_data')
+    const docRef = doc(
+      db,
+      `${mode}/${appconfig.projectRef}/data/${docId}/private/`,
+      "private_data",
+    );
     await setDoc(docRef, {
       ...data,
       firebaseAnonAuthID: user.uid,
-    })
-    log.log(`FIRESTORE-DB: Private document written with ID: `, docRef.id)
-    return docRef.id
+    });
+    log.log(`FIRESTORE-DB: Private document written with ID: `, docRef.id);
+    return docRef.id;
   } catch (e) {
-    log.error('FIRESTORE-DB: Error adding private document: ', e)
-    return null
+    log.error("FIRESTORE-DB: Error adding private document: ", e);
+    return null;
   }
-}
+};
 
-export default db
+export default db;
 
 // const db_type = collection(db, mode) // or should this be collection?
 

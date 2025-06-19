@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GITHUB_COMMIT_MESSAGE: '${{ github.event.head_commit.message }}'
+      GITHUB_COMMIT_MESSAGE: "${{ github.event.head_commit.message }}"
 
     steps:
       - name: Checkout code
@@ -35,7 +35,7 @@ jobs:
       # Configure git-specific .env file
       - name: Expose git-specific information to the Vite environment
         env:
-          ENV_FILE: 'env/.env.git.local'
+          ENV_FILE: "env/.env.git.local"
         run: |
           escape_quotes() {
             # Get the input string
@@ -108,7 +108,7 @@ jobs:
       - name: Expose secret information to the Vite environment
         env:
           SECRET_APP_CONFIG: ${{ secrets.SECRET_APP_CONFIG }}
-          SECRET_ENV_FILE: 'env/.env.local'
+          SECRET_ENV_FILE: "env/.env.local"
         run: |
           echo "------"
           echo $SECRET_APP_CONFIG | base64 --decode > $SECRET_ENV_FILE
@@ -118,13 +118,13 @@ jobs:
         id: dotenv_github
         uses: falti/dotenv-action@v1.1
         with:
-          path: 'env/.env.git.local'
+          path: "env/.env.git.local"
 
       - name: Load the general config dotenv file
         id: dotenv_config
         uses: falti/dotenv-action@v1.1
         with:
-          path: './env/.env.local'
+          path: "./env/.env.local"
 
       # echo all the environment variables
       - name: echo the environment variables
@@ -135,7 +135,7 @@ jobs:
       # this one needs to be made available to vite.config.js
       - name: create deploy file
         env:
-          DEPLOY_ENV_FILE: 'env/.env.deploy.local'
+          DEPLOY_ENV_FILE: "env/.env.deploy.local"
         run: |
           echo "VITE_DEPLOY_URL = 'https://${{ secrets.EXP_DEPLOY_HOST }}${{ steps.dotenv_github.outputs.VITE_DEPLOY_BASE_PATH }}'" > $DEPLOY_ENV_FILE
           echo 'VITE_CODE_NAME_DEPLOY_URL         =  "https://${{ secrets.EXP_DEPLOY_HOST }}/e/${{ steps.dotenv_github.outputs.VITE_CODE_NAME }}"' >> $DEPLOY_ENV_FILE
@@ -155,7 +155,7 @@ jobs:
         if: env.PRETTIER_FAILED == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: 'style: apply prettier formatting [auto-commit]'
+          commit_message: "style: apply prettier formatting [auto-commit]"
           branch: ${{ github.head_ref }}
 
       # run tests

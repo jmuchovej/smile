@@ -5,10 +5,10 @@
 
 /* eslint-disable import/no-duplicates */
 /* import the fontawesome core */
-import { library } from '@fortawesome/fontawesome-svg-core'
-
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faCircle as farCircle, faClock as farClock } from "@fortawesome/free-regular-svg-icons";
 /* import specific icons */
-/* to limit the size of the final project you import individal icons */
+/* to limit the size of the final project you import individual icons */
 /* NOTE: you also have to load them below by adding to the library */
 import {
   faRobot,
@@ -79,11 +79,8 @@ import {
   faMagnifyingGlassArrowRight,
   faLeaf,
   faPerson,
-} from '@fortawesome/free-solid-svg-icons'
-
-import { faCircle as farCircle, faClock as farClock } from '@fortawesome/free-regular-svg-icons'
-
-import { faDiamond } from '@fortawesome/free-solid-svg-icons'
+} from "@fortawesome/free-solid-svg-icons";
+import { faDiamond } from "@fortawesome/free-solid-svg-icons";
 
 /* add icons to the library */
 library.add(
@@ -157,5 +154,5 @@ library.add(
   faAnglesRight,
   faAnglesLeft,
   faHammer,
-  faDiamond
-)
+  faDiamond,
+);

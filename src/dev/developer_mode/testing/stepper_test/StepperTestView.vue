@@ -1,68 +1,69 @@
 <script setup>
-import useAPI from '@/core/composables/useAPI'
-import StateTreeViewer from '@/dev/developer_mode/StateTreeViewer.vue'
-import { computed } from 'vue'
-import { defineComponent, h } from 'vue'
+  import { computed } from "vue";
+  import { defineComponent, h } from "vue";
 
-const api = useAPI()
+  import useAPI from "@/core/composables/useAPI";
+  import StateTreeViewer from "@/dev/developer_mode/StateTreeViewer.vue";
 
-const Stimulus = defineComponent({
-  name: 'Stimulus',
-  template: `
+  const api = useAPI();
+
+  const Stimulus = defineComponent({
+    name: "Stimulus",
+    template: `
     <div>
       Stim
     </div>
   `,
-})
+  });
 
-const Feedback = defineComponent({
-  name: 'Feedback',
-  template: `
+  const Feedback = defineComponent({
+    name: "Feedback",
+    template: `
     <div>
       Feedback
     </div>
   `,
-})
+  });
 
-const stepper = api.useStepper()
+  const stepper = api.useStepper();
 
-const trials = stepper
-  .spec()
-  .append([{ type: Stimulus }, { type: Feedback }])
-  .repeat(3)
-stepper.addSpec(trials)
+  const trials = stepper
+    .spec()
+    .append([{ type: Stimulus }, { type: Feedback }])
+    .repeat(3);
+  stepper.addSpec(trials);
 
-const trials2 = stepper.t
-  .append([
-    { type: 'trial', id: 1 },
-    { type: 'trial', id: 2 },
-  ])
-  .forEach((trial) => {
-    let index = 0
-    trial
-      .append([
-        { type: 'step', id: index++ },
-        { type: 'step', id: index++ },
-      ])
-      .forEach((step) => {
-        for (let i = 0; i < 5; i++) {
-          step.append([{ type: 'step', id: i }])
-        }
-      })
-  })
-stepper.addSpec(trials2)
+  const trials2 = stepper.t
+    .append([
+      { type: "trial", id: 1 },
+      { type: "trial", id: 2 },
+    ])
+    .forEach((trial) => {
+      let index = 0;
+      trial
+        .append([
+          { type: "step", id: index++ },
+          { type: "step", id: index++ },
+        ])
+        .forEach((step) => {
+          for (let i = 0; i < 5; i++) {
+            step.append([{ type: "step", id: i }]);
+          }
+        });
+    });
+  stepper.addSpec(trials2);
 
-function next() {
-  if (stepper.index >= stepper.length) {
-    api.goNextView()
+  function next() {
+    if (stepper.index >= stepper.length) {
+      api.goNextView();
+    }
+    stepper.goNextStep();
   }
-  stepper.goNextStep()
-}
 
-function adddata() {
-  const trials = stepper.spec().append([{ type: 'added', id: stepper.nrows - 2 }])
-  stepper.addSpec(trials)
-}
+  function adddata() {
+    const trials = stepper.spec().append([{ type: "added", id: stepper.nrows - 2 }]);
+    stepper.addSpec(trials);
+  }
 </script>
 
 <template>
@@ -87,16 +88,16 @@ function adddata() {
 </template>
 
 <style scoped>
-.viewer-container {
-  width: 400px;
-  margin: 0 auto;
-  border: 1px solid #c5c5c5;
-  border-top: none;
-}
-.tree-diagram-text {
-  text-align: left;
-  width: 400px;
-  margin: 0 auto;
-  font-family: monospace;
-}
+  .viewer-container {
+    width: 400px;
+    margin: 0 auto;
+    border: 1px solid #c5c5c5;
+    border-top: none;
+  }
+  .tree-diagram-text {
+    text-align: left;
+    width: 400px;
+    margin: 0 auto;
+    font-family: monospace;
+  }
 </style>

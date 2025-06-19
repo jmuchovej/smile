@@ -55,11 +55,11 @@ new lodash function. Then you must use that function rather than the default
 `_`:
 
 ```js
-import _ from 'lodash'
-const lodash = _.runInContext()
+import _ from "lodash";
+const lodash = _.runInContext();
 
 // this will use the seeded Math.random()
-lodash.shuffle([1, 2, 3])
+lodash.shuffle([1, 2, 3]);
 ```
 
 **Warning:** Be careful with Views that step through multiple trials using the
@@ -71,7 +71,7 @@ back to the trial where they left off. If you set all random numbers at the
 beginning, the participant can easily pick up from trial 10 with the same
 randomization (all random numbers are regenerated upon refresh, and the stepper
 will correctly point to the 10th random number for the 10th trial). However, if
-you set random numbers within each trial, the partcipant will get a different
+you set random numbers within each trial, the participant will get a different
 random number on trial 10 before page refresh (the 10th random number after
 seeding) and after page refresh (the 1st random number after seeding).
 
@@ -85,25 +85,25 @@ to between-subjects conditions. This requires a name for the condition (e.g.,
 and `BA`).
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
 api.randomAssignCondition({
-  taskOrder: ['AB', 'BA'],
-})
+  taskOrder: ["AB", "BA"],
+});
 ```
 
 This function can also include weights. Say you want twice as many participants
 in variation condition C compared to variation condition D:
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
 api.randomAssignCondition({
-  variation: ['C', 'D'],
+  variation: ["C", "D"],
   weights: [2, 1],
-})
+});
 ```
 
 Note that the weights are automatically normalized, so [2/3, 1/3] or [4, 2]
@@ -113,11 +113,11 @@ To access the value of the condition elsewhere (e.g., in the instructions
 component), you can do:
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
-api.getConditionByName(taskOrder)
-api.getConditionByName(variation)
+api.getConditionByName(taskOrder);
+api.getConditionByName(variation);
 ```
 
 As long as the condition has already been set, this will return the value
@@ -141,11 +141,11 @@ functions for these situations:
 Generates a random integer between min and max (both inclusive).
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
 // generate a random integer: 1, 2, 3, 4, or 5
-const number = api.randomInt(1, 5)
+const number = api.randomInt(1, 5);
 ```
 
 ### `api.shuffle(array)`
@@ -154,19 +154,13 @@ Randomly shuffles an array. For example, this can be used to present some fixed
 stimuli in a random order.
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
-const stimuli = [
-  'image1.png',
-  'image2.png',
-  'image3.png',
-  'image4.png',
-  'image5.png',
-]
+const stimuli = ["image1.png", "image2.png", "image3.png", "image4.png", "image5.png"];
 
 // shuffle the stimulus array
-const stimuli_shuffled = api.shuffle(stimuli)
+const stimuli_shuffled = api.shuffle(stimuli);
 ```
 
 ### `api.sampleWithoutReplacement(array, sampleSize)`
@@ -175,19 +169,13 @@ Samples **without** replacement from an array. For example, this can be used to
 randomly present 3 stimuli from a larger set.
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
-const stimuli = [
-  'image1.png',
-  'image2.png',
-  'image3.png',
-  'image4.png',
-  'image5.png',
-]
+const stimuli = ["image1.png", "image2.png", "image3.png", "image4.png", "image5.png"];
 
 // sample (without replacement) from array
-const stimuli_selected = api.sampleWithoutReplacement(stimuli, 3)
+const stimuli_selected = api.sampleWithoutReplacement(stimuli, 3);
 ```
 
 ### `api.sampleWithReplacement(array, sampleSize)`
@@ -197,19 +185,13 @@ randomly present 3 stimuli from a larger set (with the possibility of presenting
 the same stimulus twice).
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
-const stimuli = [
-  'image1.png',
-  'image2.png',
-  'image3.png',
-  'image4.png',
-  'image5.png',
-]
+const stimuli = ["image1.png", "image2.png", "image3.png", "image4.png", "image5.png"];
 
 // sample (with replacement) from array
-const stimuli_selected = api.sampleWithReplacement(stimuli, 3)
+const stimuli_selected = api.sampleWithReplacement(stimuli, 3);
 ```
 
 ### `random.expandProduct(...arrays)`
@@ -218,21 +200,15 @@ Computes the cartesian product of any number of arrays. For example, this can be
 used to get all permutations of three condition variables.
 
 ```js
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 
-const stimuli = [
-  'image1.png',
-  'image2.png',
-  'image3.png',
-  'image4.png',
-  'image5.png',
-]
-const prompts = ['click the red button', 'click the blue button']
-const backgroundColors = ['purple', 'orange', 'yellow']
+const stimuli = ["image1.png", "image2.png", "image3.png", "image4.png", "image5.png"];
+const prompts = ["click the red button", "click the blue button"];
+const backgroundColors = ["purple", "orange", "yellow"];
 
 // get cartesian product of all arrays -- this will return an array of 5 x 2 x 3 = 30 arrays (each of length 3), each of which contains a stimulus, prompt, and background color
-const all_trial_types = api.expandProduct(stimuli, prompts, backgroundColors)
+const all_trial_types = api.expandProduct(stimuli, prompts, backgroundColors);
 ```
 
 ### Random timeline routes
@@ -246,20 +222,20 @@ In rare cases, it may be desirable to generate "true" or "unseeded" random
 numbers. To do so, you can use the smile API:
 
 ```js
-const api = useAPI()
+const api = useAPI();
 
 // randomize seed each time component is loaded
-api.randomSeed()
+api.randomSeed();
 ```
 
 This will initialize the component with a random seed each time the View is
 loaded. You can also provide a fixed seed using the same function:
 
 ```js
-const api = useAPI()
+const api = useAPI();
 
 // set to a known seed
-api.randomSeed(12344)
+api.randomSeed(12344);
 ```
 
 ## Override randomization for debugging

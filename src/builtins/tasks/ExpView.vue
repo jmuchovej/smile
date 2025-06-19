@@ -1,12 +1,13 @@
 <script setup>
-import { onMounted } from 'vue'
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  import { onMounted } from "vue";
 
-function finish() {
-  // smilestore.saveData()
-  api.goNextView()
-}
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
+
+  function finish() {
+    // smilestore.saveData()
+    api.goNextView();
+  }
 </script>
 
 <template>

@@ -21,7 +21,7 @@ logic. Components can show/hide content, verify that input to a form is valid,
 collect data from a participant and save it to a database, animate elements of a
 page, etc...
 
-Well-designed components are reuseable across projects so that if someone else
+Well-designed components are reusable across projects so that if someone else
 develops a useful component you can easily import it into your project.
 Component libraries exist which define the logic and behavior of common elements
 on a page. For example, [Radix Vue](https://www.radix-vue.com/) and
@@ -89,8 +89,8 @@ Vue 3.0 composition API:
 
 ```vue
 <script setup>
-import { ref } from 'vue'
-const count = ref(0)
+  import { ref } from "vue";
+  const count = ref(0);
 </script>
 
 <template>
@@ -98,10 +98,10 @@ const count = ref(0)
 </template>
 
 <style scoped>
-button {
-  font-weight: bold;
-  background-color: lightblue;
-}
+  button {
+    font-weight: bold;
+    background-color: lightblue;
+  }
 </style>
 ```
 
@@ -142,8 +142,8 @@ Now lets look closer at the `<script>` section:
 
 ```vue
 <script setup>
-import { ref } from 'vue'
-const count = ref(0)
+  import { ref } from "vue";
+  const count = ref(0);
 </script>
 ```
 
@@ -157,10 +157,10 @@ Finally, the `<style>` section defines how elements of the template should look.
 
 ```vue
 <style scoped>
-button {
-  font-weight: bold;
-  background-color: lightblue;
-}
+  button {
+    font-weight: bold;
+    background-color: lightblue;
+  }
 </style>
 ```
 
@@ -219,8 +219,8 @@ component:
 
 ```vue
 <script setup>
-import SimpleButton from '@/components/SimpleButton.vue'
-import TextInput from '@/components/TextInput.vue'
+  import SimpleButton from "@/components/SimpleButton.vue";
+  import TextInput from "@/components/TextInput.vue";
 </script>
 
 <template>
@@ -262,7 +262,7 @@ Sheets. Here you **define** the value of a cell to be the `=AVERAGE()` of some
 other cells. When the value of the other cells is updated the average
 **automatically** recomputes. In fact, the declarative style of Excel is one of
 the reasons people find it so easy to work with. Why not borrow some of that
-magic for your online web developmenet?
+magic for your online web developments?
 
 :::
 
@@ -301,8 +301,8 @@ code.
 
 ```vue
 <script setup>
-import { ref } from 'vue'
-const text = ref('')
+  import { ref } from "vue";
+  const text = ref("");
 </script>
 
 <template>
@@ -311,9 +311,9 @@ const text = ref('')
 </template>
 
 <style scoped>
-.input {
-  font-weight: bold;
-}
+  .input {
+    font-weight: bold;
+  }
 </style>
 ```
 
@@ -336,24 +336,21 @@ code for a similar effect might look like this:
 
 ```js
 plugin.trial = function (display_element, trial) {
-  var text = ''
+  var text = "";
 
-  var html = `<input class="input" name="text" id="myinput" placeholder="Type here" />`
-  html += `<p id="message"><b>You typed: </b>${text}</p>`
-  display_element.innerHTML = html
+  var html = `<input class="input" name="text" id="myinput" placeholder="Type here" />`;
+  html += `<p id="message"><b>You typed: </b>${text}</p>`;
+  display_element.innerHTML = html;
 
-  display_element
-    .querySelector('#myinput')
-    .addEventListener('onchange', function () {
-      handle_change()
-    })
+  display_element.querySelector("#myinput").addEventListener("onchange", function () {
+    handle_change();
+  });
 
   function handle_change() {
-    let new_text = display_element.querySelector('#myinput').value
-    display_element.querySelector('#message').innerHTML =
-      `<b>You typed: </b>${new_text}`
+    let new_text = display_element.querySelector("#myinput").value;
+    display_element.querySelector("#message").innerHTML = `<b>You typed: </b>${new_text}`;
   }
-}
+};
 ```
 
 with an additional entry in the global CSS definition like this to style the
@@ -369,9 +366,9 @@ input:
 Unpacking this code, first we add the input and text to the page:
 
 ```js
-var html = `<input class="input" name="text" id="myinput" placeholder="Type here" />`
-html += `<p id="message"><b>You typed: </b>${text}</p>`
-display_element.innerHTML = html
+var html = `<input class="input" name="text" id="myinput" placeholder="Type here" />`;
+html += `<p id="message"><b>You typed: </b>${text}</p>`;
+display_element.innerHTML = html;
 ```
 
 This looks similar to the `<template>` section of the Vue component. However, we
@@ -380,11 +377,9 @@ selecting the `#myinput` element and adding an event listener to to the click
 for `onchange` events.
 
 ```js
-display_element
-  .querySelector('#myinput')
-  .addEventListener('onchange', function () {
-    handle_change()
-  })
+display_element.querySelector("#myinput").addEventListener("onchange", function () {
+  handle_change();
+});
 ```
 
 In the Vue component, the event handler which listens to changes was implicitly
@@ -394,9 +389,8 @@ of the input field and sets the HTML of the message to the new value.
 
 ```js
 function handle_change() {
-  let new_text = display_element.querySelector('#myinput').value
-  display_element.querySelector('#message').innerHTML =
-    `<b>You typed: </b>${new_text}`
+  let new_text = display_element.querySelector("#myinput").value;
+  display_element.querySelector("#message").innerHTML = `<b>You typed: </b>${new_text}`;
 }
 ```
 

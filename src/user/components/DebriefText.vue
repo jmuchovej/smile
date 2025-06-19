@@ -7,10 +7,10 @@
 </template>
 
 <style scoped>
-.debrief {
-  padding: 30px;
-  margin: auto;
-  width: 60%;
-  text-align: left;
-}
+  .debrief {
+    padding: 30px;
+    margin: auto;
+    width: 60%;
+    text-align: left;
+  }
 </style>

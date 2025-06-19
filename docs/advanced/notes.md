@@ -78,7 +78,7 @@ available for managing the project. The content contains something like this:
 
 In the `scripts` section, you see several commands. To run them you just type
 `npm run <cmd>`. For instance typing `npm run docs:dev` will effectively run the
-command `vitepress dev docs`.  
+command `vitepress dev docs`.
 The `npm run <cmd>` commands are just aliases/shorthands for running build steps
 of the vitepress documentation system, and later for the Smile project itself.
 It is similar to a Makefile. Anytime you forget the possible commands just type

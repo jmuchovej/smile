@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(['nextPageCaptcha'])
+  const emit = defineEmits(["nextPageCaptcha"]);
 </script>
 
 <template>
@@ -7,17 +7,19 @@ const emit = defineEmits(['nextPageCaptcha'])
     <h1 class="title">Categorize an image!</h1>
     <p class="is-size-5 has-text-left">XXX</p>
     <hr />
-    <button class="button is-success" id="finish" @click="$emit('nextPageCaptcha')">I'm ready</button>
+    <button class="button is-success" id="finish" @click="$emit('nextPageCaptcha')">
+      I'm ready
+    </button>
   </div>
 </template>
 
 <style scoped>
-.instructions {
-  width: 60%;
-  margin: auto;
-}
+  .instructions {
+    width: 60%;
+    margin: auto;
+  }
 
-.instructions p {
-  padding-bottom: 20px;
-}
+  .instructions p {
+    padding-bottom: 20px;
+  }
 </style>

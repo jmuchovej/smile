@@ -1,41 +1,41 @@
 <script setup>
-import { ref } from 'vue'
+  import { ref } from "vue";
 
-const props = defineProps({
-  data: {
-    type: [Object, Array, String, Number, Boolean, null],
-    required: true,
-  },
-})
+  const props = defineProps({
+    data: {
+      type: [Object, Array, String, Number, Boolean, null],
+      required: true,
+    },
+  });
 
-const expandedNodes = ref(new Set())
+  const expandedNodes = ref(new Set());
 
-const toggleNode = (path) => {
-  if (expandedNodes.value.has(path)) {
-    expandedNodes.value.delete(path)
-  } else {
-    expandedNodes.value.add(path)
-  }
-}
+  const toggleNode = (path) => {
+    if (expandedNodes.value.has(path)) {
+      expandedNodes.value.delete(path);
+    } else {
+      expandedNodes.value.add(path);
+    }
+  };
 
-const formatValue = (value) => {
-  if (value === null) return 'null'
-  if (value === undefined) return 'undefined'
-  if (typeof value === 'string') return `"${value}"`
-  return String(value)
-}
+  const formatValue = (value) => {
+    if (value === null) return "null";
+    if (value === undefined) return "undefined";
+    if (typeof value === "string") return `"${value}"`;
+    return String(value);
+  };
 
-const isExpandable = (value) => {
-  return value !== null && (typeof value === 'object' || Array.isArray(value))
-}
+  const isExpandable = (value) => {
+    return value !== null && (typeof value === "object" || Array.isArray(value));
+  };
 
-const isSinglePrimitive = (value) => {
-  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
-}
+  const isSinglePrimitive = (value) => {
+    return typeof value === "string" || typeof value === "number" || typeof value === "boolean";
+  };
 
-const getSingleValue = (value) => {
-  return value
-}
+  const getSingleValue = (value) => {
+    return value;
+  };
 </script>
 
 <template>
@@ -50,10 +50,10 @@ const getSingleValue = (value) => {
         </template>
         <template v-else>
           <div class="node-content" @click="toggleNode(key)">
-            <span class="expand-icon">{{ expandedNodes.has(key) ? '▼' : '▶' }}</span>
+            <span class="expand-icon">{{ expandedNodes.has(key) ? "▼" : "▶" }}</span>
             <span class="key">{{ key }}:</span>
             <span v-if="!expandedNodes.has(key)" class="preview">
-              {{ Array.isArray(value) ? `[${value.length} items]` : '{...}' }}
+              {{ Array.isArray(value) ? `[${value.length} items]` : "{...}" }}
             </span>
           </div>
           <div v-if="expandedNodes.has(key)" class="nested-content">
@@ -69,48 +69,48 @@ const getSingleValue = (value) => {
 </template>
 
 <style scoped>
-.data-path-viewer {
-  font-family: monospace;
-  font-size: 0.7rem;
-  line-height: 1.4;
-}
+  .data-path-viewer {
+    font-family: monospace;
+    font-size: 0.7rem;
+    line-height: 1.4;
+  }
 
-.data-node {
-  margin: 2px 0;
-}
+  .data-node {
+    margin: 2px 0;
+  }
 
-.node-content {
-  cursor: pointer;
-  padding: 2px 0;
-  user-select: none;
-}
+  .node-content {
+    cursor: pointer;
+    padding: 2px 0;
+    user-select: none;
+  }
 
-.node-content:hover {
-  background-color: #f0f0f0;
-}
+  .node-content:hover {
+    background-color: #f0f0f0;
+  }
 
-.expand-icon {
-  display: inline-block;
-  width: 16px;
-  color: #666;
-}
+  .expand-icon {
+    display: inline-block;
+    width: 16px;
+    color: #666;
+  }
 
-.key {
-  color: #0baac3;
-  margin-right: 4px;
-}
+  .key {
+    color: #0baac3;
+    margin-right: 4px;
+  }
 
-.preview {
-  color: #666;
-  font-style: italic;
-}
+  .preview {
+    color: #666;
+    font-style: italic;
+  }
 
-.primitive-value {
-  color: #dda814;
-}
+  .primitive-value {
+    color: #dda814;
+  }
 
-.nested-content {
-  padding-left: 20px;
-  border-left: 1px dotted #ccc;
-}
+  .nested-content {
+    padding-left: 20px;
+    border-left: 1px dotted #ccc;
+  }
 </style>

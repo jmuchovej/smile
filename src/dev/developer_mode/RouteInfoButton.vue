@@ -1,31 +1,32 @@
 <script setup>
-import { computed } from 'vue'
-import useAPI from '@/core/composables/useAPI'
-import RouteJumper from '@/dev/developer_mode/RouteJumper.vue'
+  import { computed } from "vue";
 
-const api = useAPI()
+  import useAPI from "@/core/composables/useAPI";
+  import RouteJumper from "@/dev/developer_mode/RouteJumper.vue";
 
-const buttonstyle = computed(() => {
-  let base = 'button is-small is-route is-jump-bar has-tooltip-arrow has-tooltip-bottom'
-  if (api.store.dev.routePanel.visible) {
-    return base + ' is-selected'
-  } else if (api.store.dev.pinnedRoute !== null) {
-    return base + ' pinned'
-  } else {
-    return base
-  }
-})
+  const api = useAPI();
 
-const toggleRoutePanel = () => {
-  if (api.store.dev.pinnedRoute == null) {
-    api.store.dev.routePanel.visible = !api.store.dev.routePanel.visible
-  }
-}
+  const buttonstyle = computed(() => {
+    let base = "button is-small is-route is-jump-bar has-tooltip-arrow has-tooltip-bottom";
+    if (api.store.dev.routePanel.visible) {
+      return base + " is-selected";
+    } else if (api.store.dev.pinnedRoute !== null) {
+      return base + " pinned";
+    } else {
+      return base;
+    }
+  });
 
-const togglePin = () => {
-  api.store.dev.pinnedRoute = api.store.dev.pinnedRoute === null ? api.currentRouteName() : null
-  api.store.dev.routePanel.visible = false
-}
+  const toggleRoutePanel = () => {
+    if (api.store.dev.pinnedRoute == null) {
+      api.store.dev.routePanel.visible = !api.store.dev.routePanel.visible;
+    }
+  };
+
+  const togglePin = () => {
+    api.store.dev.pinnedRoute = api.store.dev.pinnedRoute === null ? api.currentRouteName() : null;
+    api.store.dev.routePanel.visible = false;
+  };
 </script>
 
 <template>
@@ -35,8 +36,7 @@ const togglePin = () => {
         class="button is-small is-jump-bar has-tooltip-arrow has-tooltip-bottom"
         v-on:click="api.autofill()"
         :data-tooltip="api.hasAutofill() ? 'Autofill Form' : 'No form to autofill'"
-        :disabled="!api.hasAutofill()"
-      >
+        :disabled="!api.hasAutofill()">
         <span>
           <FAIcon icon="fa-solid fa-pen-to-square" />
         </span>
@@ -47,8 +47,7 @@ const togglePin = () => {
       <button
         class="button is-small devbar-button has-tooltip-arrow has-tooltip-bottom"
         v-on:click="api.goToView(api.route?.meta?.prev)"
-        data-tooltip="Previous page"
-      >
+        data-tooltip="Previous page">
         <span>
           <FAIcon icon="fa-solid fa-angles-left" />
         </span>
@@ -66,8 +65,7 @@ const togglePin = () => {
       <button
         class="button is-small devbar-button has-tooltip-arrow has-tooltip-bottom"
         v-on:click="api.goNextView()"
-        data-tooltip="Step page forward"
-      >
+        data-tooltip="Step page forward">
         <span>
           <FAIcon icon="fa-solid fa-angles-right" />
         </span>
@@ -85,14 +83,15 @@ const togglePin = () => {
         class="button is-small is-jump-bar has-tooltip-arrow has-tooltip-bottom"
         :class="{ pinned: api.store.dev.pinnedRoute !== null }"
         v-on:click="togglePin()"
-        data-tooltip="Pin current route"
-      >
+        data-tooltip="Pin current route">
         <span>
           <FAIcon icon="fa-solid fa-thumbtack" />
         </span>
       </button>
     </p>
-    <div class="dropdown is-hoverable is-right" :class="{ 'is-active': api.store.dev.routePanel.visible }">
+    <div
+      class="dropdown is-hoverable is-right"
+      :class="{ 'is-active': api.store.dev.routePanel.visible }">
       <div class="dropdown-trigger">
         <p class="control is-route">
           <button :class="buttonstyle" @click="toggleRoutePanel()">
@@ -100,7 +99,11 @@ const togglePin = () => {
           </button>
         </p>
       </div>
-      <div class="dropdown-menu pt-0 mt-0" id="dropdown-menu" role="menu" v-if="api.store.dev.pinnedRoute === null">
+      <div
+        class="dropdown-menu mt-0 pt-0"
+        id="dropdown-menu"
+        role="menu"
+        v-if="api.store.dev.pinnedRoute === null">
         <RouteJumper :routeName="api.currentRouteName()"></RouteJumper>
       </div>
     </div>
@@ -108,28 +111,28 @@ const togglePin = () => {
 </template>
 
 <style scoped>
-.pinned {
-  background-color: #ffdd57;
-}
-.is-route {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
+  .pinned {
+    background-color: #ffdd57;
+  }
+  .is-route {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 
-.dropdown {
-  margin-top: 0;
-}
-.is-selected {
-  background-color: rgb(219, 219, 219);
-}
-.is-jump-bar {
-  font-size: 0.65rem;
-  height: 2em;
-  margin: 0px;
-}
-.routelabel {
-  min-width: 100px;
-  font-weight: 1000;
-  font-family: 'Courier New', Courier, monospace;
-}
+  .dropdown {
+    margin-top: 0;
+  }
+  .is-selected {
+    background-color: rgb(219, 219, 219);
+  }
+  .is-jump-bar {
+    font-size: 0.65rem;
+    height: 2em;
+    margin: 0px;
+  }
+  .routelabel {
+    min-width: 100px;
+    font-weight: 1000;
+    font-family: "Courier New", Courier, monospace;
+  }
 </style>

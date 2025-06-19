@@ -1,20 +1,20 @@
 <script setup>
-//import DebriefText from '@/user/components/DebriefText.vue' // get access to the global store
-// import and initalize smile API
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  //import DebriefText from '@/user/components/DebriefText.vue' // get access to the global store
+  // import and initialize smile API
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
 
-const props = defineProps({
-  debriefText: {
-    type: Object,
-    required: true,
-  },
-})
+  const props = defineProps({
+    debriefText: {
+      type: Object,
+      required: true,
+    },
+  });
 
-function finish() {
-  // do stuff if you want
-  api.goNextView()
-}
+  function finish() {
+    // do stuff if you want
+    api.goNextView();
+  }
 </script>
 
 <template>

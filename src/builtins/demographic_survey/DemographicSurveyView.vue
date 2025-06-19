@@ -1,88 +1,91 @@
 <script setup>
-import { reactive, computed } from 'vue'
+  import { reactive, computed } from "vue";
 
-// import and initalize smile API
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  // import and initialize smile API
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
 
-api.steps.append([{ id: 'survey_page1' }, { id: 'survey_page2' }, { id: 'survey_page3' }])
+  api.steps.append([{ id: "survey_page1" }, { id: "survey_page2" }, { id: "survey_page3" }]);
 
-// persists the form info in local storage, otherwise initialize
-if (!api.persist.isDefined('forminfo')) {
-  api.persist.forminfo = reactive({
-    dob: '',
-    gender: '',
-    race: '',
-    hispanic: '',
-    fluent_english: '',
-    normal_vision: '',
-    color_blind: '',
-    learning_disability: '',
-    neurodevelopmental_disorder: '',
-    psychiatric_disorder: '',
-    country: '',
-    zipcode: '',
-    education_level: '',
-    household_income: '',
-  })
-}
+  // persists the form info in local storage, otherwise initialize
+  if (!api.persist.isDefined("forminfo")) {
+    api.persist.forminfo = reactive({
+      dob: "",
+      gender: "",
+      race: "",
+      hispanic: "",
+      fluent_english: "",
+      normal_vision: "",
+      color_blind: "",
+      learning_disability: "",
+      neurodevelopmental_disorder: "",
+      psychiatric_disorder: "",
+      country: "",
+      zipcode: "",
+      education_level: "",
+      household_income: "",
+    });
+  }
 
-const page_one_complete = computed(
-  () =>
-    api.persist.forminfo.dob !== '' &&
-    api.persist.forminfo.gender !== '' &&
-    api.persist.forminfo.race !== '' &&
-    api.persist.forminfo.hispanic !== '' &&
-    api.persist.forminfo.fluent_english !== ''
-)
+  const page_one_complete = computed(
+    () =>
+      api.persist.forminfo.dob !== "" &&
+      api.persist.forminfo.gender !== "" &&
+      api.persist.forminfo.race !== "" &&
+      api.persist.forminfo.hispanic !== "" &&
+      api.persist.forminfo.fluent_english !== "",
+  );
 
-const page_two_complete = computed(
-  () =>
-    api.persist.forminfo.color_blind !== '' &&
-    api.persist.forminfo.learning_disability !== '' &&
-    api.persist.forminfo.neurodevelopmental_disorder !== '' &&
-    api.persist.forminfo.psychiatric_disorder !== ''
-)
+  const page_two_complete = computed(
+    () =>
+      api.persist.forminfo.color_blind !== "" &&
+      api.persist.forminfo.learning_disability !== "" &&
+      api.persist.forminfo.neurodevelopmental_disorder !== "" &&
+      api.persist.forminfo.psychiatric_disorder !== "",
+  );
 
-const page_three_complete = computed(
-  () =>
-    api.persist.forminfo.country !== '' &&
-    api.persist.forminfo.education_level !== '' &&
-    api.persist.forminfo.household_income !== ''
-)
+  const page_three_complete = computed(
+    () =>
+      api.persist.forminfo.country !== "" &&
+      api.persist.forminfo.education_level !== "" &&
+      api.persist.forminfo.household_income !== "",
+  );
 
-function autofill() {
-  api.persist.forminfo.dob = '1978-09-12'
-  api.persist.forminfo.gender = 'Male'
-  api.persist.forminfo.race = 'Caucasian/White'
-  api.persist.forminfo.hispanic = 'No'
-  api.persist.forminfo.fluent_english = 'Yes'
-  api.persist.forminfo.normal_vision = 'Yes'
-  api.persist.forminfo.color_blind = 'No'
-  api.persist.forminfo.learning_disability = 'No'
-  api.persist.forminfo.neurodevelopmental_disorder = 'No'
-  api.persist.forminfo.psychiatric_disorder = 'No'
-  api.persist.forminfo.country = 'United States'
-  api.persist.forminfo.zipcode = '12345'
-  api.persist.forminfo.education_level = 'Doctorate Degree (PhD/Other)'
-  api.persist.forminfo.household_income = '$100,000–$199,999'
-}
+  function autofill() {
+    api.persist.forminfo.dob = "1978-09-12";
+    api.persist.forminfo.gender = "Male";
+    api.persist.forminfo.race = "Caucasian/White";
+    api.persist.forminfo.hispanic = "No";
+    api.persist.forminfo.fluent_english = "Yes";
+    api.persist.forminfo.normal_vision = "Yes";
+    api.persist.forminfo.color_blind = "No";
+    api.persist.forminfo.learning_disability = "No";
+    api.persist.forminfo.neurodevelopmental_disorder = "No";
+    api.persist.forminfo.psychiatric_disorder = "No";
+    api.persist.forminfo.country = "United States";
+    api.persist.forminfo.zipcode = "12345";
+    api.persist.forminfo.education_level = "Doctorate Degree (PhD/Other)";
+    api.persist.forminfo.household_income = "$100,000–$199,999";
+  }
 
-api.setAutofill(autofill)
+  api.setAutofill(autofill);
 
-function finish() {
-  api.recordForm('demographicForm', api.persist.forminfo)
-  api.goNextView()
-}
+  function finish() {
+    api.recordForm("demographicForm", api.persist.forminfo);
+    api.goNextView();
+  }
 </script>
 
 <template>
   <div class="page prevent-select">
     <div class="formcontent">
-      <h3 class="is-size-3 has-text-weight-bold"><FAIcon icon="fa-solid fa-person" />&nbsp;Demographic Information</h3>
+      <h3 class="is-size-3 has-text-weight-bold">
+        <FAIcon icon="fa-solid fa-person" />&nbsp;Demographic Information
+      </h3>
       <p class="is-size-6">
-        We request some information about you which we can use to understand aggregate differences between individuals.
-        Your privacy will be maintained and the data will not be linked to your online identity (e.g., email).
+        We request some information about you which we can use to understand aggregate differences
+        between individuals. Your privacy will be maintained and the data will not be linked to your
+        online identity (e.g., email).
       </p>
 
       <div class="formstep" v-if="api.pathString === 'survey_page1'">
@@ -102,8 +105,7 @@ function finish() {
                 name="dob"
                 v-model="api.persist.forminfo.dob"
                 help="Enter your birthday (required)"
-                validation="required"
-              />
+                validation="required" />
               <FormKit
                 type="select"
                 label="Gender"
@@ -111,8 +113,7 @@ function finish() {
                 help="Enter your self-identified gender (required)"
                 placeholder="Select an option"
                 :options="['Male', 'Female', 'Other', 'I prefer not to say']"
-                v-model="api.persist.forminfo.gender"
-              />
+                v-model="api.persist.forminfo.gender" />
               <FormKit
                 type="select"
                 label="Race"
@@ -129,8 +130,7 @@ function finish() {
                   'Mixed Race',
                   'Other',
                   'I prefer not to say',
-                ]"
-              />
+                ]" />
               <FormKit
                 type="select"
                 label="Are you hispanic?"
@@ -139,8 +139,7 @@ function finish() {
                 placeholder="Select an option"
                 help="Do you consider yourself hispanic? (required)"
                 validation="required"
-                :options="['No', 'Yes', 'I prefer not to say']"
-              />
+                :options="['No', 'Yes', 'I prefer not to say']" />
               <FormKit
                 type="select"
                 label="Are you fluent in English?"
@@ -149,13 +148,16 @@ function finish() {
                 help="Are you able to speak and understanding English? (required)"
                 placeholder="Select an option"
                 validation="required"
-                :options="['Yes', 'No', 'I prefer not to say']"
-              />
+                :options="['Yes', 'No', 'I prefer not to say']" />
               <hr />
               <div class="columns">
                 <div class="column">
                   <div class="has-text-right">
-                    <button class="button is-warning" id="finish" v-if="page_one_complete" @click="api.goNextStep()">
+                    <button
+                      class="button is-warning"
+                      id="finish"
+                      v-if="page_one_complete"
+                      @click="api.goNextStep()">
                       Continue &nbsp;
                       <FAIcon icon="fa-solid fa-arrow-right" />
                     </button>
@@ -172,7 +174,9 @@ function finish() {
           <div class="column is-one-third">
             <div class="formsectionexplainer">
               <h3 class="is-size-6 has-text-weight-bold">Psychological Information</h3>
-              <p class="is-size-6">Next, we need some basic information about your ability to perceive this study.</p>
+              <p class="is-size-6">
+                Next, we need some basic information about your ability to perceive this study.
+              </p>
             </div>
           </div>
           <div class="column">
@@ -185,8 +189,7 @@ function finish() {
                 placeholder="Select an option"
                 validation="required"
                 v-model="api.persist.forminfo.normal_vision"
-                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']"
-              />
+                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']" />
               <FormKit
                 type="select"
                 name="colorblind"
@@ -195,8 +198,7 @@ function finish() {
                 placeholder="Select an option"
                 validation="required"
                 v-model="api.persist.forminfo.color_blind"
-                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']"
-              />
+                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']" />
               <FormKit
                 type="select"
                 name="learningdisability"
@@ -205,8 +207,7 @@ function finish() {
                 placeholder="Select an option"
                 validation="required"
                 v-model="api.persist.forminfo.learning_disability"
-                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']"
-              />
+                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']" />
               <FormKit
                 type="select"
                 name="neurodevelopmentaldisorder"
@@ -215,8 +216,7 @@ function finish() {
                 placeholder="Select an option"
                 validation="required"
                 v-model="api.persist.forminfo.neurodevelopmental_disorder"
-                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']"
-              />
+                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']" />
               <FormKit
                 type="select"
                 name="psychiatricdisorder"
@@ -225,8 +225,7 @@ function finish() {
                 validation="required"
                 v-model="api.persist.forminfo.psychiatric_disorder"
                 placeholder="Select an option"
-                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']"
-              />
+                :options="['Yes', 'No', 'Unsure', 'I prefer not to say']" />
               <hr />
               <div class="columns">
                 <div class="column">
@@ -238,7 +237,11 @@ function finish() {
                 </div>
                 <div class="column">
                   <div class="has-text-right">
-                    <button class="button is-warning" id="finish" v-if="page_two_complete" @click="api.goNextStep()">
+                    <button
+                      class="button is-warning"
+                      id="finish"
+                      v-if="page_two_complete"
+                      @click="api.goNextStep()">
                       Continue &nbsp;
                       <FAIcon icon="fa-solid fa-arrow-right" />
                     </button>
@@ -465,8 +468,7 @@ function finish() {
                   'Yemen',
                   'Zambia',
                   'Zimbabwe',
-                ]"
-              />
+                ]" />
               <FormKit
                 type="text"
                 name="zipcode"
@@ -474,8 +476,7 @@ function finish() {
                 placeholder="Enter zip or postal code"
                 validation="optional"
                 v-model="api.persist.forminfo.zipcode"
-                help="Select zipcode or postal code of your primary residence. (optional)"
-              />
+                help="Select zipcode or postal code of your primary residence. (optional)" />
 
               <FormKit
                 type="select"
@@ -494,8 +495,7 @@ function finish() {
                   'Doctorate Degree (PhD/Other)',
                   'Don’t Know/Not Applicable',
                   'I prefer not to answer',
-                ]"
-              />
+                ]" />
               <FormKit
                 type="select"
                 name="income"
@@ -516,8 +516,7 @@ function finish() {
                   '$500,000+',
                   'I don’t know',
                   'I prefer not to answer',
-                ]"
-              />
+                ]" />
               <hr />
               <div class="columns">
                 <div class="column">
@@ -529,7 +528,11 @@ function finish() {
                 </div>
                 <div class="column">
                   <div class="has-text-right">
-                    <button class="button is-success" id="finish" v-if="page_three_complete" @click="finish()">
+                    <button
+                      class="button is-success"
+                      id="finish"
+                      v-if="page_three_complete"
+                      @click="finish()">
                       That was easy!
                     </button>
                   </div>
@@ -544,39 +547,39 @@ function finish() {
 </template>
 
 <style>
-.formstep {
-  margin-top: 40px;
-}
+  .formstep {
+    margin-top: 40px;
+  }
 
-.formkit-input {
-  --fk-bg-input: #fff;
-  --fk-max-width-input: 100%;
-}
+  .formkit-input {
+    --fk-bg-input: #fff;
+    --fk-max-width-input: 100%;
+  }
 
-.formkit-wrapper {
-  --fk-max-width-input: 100%;
-}
+  .formkit-wrapper {
+    --fk-max-width-input: 100%;
+  }
 
-.formbox {
-  border: 1px solid #dfdfdf;
-  text-align: left;
-  background-color: rgb(248, 248, 248);
-}
+  .formbox {
+    border: 1px solid #dfdfdf;
+    text-align: left;
+    background-color: rgb(248, 248, 248);
+  }
 
-.formkit-input select {
-  background-color: #fff;
-}
+  .formkit-input select {
+    background-color: #fff;
+  }
 
-.formcontent {
-  width: 80%;
-  margin: auto;
-  margin-bottom: 40px;
-  padding-bottom: 200px;
-  text-align: left;
-}
+  .formcontent {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 40px;
+    padding-bottom: 200px;
+    text-align: left;
+  }
 
-.formsectionexplainer {
-  text-align: left;
-  color: #777;
-}
+  .formsectionexplainer {
+    text-align: left;
+    color: #777;
+  }
 </style>

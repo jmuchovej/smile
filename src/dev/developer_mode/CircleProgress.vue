@@ -1,11 +1,11 @@
 <script setup>
-const props = defineProps({
-  percentage: Number,
-  size: Number,
-  strokeWidth: Number,
-  basecolor: String,
-  slicecolor: String,
-})
+  const props = defineProps({
+    percentage: Number,
+    size: Number,
+    strokeWidth: Number,
+    basecolor: String,
+    slicecolor: String,
+  });
 </script>
 
 <template>
@@ -17,21 +17,21 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.pie-chart {
-  display: inline-block;
-}
+  .pie-chart {
+    display: inline-block;
+  }
 
-svg {
-  width: v-bind(size + 'px');
-  height: v-bind(size + 'px');
-  transform: rotate(-90deg);
-  border-radius: 50%;
-}
+  svg {
+    width: v-bind(size + "px");
+    height: v-bind(size + "px");
+    transform: rotate(-90deg);
+    border-radius: 50%;
+  }
 
-circle {
-  fill: v-bind(basecolor);
-  stroke: v-bind(slicecolor);
-  stroke-width: 32;
-  stroke-dasharray: v-bind(percentage) 100; /* for 38% */
-}
+  circle {
+    fill: v-bind(basecolor);
+    stroke: v-bind(slicecolor);
+    stroke-width: 32;
+    stroke-dasharray: v-bind(percentage) 100; /* for 38% */
+  }
 </style>

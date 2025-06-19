@@ -12,12 +12,12 @@ stepper and handling user input events:
 
 ```js
 // import and initialize view API (recommended)
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+import useViewAPI from "@/core/composables/useViewAPI";
+const api = useViewAPI();
 
 // or import and initialize base API only
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+import useAPI from "@/core/composables/useAPI";
+const api = useAPI();
 ```
 
 The `useViewAPI` composable provides all the functionality of `useAPI` plus
@@ -209,12 +209,12 @@ The following functions are available in both `useAPI` and `useViewAPI`:
 
 ```javascript
 // Shuffle with a seed (only shuffles if not already shuffled)
-stepper.shuffle('seed123')
+stepper.shuffle("seed123");
 
 // Shuffle with options
-stepper.shuffle({ seed: 'seed123', always: false }) // Only shuffles if not already shuffled
-stepper.shuffle({ seed: 'seed123', always: true }) // Always shuffles
-stepper.shuffle({ always: true }) // Always shuffles without a seed
+stepper.shuffle({ seed: "seed123", always: false }); // Only shuffles if not already shuffled
+stepper.shuffle({ seed: "seed123", always: true }); // Always shuffles
+stepper.shuffle({ always: true }); // Always shuffles without a seed
 ```
 
 **Notes:**
@@ -281,10 +281,10 @@ merging parent block data.
 
 ```javascript
 // Get data for all leaf nodes
-const allLeafData = api.queryStepData()
+const allLeafData = api.queryStepData();
 
 // Get data for nodes matching a pattern
-const trialData = api.queryStepData('trial/block*')
+const trialData = api.queryStepData("trial/block*");
 ```
 
 #### `queryStepDataLeaf(pathFilter = null)`
@@ -296,10 +296,10 @@ with the `stepDataLeaf` getter.
 
 ```javascript
 // Get data for all leaf nodes
-const allLeafData = api.queryStepDataLeaf()
+const allLeafData = api.queryStepDataLeaf();
 
 // Get data for nodes matching a pattern
-const trialData = api.queryStepDataLeaf('trial/block*')
+const trialData = api.queryStepDataLeaf("trial/block*");
 ```
 
 #### `queryStepDataMerge(pathFilter = null)`
@@ -310,10 +310,10 @@ node (including parent block data).
 
 ```javascript
 // Get merged data for all leaf nodes
-const allMergedData = api.queryStepDataMerge()
+const allMergedData = api.queryStepDataMerge();
 
 // Get merged data for nodes matching a pattern
-const trialData = api.queryStepDataMerge('trial/block*')
+const trialData = api.queryStepDataMerge("trial/block*");
 ```
 
 The difference between these methods can be illustrated with an example:
@@ -325,9 +325,8 @@ The difference between these methods can be illustrated with an example:
 //   trial2 (response: 'B')
 
 // queryStepData() returns:
-;[{ response: 'A' }, { response: 'B' }][
+[{ response: "A" }, { response: "B" }][
   // queryStepDataMerge() returns:
-  ({ blockType: 'practice', response: 'A' },
-  { blockType: 'practice', response: 'B' })
-]
+  ({ blockType: "practice", response: "A" }, { blockType: "practice", response: "B" })
+];
 ```

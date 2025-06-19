@@ -7,12 +7,12 @@
  * Pinia store factory function
  * @external createPinia
  */
-import { createPinia } from 'pinia'
+import { createPinia } from "pinia";
 
 /**
  * Global Pinia store instance
  * @const {import('pinia').Pinia}
  */
-export const pinia = createPinia()
+export const pinia = createPinia();
 
-export default pinia
+export default pinia;

@@ -1,9 +1,9 @@
-const { defineConfig } = require('cypress')
-const { loadEnv } = require('vite')
+const { defineConfig } = require("cypress");
+const { loadEnv } = require("vite");
 
-console.log(`${process.cwd()}/../env/`)
-const environ = loadEnv('git', `${process.cwd()}/../env/`, '')
-console.log(environ)
+console.log(`${process.cwd()}/../env/`);
+const environ = loadEnv("git", `${process.cwd()}/../env/`, "");
+console.log(environ);
 
 module.exports = defineConfig({
   env: environ,
@@ -15,8 +15,8 @@ module.exports = defineConfig({
   },
   component: {
     devServer: {
-      framework: 'vue',
-      bundler: 'vite',
+      framework: "vue",
+      bundler: "vite",
     },
   },
-})
+});

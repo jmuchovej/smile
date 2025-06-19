@@ -34,16 +34,16 @@ export class StepState {
    * - root: Reference to root node of the tree
    */
   constructor(id = null, parent = null) {
-    this._id = id === null ? '/' : id
-    this._states = []
-    this._currentIndex = 0
-    this._depth = 0
+    this._id = id === null ? "/" : id;
+    this._states = [];
+    this._currentIndex = 0;
+    this._depth = 0;
     if (parent !== null) {
-      this._depth = parent.depth + 1
+      this._depth = parent.depth + 1;
     }
-    this._parent = parent
-    this._root = parent?._root || this
-    this._data = {}
+    this._parent = parent;
+    this._root = parent?._root || this;
+    this._data = {};
   }
 
   /**
@@ -51,7 +51,7 @@ export class StepState {
    * @returns {number} The number of child states
    */
   get length() {
-    return this._states.length
+    return this._states.length;
   }
 
   /**
@@ -59,7 +59,7 @@ export class StepState {
    * @returns {StepState|null} The parent StepState node, or null if this is the root
    */
   get parent() {
-    return this._parent
+    return this._parent;
   }
 
   /**
@@ -67,9 +67,9 @@ export class StepState {
    * @param {*} id - The new id to set
    */
   set id(id) {
-    this._id = id
+    this._id = id;
     // Update or add id in the data field
-    this._data = { ...this._data, id }
+    this._data = { ...this._data, id };
   }
 
   /**
@@ -77,7 +77,7 @@ export class StepState {
    * @returns {*} The node's id
    */
   get id() {
-    return this._id
+    return this._id;
   }
 
   /**
@@ -85,7 +85,7 @@ export class StepState {
    * @param {StepState[]} states - Array of child StepState nodes to set
    */
   set states(states) {
-    this._states = states
+    this._states = states;
   }
 
   /**
@@ -93,7 +93,7 @@ export class StepState {
    * @returns {StepState[]} Array of child StepState nodes
    */
   get states() {
-    return this._states
+    return this._states;
   }
 
   /**
@@ -102,9 +102,11 @@ export class StepState {
    */
   set index(index) {
     if (Number.isInteger(index) && index >= 0 && index <= Math.max(0, this._states.length - 1)) {
-      this._currentIndex = index
+      this._currentIndex = index;
     } else {
-      throw new Error(`Invalid index: ${index}. Index must be between 0 and ${this._states.length - 1}`)
+      throw new Error(
+        `Invalid index: ${index}. Index must be between 0 and ${this._states.length - 1}`,
+      );
     }
   }
 
@@ -113,7 +115,7 @@ export class StepState {
    * @returns {number} The current index
    */
   get index() {
-    return this._currentIndex
+    return this._currentIndex;
   }
 
   /**
@@ -123,11 +125,11 @@ export class StepState {
   get parentIndex() {
     // If this is the root node, return null
     if (!this._parent) {
-      return null
+      return null;
     }
 
     // Return the current index of the parent node
-    return this._parent._currentIndex
+    return this._parent._currentIndex;
   }
 
   /**
@@ -137,13 +139,13 @@ export class StepState {
    */
   get blockIndex() {
     // Get the current leaf node
-    let current = this._root
+    let current = this._root;
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex]
+      current = current._states[current._currentIndex];
     }
 
     // Return the parent's index
-    return current._parent ? current._parent._currentIndex : null
+    return current._parent ? current._parent._currentIndex : null;
   }
 
   /**
@@ -153,13 +155,13 @@ export class StepState {
    */
   get blockLength() {
     // Get the current leaf node
-    let current = this._root
+    let current = this._root;
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex]
+      current = current._states[current._currentIndex];
     }
 
     // Return the number of states in the parent node, or 0 if no parent
-    return current._parent ? current._parent._states.length : 0
+    return current._parent ? current._parent._states.length : 0;
   }
 
   /**
@@ -167,7 +169,7 @@ export class StepState {
    * @param {*} data - The data to store in this node
    */
   set data(data) {
-    this._data = data
+    this._data = data;
   }
 
   /**
@@ -175,7 +177,7 @@ export class StepState {
    * @returns {*} The data stored in this node
    */
   get data() {
-    return this._data
+    return this._data;
   }
 
   /**
@@ -183,7 +185,7 @@ export class StepState {
    * @returns {StepState} The root StepState node
    */
   get root() {
-    return this._root
+    return this._root;
   }
 
   /**
@@ -194,7 +196,7 @@ export class StepState {
    * @returns {Array<StepState>} Array of child StepState nodes
    */
   get rows() {
-    return this._states
+    return this._states;
   }
 
   /**
@@ -205,7 +207,7 @@ export class StepState {
    * @returns {Array} Array of data values from all child states
    */
   get rowsData() {
-    return this._states.map((item) => item.data)
+    return this._states.map((item) => item.data);
   }
 
   /**
@@ -214,7 +216,7 @@ export class StepState {
    * @returns {Array} Array of data values from all child states
    */
   get statesData() {
-    return this._states.map((item) => item.data)
+    return this._states.map((item) => item.data);
   }
 
   /**
@@ -222,7 +224,7 @@ export class StepState {
    * @returns {number} The depth of this node
    */
   get depth() {
-    return this._depth
+    return this._depth;
   }
 
   /**
@@ -231,9 +233,9 @@ export class StepState {
    */
   get treeDepth() {
     if (this._states.length === 0) {
-      return 0 // this is a leaf node
+      return 0; // this is a leaf node
     }
-    return Math.max(...this._states.map((state) => state.treeDepth)) + 1
+    return Math.max(...this._states.map((state) => state.treeDepth)) + 1;
   }
 
   /**
@@ -241,7 +243,7 @@ export class StepState {
    * @returns {boolean} True if this node has no child states, false otherwise
    */
   get isLeaf() {
-    return this._states.length === 0
+    return this._states.length === 0;
   }
 
   /**
@@ -256,25 +258,25 @@ export class StepState {
   get isFirstLeaf() {
     // If this is not a leaf node, return false
     if (!this.isLeaf) {
-      return false
+      return false;
     }
 
     // Helper function to find leftmost leaf
     const findLeftmostLeaf = (state) => {
       if (state.isLeaf) {
-        return state
+        return state;
       }
-      return findLeftmostLeaf(state._states[0])
-    }
+      return findLeftmostLeaf(state._states[0]);
+    };
 
     // Find first  leaf by checking each branch from left
     for (let i = 0; i < this._root._states.length; i++) {
-      const leftmostLeaf = findLeftmostLeaf(this._root._states[i])
+      const leftmostLeaf = findLeftmostLeaf(this._root._states[i]);
       // Return true if this is that first  leaf
-      return leftmostLeaf.pathString === this.pathString
+      return leftmostLeaf.pathString === this.pathString;
     }
 
-    return false
+    return false;
   }
 
   /**
@@ -282,10 +284,10 @@ export class StepState {
    * @returns {boolean} True if there is a next state, false otherwise
    */
   hasNext() {
-    if (this._states.length === 0) return false
-    if (this._currentIndex < this._states.length - 1) return true
+    if (this._states.length === 0) return false;
+    if (this._currentIndex < this._states.length - 1) return true;
     if (this._currentIndex === this._states.length - 1) {
-      return this._states[this._currentIndex].hasNext()
+      return this._states[this._currentIndex].hasNext();
     }
   }
 
@@ -294,10 +296,10 @@ export class StepState {
    * @returns {boolean} True if there is a previous state, false otherwise
    */
   hasPrev() {
-    if (this._states.length === 0) return false
-    if (this._currentIndex > 0) return true
+    if (this._states.length === 0) return false;
+    if (this._currentIndex > 0) return true;
     if (this._currentIndex === 0) {
-      return this._states[this._currentIndex].hasPrev()
+      return this._states[this._currentIndex].hasPrev();
     }
   }
 
@@ -306,7 +308,7 @@ export class StepState {
    * @returns {boolean} True if this state has child states, false otherwise
    */
   hasSteps() {
-    return this._states.length > 0
+    return this._states.length > 0;
   }
 
   /**
@@ -314,13 +316,13 @@ export class StepState {
    * @returns {StepState|null} The next state or null if no next state exists
    */
   peekNext() {
-    if (!this.hasNext()) return null
+    if (!this.hasNext()) return null;
 
-    const savedIndex = this._currentIndex
-    const nextState = this.next()
-    this._currentIndex = savedIndex
+    const savedIndex = this._currentIndex;
+    const nextState = this.next();
+    this._currentIndex = savedIndex;
 
-    return nextState
+    return nextState;
   }
 
   /**
@@ -328,13 +330,13 @@ export class StepState {
    * @returns {StepState|null} The previous state or null if no previous state exists
    */
   peekPrev() {
-    if (!this.hasPrev()) return null
+    if (!this.hasPrev()) return null;
 
-    const savedIndex = this._currentIndex
-    const prevState = this.prev()
-    this._currentIndex = savedIndex
+    const savedIndex = this._currentIndex;
+    const prevState = this.prev();
+    this._currentIndex = savedIndex;
 
-    return prevState
+    return prevState;
   }
 
   /**
@@ -346,7 +348,7 @@ export class StepState {
    * @returns {StepState} A new state instance
    */
   _createNew(id, parent) {
-    return new StepState(id, parent)
+    return new StepState(id, parent);
   }
 
   /**
@@ -358,7 +360,7 @@ export class StepState {
    * @throws {Error} If a state with the given id already exists
    */
   push(id = null, data = null) {
-    return this.insert(id, -1, data)
+    return this.insert(id, -1, data);
   }
 
   /**
@@ -371,36 +373,36 @@ export class StepState {
    * @throws {Error} If a state with the given id already exists
    */
   insert(id = null, index = 0, data = null) {
-    const autoid = id === null ? this._states.length : id
+    const autoid = id === null ? this._states.length : id;
 
     // Check for existing state with same id and warn if found
     if (this._states.some((state) => state.id === autoid)) {
-      throw new Error(`State id already exists in at this node (id: "${autoid}")`)
+      throw new Error(`State id already exists in at this node (id: "${autoid}")`);
     }
 
     // Check for string in id
-    if (String(autoid).includes('/')) {
-      throw new Error(`State id cannot contain slashes (id: "${autoid}")`)
+    if (String(autoid).includes("/")) {
+      throw new Error(`State id cannot contain slashes (id: "${autoid}")`);
     }
 
-    const state = this._createNew(autoid, this)
+    const state = this._createNew(autoid, this);
     if (data !== null) {
-      state.data = data
+      state.data = data;
     }
 
     // Handle negative indices
     if (index < 0) {
-      index = this._states.length + index + 1
+      index = this._states.length + index + 1;
     }
 
     // Handle positive indices beyond list length
     if (index > this._states.length) {
-      index = this._states.length
+      index = this._states.length;
     }
 
-    this._states.splice(index, 0, state)
+    this._states.splice(index, 0, state);
 
-    return state
+    return state;
   }
 
   /**
@@ -409,8 +411,8 @@ export class StepState {
    * then recursively resets all child nodes.
    */
   reset() {
-    this._currentIndex = 0
-    this._states.forEach((state) => state.reset())
+    this._currentIndex = 0;
+    this._states.forEach((state) => state.reset());
   }
 
   /**
@@ -422,34 +424,36 @@ export class StepState {
    */
   goTo(path) {
     // Convert string path to array if needed
-    const pathArray = typeof path === 'string' ? path.split('/') : path
+    const pathArray = typeof path === "string" ? path.split("/") : path;
 
     // Reset the state machine
-    this.reset()
+    this.reset();
 
     // Start from root
-    let current = this
+    let current = this;
 
     // Navigate through the path
     for (const id of pathArray) {
       // Skip the root '/' id if it's in the path
-      if (id === '/') continue
+      if (id === "/") continue;
 
       // Find the child state with matching id, converting to string for comparison
-      const childState = current._states.find((state) => String(state.id) === String(id))
+      const childState = current._states.find((state) => String(state.id) === String(id));
       if (!childState) {
-        throw new Error(`Invalid path: ${path} (Could not find child with id "${id}" in node "${current.id}")`)
+        throw new Error(
+          `Invalid path: ${path} (Could not find child with id "${id}" in node "${current.id}")`,
+        );
       }
 
       // Update current index to point to this child
-      current._currentIndex = current._states.indexOf(childState)
-      current = childState
+      current._currentIndex = current._states.indexOf(childState);
+      current = childState;
     }
 
     // If we're at a non-leaf node, traverse to its leftmost leaf
     while (current._states.length > 0) {
-      current._currentIndex = 0
-      current = current._states[0]
+      current._currentIndex = 0;
+      current = current._states[0];
     }
   }
 
@@ -459,32 +463,32 @@ export class StepState {
    */
   next() {
     // Empty state has no next value
-    if (this._states.length === 0) return null
+    if (this._states.length === 0) return null;
 
     // Get current node
-    const current = this._states[this._currentIndex]
+    const current = this._states[this._currentIndex];
 
     // Try to get next value from current state's children
-    const nextInCurrent = current.next()
+    const nextInCurrent = current.next();
     if (nextInCurrent !== null) {
-      return nextInCurrent
+      return nextInCurrent;
     }
 
     // Move to next sibling state if available
-    this._currentIndex++
+    this._currentIndex++;
     if (this._currentIndex < this._states.length) {
       // When moving to a sibling, traverse to its leftmost leaf
-      let leaf = this._states[this._currentIndex]
+      let leaf = this._states[this._currentIndex];
       while (leaf._states.length > 0) {
-        leaf._currentIndex = 0
-        leaf = leaf._states[0]
+        leaf._currentIndex = 0;
+        leaf = leaf._states[0];
       }
-      return leaf
+      return leaf;
     }
 
     // End of sequence reached - stay at last state
-    this._currentIndex = this._states.length - 1
-    return null
+    this._currentIndex = this._states.length - 1;
+    return null;
   }
 
   /**
@@ -493,31 +497,31 @@ export class StepState {
    */
   prev() {
     // Empty state has no previous value
-    if (this._states.length === 0) return null
+    if (this._states.length === 0) return null;
 
     // Get current node
-    const current = this._states[this._currentIndex]
+    const current = this._states[this._currentIndex];
 
     // Try to get previous value from current state's children
-    const prevInCurrent = current.prev()
+    const prevInCurrent = current.prev();
     if (prevInCurrent !== null) {
-      return prevInCurrent
+      return prevInCurrent;
     }
 
     // Move to previous sibling
     if (this._currentIndex > 0) {
-      this._currentIndex--
+      this._currentIndex--;
       // When moving to a previous sibling, traverse to its rightmost leaf
-      let leaf = this._states[this._currentIndex]
+      let leaf = this._states[this._currentIndex];
       while (leaf._states.length > 0) {
-        leaf._currentIndex = leaf._states.length - 1
-        leaf = leaf._states[leaf._currentIndex]
+        leaf._currentIndex = leaf._states.length - 1;
+        leaf = leaf._states[leaf._currentIndex];
       }
-      return leaf
+      return leaf;
     }
 
     // No more previous states
-    return null
+    return null;
   }
 
   /**
@@ -527,12 +531,12 @@ export class StepState {
    */
   get leafNodes() {
     if (this._states.length === 0) {
-      return this.pathString
+      return this.pathString;
     }
 
     return this._states.reduce((leaves, state) => {
-      return leaves.concat(state.leafNodes)
-    }, [])
+      return leaves.concat(state.leafNodes);
+    }, []);
   }
 
   /**
@@ -541,7 +545,7 @@ export class StepState {
    * @returns {number} The count of leaf nodes
    */
   get countLeafNodes() {
-    return this.leafNodes.length
+    return this.leafNodes.length;
   }
 
   /**
@@ -550,10 +554,10 @@ export class StepState {
    * @returns {StepState|null} The found child node, or null if not found
    */
   getNode(identifier) {
-    if (typeof identifier === 'number') {
-      return this._states[identifier] || null
+    if (typeof identifier === "number") {
+      return this._states[identifier] || null;
     }
-    return this._states.find((state) => state.id === identifier) || null
+    return this._states.find((state) => state.id === identifier) || null;
   }
 
   /**
@@ -566,13 +570,13 @@ export class StepState {
    * @returns {Array} Array of ids representing the path from root to this node
    */
   get path() {
-    const path = []
-    let current = this
-    while (current && current.id !== '/') {
-      path.unshift(current.id)
-      current = current.parent
+    const path = [];
+    let current = this;
+    while (current && current.id !== "/") {
+      path.unshift(current.id);
+      current = current.parent;
     }
-    return path
+    return path;
   }
 
   /**
@@ -584,7 +588,7 @@ export class StepState {
    * @returns {string} Slash-separated string representing the path to this node
    */
   get pathString() {
-    return this.path.join('/')
+    return this.path.join("/");
   }
 
   /**
@@ -592,16 +596,16 @@ export class StepState {
    * @returns {Set<string>} Set of all unique paths in the tree
    */
   get existingPaths() {
-    const paths = new Set()
+    const paths = new Set();
     const collectPaths = (node) => {
       // Only add path if this is a leaf node (no children)
       if (node._states.length === 0 && node !== this._root) {
-        paths.add(node.pathString)
+        paths.add(node.pathString);
       }
-      node._states.forEach(collectPaths)
-    }
-    collectPaths(this)
-    return paths
+      node._states.forEach(collectPaths);
+    };
+    collectPaths(this);
+    return paths;
   }
 
   /**
@@ -609,38 +613,38 @@ export class StepState {
    * @returns {Array} Array of data objects, where each element is the complete data from a node along the path
    */
   get dataAlongPath() {
-    const dataArray = []
-    let current = this
+    const dataArray = [];
+    let current = this;
 
     // First collect data from root to current node
-    const ancestors = []
+    const ancestors = [];
     while (current.parent !== null) {
-      ancestors.unshift(current)
-      current = current.parent
+      ancestors.unshift(current);
+      current = current.parent;
     }
 
     // Add root node data if it exists and isn't '/' and isn't empty
-    if (current.id !== '/' && current.data && Object.keys(current.data).length > 0) {
-      dataArray.push(current.data)
+    if (current.id !== "/" && current.data && Object.keys(current.data).length > 0) {
+      dataArray.push(current.data);
     }
 
     // Add ancestor data
     ancestors.forEach((node) => {
       if (node.data && Object.keys(node.data).length > 0) {
-        dataArray.push(node.data)
+        dataArray.push(node.data);
       }
-    })
+    });
 
     // Now traverse down through selected children to the leaf
-    current = this
+    current = this;
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex]
+      current = current._states[current._currentIndex];
       if (current.data && Object.keys(current.data).length > 0) {
-        dataArray.push(current.data)
+        dataArray.push(current.data);
       }
     }
 
-    return dataArray
+    return dataArray;
   }
 
   /**
@@ -651,21 +655,21 @@ export class StepState {
    */
   setDataAtPath(path, data) {
     // Ensure data is an object (not null, undefined, or an array)
-    if (!data || typeof data !== 'object' || Array.isArray(data)) {
-      throw new Error('Data must be an object')
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("Data must be an object");
     }
 
-    const pathArray = typeof path === 'string' ? path.split('/') : path
-    let current = this
+    const pathArray = typeof path === "string" ? path.split("/") : path;
+    let current = this;
 
     for (const id of pathArray) {
-      current = current.getNode(id)
+      current = current.getNode(id);
       if (!current) {
-        throw new Error(`Invalid path: ${path}`)
+        throw new Error(`Invalid path: ${path}`);
       }
     }
 
-    current.data = data
+    current.data = data;
   }
 
   /**
@@ -673,16 +677,16 @@ export class StepState {
    * @returns {Array} Array of ids representing the current path
    */
   get currentPath() {
-    const path = []
-    let current = this._root
+    const path = [];
+    let current = this._root;
 
     // Build path from root to current leaf node
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex]
-      path.push(current.id)
+      current = current._states[current._currentIndex];
+      path.push(current.id);
     }
 
-    return path
+    return path;
   }
 
   /**
@@ -690,7 +694,7 @@ export class StepState {
    * @returns {string} String representation of the current path
    */
   get currentPathString() {
-    return this.currentPath.join('/')
+    return this.currentPath.join("/");
   }
 
   /**
@@ -698,14 +702,14 @@ export class StepState {
    * @returns {*} The data from the current leaf node
    */
   get currentData() {
-    let current = this._root
+    let current = this._root;
 
     // Traverse to current leaf node
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex]
+      current = current._states[current._currentIndex];
     }
 
-    return current.data
+    return current.data;
   }
 
   /**
@@ -713,27 +717,33 @@ export class StepState {
    * @returns {string} Tree diagram
    */
   get treeDiagram() {
-    const buildDiagram = (node, prefix = '', isLast = true) => {
+    const buildDiagram = (node, prefix = "", isLast = true) => {
       // Create the line for current node
-      const line = prefix + (isLast ? '└── ' : '├── ') + node.id + '\n'
+      const line = prefix + (isLast ? "└── " : "├── ") + node.id + "\n";
 
       // Calculate new prefix for children
-      const childPrefix = prefix + (isLast ? '    ' : '│   ')
+      const childPrefix = prefix + (isLast ? "    " : "│   ");
 
       // Recursively build diagram for children
       const childLines = node.states
         .map((state, index) => buildDiagram(state, childPrefix, index === node.length - 1))
-        .join('')
+        .join("");
 
-      return line + childLines
-    }
+      return line + childLines;
+    };
 
     // Special case for root node
-    if (this.id === '/') {
-      return '/' + '\n' + this.states.map((state, index) => buildDiagram(state, '', index === this.length - 1)).join('')
+    if (this.id === "/") {
+      return (
+        "/" +
+        "\n" +
+        this.states
+          .map((state, index) => buildDiagram(state, "", index === this.length - 1))
+          .join("")
+      );
     }
 
-    return buildDiagram(this)
+    return buildDiagram(this);
   }
 
   /**
@@ -742,8 +752,8 @@ export class StepState {
    * also clears the data from the current node
    */
   clear() {
-    this.clearSubTree()
-    this.clearData()
+    this.clearSubTree();
+    this.clearData();
   }
 
   /**
@@ -751,7 +761,7 @@ export class StepState {
    * Does not affect child nodes or the structure of the state tree
    */
   clearData() {
-    this._data = {}
+    this._data = {};
   }
 
   /**
@@ -762,13 +772,13 @@ export class StepState {
   clearSubTree() {
     // Clear all child states recursively
     this._states.forEach((state) => {
-      state.clear()
-    })
+      state.clear();
+    });
 
     // Reset all internal properties
-    this._states = []
-    this._currentIndex = 0
+    this._states = [];
+    this._currentIndex = 0;
   }
 }
 
-export default StepState
+export default StepState;

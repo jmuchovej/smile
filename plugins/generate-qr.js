@@ -1,12 +1,12 @@
-import QRCode from 'qrcode-svg'
+import QRCode from "qrcode-svg";
 
 export default function generateQRCode() {
-  let config
+  let config;
   return {
-    name: 'smile-generate-qr', // name of the plugin
+    name: "smile-generate-qr", // name of the plugin
     configResolved(resolvedConfig) {
       // store the resolved config
-      config = resolvedConfig
+      config = resolvedConfig;
 
       // create the QR code
       var qrcode = new QRCode({
@@ -14,16 +14,16 @@ export default function generateQRCode() {
         padding: 4,
         width: 256,
         height: 256,
-        color: '#000000',
-        background: '#ffffff',
+        color: "#000000",
+        background: "#ffffff",
         xmlDeclaration: false,
-        ecl: 'M',
-      })
-      let qrpath = `/qr.svg`
+        ecl: "M",
+      });
+      let qrpath = `/qr.svg`;
       qrcode.save(`./public${qrpath}`, function (error) {
-        if (error) throw error
+        if (error) throw error;
         //console.log('saved qr code to ./public/qr.svg')
-      })
+      });
     },
-  }
+  };
 }

@@ -1,29 +1,30 @@
 <script setup>
-import { computed } from 'vue'
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  import { computed } from "vue";
 
-const cond = api.getConditionByName('instructionsVersion')
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
 
-// computed property based on condition in data
-const instText = computed(() => {
-  // how do you know that instructions will exist because it
-  // starts off empty?
-  if (cond === '1') {
-    return 'instructions version 1'
-  }
-  if (cond === '2') {
-    return 'instructions version 2'
-  }
-  if (cond === '3') {
-    return 'instructions version 3'
-  }
-  return 'no condition set'
-})
+  const cond = api.getConditionByName("instructionsVersion");
 
-function finish(goto) {
-  api.goNextView()
-}
+  // computed property based on condition in data
+  const instText = computed(() => {
+    // how do you know that instructions will exist because it
+    // starts off empty?
+    if (cond === "1") {
+      return "instructions version 1";
+    }
+    if (cond === "2") {
+      return "instructions version 2";
+    }
+    if (cond === "3") {
+      return "instructions version 3";
+    }
+    return "no condition set";
+  });
+
+  function finish(goto) {
+    api.goNextView();
+  }
 </script>
 
 <template>

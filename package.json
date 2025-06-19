@@ -1,20 +1,13 @@
 {
   "name": "smile",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
   "author": "Todd Gureckis <gureckis@gmail.com>",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://www.opensource.org/licenses/mit-license.php"
-    }
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/nyuccl/smile.git"
   },
-  "github": "https://github.com/nyuccl/smile",
-  "license": "MIT",
   "type": "module",
   "scripts": {
     "test": "vitest",
@@ -109,5 +102,12 @@
     "vite-plugin-inspect": "^10.1.0",
     "vitepress": "^1.6.3",
     "vitest": "^3.0.6"
-  }
+  },
+  "github": "https://github.com/nyuccl/smile",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ]
 }

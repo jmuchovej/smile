@@ -1,10 +1,10 @@
 export default function preLoaderPlugin() {
-  const loaderMatch = /\.vue\?preload$/
+  const loaderMatch = /\.vue\?preload$/;
   return {
-    name: 'smile-preloader', // name of the plugin
+    name: "smile-preloader", // name of the plugin
     async transform(src, id) {
       if (loaderMatch.test(id)) {
-        console.log('source', src)
+        console.log("source", src);
         // const mod_name = id.replace(/\?preload$/, '')
         // try {
         //   const module = await import(mod_name)
@@ -15,7 +15,7 @@ export default function preLoaderPlugin() {
         //   console.error(`Error importing ${mod_name}:`, error)
         // }
       }
-      return null
+      return null;
     },
-  }
+  };
 }

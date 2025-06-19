@@ -1,3 +1,4 @@
+import _ from "lodash";
 /**
  * @module useTimeline
  * @description Timeline management composable for handling view navigation in the SMILE framework.
@@ -13,11 +14,11 @@
  * - Managing query parameters between routes
  * - Providing navigation utilities for views
  */
-import { useRoute, useRouter } from 'vue-router'
-import _ from 'lodash'
-import useSmileStore from '@/core/stores/smilestore'
-import useLog from '@/core/stores/log'
-import { pinia } from '@/core/stores/createPinia'
+import { useRoute, useRouter } from "vue-router";
+
+import { pinia } from "@/core/stores/createPinia";
+import useLog from "@/core/stores/log";
+import useSmileStore from "@/core/stores/smilestore";
 
 /**
  * Timeline management composable for handling view navigation
@@ -30,10 +31,10 @@ import { pinia } from '@/core/stores/createPinia'
  * The timeline ensures proper view sequencing and navigation guard handling.
  */
 export default function useTimeline() {
-  const smilestore = useSmileStore(pinia)
-  const route = useRoute()
-  const router = useRouter()
-  const log = useLog()
+  const smilestore = useSmileStore(pinia);
+  const route = useRoute();
+  const router = useRouter();
+  const log = useLog();
 
   /**
    * Looks up the next route in the navigation sequence for a given route name
@@ -42,24 +43,24 @@ export default function useTimeline() {
    */
   const lookupNext = (routeName) => {
     // Get all routes from the router
-    const routes = router.getRoutes()
+    const routes = router.getRoutes();
 
     // Find the specified route
-    const currentRoute = routes.find((r) => r.name === routeName)
-    if (!currentRoute) return null
+    const currentRoute = routes.find((r) => r.name === routeName);
+    if (!currentRoute) return null;
 
     // If the route has a next property, find that route
     if (currentRoute.meta?.next) {
-      const nextRoute = routes.find((r) => r.name === currentRoute.meta.next)
+      const nextRoute = routes.find((r) => r.name === currentRoute.meta.next);
       if (nextRoute) {
         return {
           name: nextRoute.name,
           query: route.query,
-        }
+        };
       }
     }
-    return null
-  }
+    return null;
+  };
 
   /**
    * Gets the next view in the navigation sequence based on current route metadata
@@ -67,10 +68,10 @@ export default function useTimeline() {
    */
   const nextView = () => {
     if (route.meta.next) {
-      return { name: route.meta.next, query: route.query }
+      return { name: route.meta.next, query: route.query };
     }
-    return null
-  }
+    return null;
+  };
 
   /**
    * Gets the previous view in the navigation sequence based on current route metadata
@@ -78,10 +79,10 @@ export default function useTimeline() {
    */
   const prevView = () => {
     if (route.meta.prev) {
-      return { name: route.meta.prev, query: route.query }
+      return { name: route.meta.prev, query: route.query };
     }
-    return null
-  }
+    return null;
+  };
 
   /**
    * Navigates to a specific view with optional force parameter
@@ -95,13 +96,13 @@ export default function useTimeline() {
     // directly to the router.push() function
     // although there's some plan about it in future
     if (force) {
-      smilestore.browserEphemeral.forceNavigate = true
-      await router.push({ name: view })
-      smilestore.browserEphemeral.forceNavigate = false
+      smilestore.browserEphemeral.forceNavigate = true;
+      await router.push({ name: view });
+      smilestore.browserEphemeral.forceNavigate = false;
     } else {
-      await router.push({ name: view })
+      await router.push({ name: view });
     }
-  }
+  };
 
   /**
    * Internal navigation handler that manages state updates and data saving
@@ -110,32 +111,32 @@ export default function useTimeline() {
    */
   const navigateTo = (goto) => {
     // sets the current page as done
-    smilestore.dev.currentViewDone = true
+    smilestore.dev.currentViewDone = true;
 
     if (smilestore.config.autoSave) {
-      log.log('TIMELINE STEPPER: Attempting auto saving on navigateTo() navigation')
-      smilestore.saveData() // automatically saves data
+      log.log("TIMELINE STEPPER: Attempting auto saving on navigateTo() navigation");
+      smilestore.saveData(); // automatically saves data
     }
-    if (goto) router.push(goto)
-  }
+    if (goto) router.push(goto);
+  };
 
   /**
    * Navigates to the next view in sequence, optionally executing a callback first
    * @param {Function} [fn] - Optional callback to execute before navigation
    */
   const goNextView = (fn) => {
-    if (fn) fn()
-    navigateTo(nextView())
-  }
+    if (fn) fn();
+    navigateTo(nextView());
+  };
 
   /**
    * Navigates to the previous view in sequence, optionally executing a callback first
    * @param {Function} [fn] - Optional callback to execute before navigation
    */
   const goPrevView = (fn) => {
-    if (fn) fn()
-    navigateTo(prevView())
-  }
+    if (fn) fn();
+    navigateTo(prevView());
+  };
 
-  return { goNextView, goPrevView, goToView, lookupNext, nextView, prevView }
+  return { goNextView, goPrevView, goToView, lookupNext, nextView, prevView };
 }

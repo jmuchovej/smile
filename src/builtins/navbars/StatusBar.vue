@@ -1,69 +1,79 @@
 <script setup>
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import useSmileStore from '@/core/stores/smilestore'
-import appconfig from '@/core/config'
-import useAPI from '@/core/composables/useAPI'
-// load sub-components used in this compomnents
-import WithdrawFormModal from '@/builtins/withdraw/WithdrawFormModal.vue'
-import InformedConsentModal from '@/builtins/simple_consent/InformedConsentModal.vue'
-import ReportIssueModal from '@/builtins/report_issue/ReportIssueModal.vue'
+  import { ref } from "vue";
+  import { useRouter, useRoute } from "vue-router";
 
-const router = useRouter()
-const smilestore = useSmileStore() // get the global store
-const api = useAPI() // get the api
-const withdrawform = ref(null) // this uses the ref="withdrawform" in the template
-const email = ref('')
+  import ReportIssueModal from "@/builtins/report_issue/ReportIssueModal.vue";
+  import InformedConsentModal from "@/builtins/simple_consent/InformedConsentModal.vue";
+  // load sub-components used in this compomnents
+  import WithdrawFormModal from "@/builtins/withdraw/WithdrawFormModal.vue";
+  import useAPI from "@/core/composables/useAPI";
+  import appconfig from "@/core/config";
+  import useSmileStore from "@/core/stores/smilestore";
 
-// IF OTHER SERVICES PROVIDE EASY EMAIL ADDRESSES, ADD THEM HERE
-function prefill_email() {
-  let emailval = ''
-  if (smilestore.data.recruitmentService === 'prolific') {
-    emailval = `${smilestore.private.recruitmentInfo.prolific_id}@email.prolific.co`
+  const router = useRouter();
+  const smilestore = useSmileStore(); // get the global store
+  const api = useAPI(); // get the api
+  const withdrawform = ref(null); // this uses the ref="withdrawform" in the template
+  const email = ref("");
+
+  // IF OTHER SERVICES PROVIDE EASY EMAIL ADDRESSES, ADD THEM HERE
+  function prefill_email() {
+    let emailval = "";
+    if (smilestore.data.recruitmentService === "prolific") {
+      emailval = `${smilestore.private.recruitmentInfo.prolific_id}@email.prolific.co`;
+    }
+    return emailval;
   }
-  return emailval
-}
-email.value = prefill_email()
+  email.value = prefill_email();
 
-/* these just toggle interface elements so are state local to the component */
-const showconsentmodal = ref(false) // reactive
-function toggleConsent() {
-  showconsentmodal.value = !showconsentmodal.value // have to use .value in <script> when using ref()
-}
+  /* these just toggle interface elements so are state local to the component */
+  const showconsentmodal = ref(false); // reactive
+  function toggleConsent() {
+    showconsentmodal.value = !showconsentmodal.value; // have to use .value in <script> when using ref()
+  }
 
-const showwithdrawmodal = ref(false) // reactive
-function toggleWithdraw() {
-  showwithdrawmodal.value = !showwithdrawmodal.value // have to use .value in <script> when using ref()
-  email.value = prefill_email() // update the value
-}
+  const showwithdrawmodal = ref(false); // reactive
+  function toggleWithdraw() {
+    showwithdrawmodal.value = !showwithdrawmodal.value; // have to use .value in <script> when using ref()
+    email.value = prefill_email(); // update the value
+  }
 
-const showreportissuemodal = ref(false) // reactive
-function toggleReport() {
-  showreportissuemodal.value = !showreportissuemodal.value // have to use .value in <script> when using ref()
-}
+  const showreportissuemodal = ref(false); // reactive
+  function toggleReport() {
+    showreportissuemodal.value = !showreportissuemodal.value; // have to use .value in <script> when using ref()
+  }
 
-function submitWithdraw() {
-  // submit the withdraw form and jump to the thanks
-  toggleWithdraw()
-  router.push('withdraw') // should use
-}
+  function submitWithdraw() {
+    // submit the withdraw form and jump to the thanks
+    toggleWithdraw();
+    router.push("withdraw"); // should use
+  }
 </script>
 
 <template>
   <div class="infobar" role="navigation" aria-label="main navigation">
     <div class="infobar-brand">
-      <a class="infobar-logo" :href="appconfig.labURL" target="_new" v-if="!appconfig.anonymousMode">
+      <a
+        class="infobar-logo"
+        :href="appconfig.labURL"
+        target="_new"
+        v-if="!appconfig.anonymousMode">
         <img :src="api.getStaticUrl(appconfig.brandLogoFn)" width="90" />
       </a>
       <div class="infobar-item">
         <p class="is-size-7 studyinfo pt-2">
-          Study: {{ smilestore.config.codeName }}<br />Version: {{ smilestore.config.github.lastCommitHash
+          Study: {{ smilestore.config.codeName }}<br />Version:
+          {{ smilestore.config.github.lastCommitHash
           }}{{
-            appconfig.mode === 'testing' || appconfig.mode === 'development' || appconfig.mode === 'presentation'
-              ? '-' + appconfig.mode
-              : ''
+            appconfig.mode === "testing" ||
+            appconfig.mode === "development" ||
+            appconfig.mode === "presentation"
+              ? "-" + appconfig.mode
+              : ""
           }}<br />
-          <template v-if="smilestore.getShortId != 'N/A'"> User ID: {{ smilestore.getShortId }} </template>
+          <template v-if="smilestore.getShortId != 'N/A'">
+            User ID: {{ smilestore.getShortId }}
+          </template>
         </p>
       </div>
     </div>
@@ -74,18 +84,19 @@ function submitWithdraw() {
             <button
               class="button is-info is-small is-light"
               v-if="api.store.browserPersisted.consented"
-              @click="toggleConsent()"
-            >
+              @click="toggleConsent()">
               <FAIcon icon="magnifying-glass" />&nbsp;&nbsp;View consent
             </button>
             <button
               class="button is-danger is-small is-light"
               v-if="api.store.browserPersisted.consented && !api.store.browserPersisted.withdrawn"
-              @click="toggleWithdraw()"
-            >
+              @click="toggleWithdraw()">
               <FAIcon icon="circle-xmark" />&nbsp;&nbsp;Withdraw
             </button>
-            <button class="button is-warning is-small is-light" @click="toggleReport()" v-if="false">
+            <button
+              class="button is-warning is-small is-light"
+              @click="toggleReport()"
+              v-if="false">
               <FAIcon icon="hand" />&nbsp;&nbsp;Report issue
             </button>
           </div>
@@ -114,8 +125,7 @@ function submitWithdraw() {
           :prefill-email="email"
           ref="withdrawform"
           @toggle-withdraw="toggleWithdraw()"
-          @submit-withdraw="submitWithdraw()"
-        />
+          @submit-withdraw="submitWithdraw()" />
       </div>
     </div>
     <button class="modal-close is-large" aria-label="close" @click="toggleWithdraw()"></button>
@@ -134,84 +144,84 @@ function submitWithdraw() {
 </template>
 
 <style scoped>
-.infobar {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: stretch;
-  position: relative;
-}
-
-.infobar-brand {
-  align-items: stretch;
-  display: flex;
-  flex-shrink: 0;
-  min-height: var(--bulma-navbar-height);
-}
-
-.infobar {
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.infobar-logo {
-  align-items: center;
-  padding-top: 12px;
-}
-
-.infobar-item {
-  align-items: center;
-  display: flex;
-  padding-top: 3px;
-}
-
-.infobar-end {
-  justify-content: flex-end;
-  margin-inline-start: auto;
-  display: flex;
-  align-items: stretch;
-}
-
-.infobar-menu {
-  flex-grow: 1;
-  flex-shrink: 0;
-  align-items: stretch;
-  display: flex;
-  z-index: 999;
-}
-
-/* scoped css for this component */
-.modaltext {
-  background-color: #fff;
-  padding: 30px;
-}
-
-.navbar {
-  z-index: 10;
-  background-color: var(--status-bar-bg-color);
-  color: var(--status-bar-text-color);
-}
-
-.modal-content {
-  width: 80%;
-}
-
-.studyinfo {
-  text-align: left;
-  padding-left: 10px;
-  color: var(--status-bar-text-color);
-}
-
-.navbar-start {
-  margin-right: 10px;
-}
-
-.navbar-end {
-  margin-left: auto;
-}
-
-@media screen and (max-width: 560px) {
-  .studyinfo {
-    display: none;
+  .infobar {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: stretch;
+    position: relative;
   }
-}
+
+  .infobar-brand {
+    align-items: stretch;
+    display: flex;
+    flex-shrink: 0;
+    min-height: var(--bulma-navbar-height);
+  }
+
+  .infobar {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .infobar-logo {
+    align-items: center;
+    padding-top: 12px;
+  }
+
+  .infobar-item {
+    align-items: center;
+    display: flex;
+    padding-top: 3px;
+  }
+
+  .infobar-end {
+    justify-content: flex-end;
+    margin-inline-start: auto;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .infobar-menu {
+    flex-grow: 1;
+    flex-shrink: 0;
+    align-items: stretch;
+    display: flex;
+    z-index: 999;
+  }
+
+  /* scoped css for this component */
+  .modaltext {
+    background-color: #fff;
+    padding: 30px;
+  }
+
+  .navbar {
+    z-index: 10;
+    background-color: var(--status-bar-bg-color);
+    color: var(--status-bar-text-color);
+  }
+
+  .modal-content {
+    width: 80%;
+  }
+
+  .studyinfo {
+    text-align: left;
+    padding-left: 10px;
+    color: var(--status-bar-text-color);
+  }
+
+  .navbar-start {
+    margin-right: 10px;
+  }
+
+  .navbar-end {
+    margin-left: auto;
+  }
+
+  @media screen and (max-width: 560px) {
+    .studyinfo {
+      display: none;
+    }
+  }
 </style>

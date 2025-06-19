@@ -1,9 +1,9 @@
 <script setup>
-// import and initalize smile API
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+  // import and initialize smile API
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
 
-api.saveData(true) // force a data save
+  api.saveData(true); // force a data save
 </script>
 
 <template>
@@ -15,8 +15,8 @@ api.saveData(true) // force a data save
           <p>Notice about withdraw from our Prolific study</p>
         </div>
         <div class="message-body has-text-left">
-          You have indicated that you withdrew from the study. Please return the task and we will contact you for
-          partial payment if you are eligible.
+          You have indicated that you withdrew from the study. Please return the task and we will
+          contact you for partial payment if you are eligible.
         </div>
       </article>
     </div>
@@ -28,8 +28,8 @@ api.saveData(true) // force a data save
           <p>Notice about withdraw from our CloudResearch study</p>
         </div>
         <div class="message-body has-text-left">
-          You have indicated that you withdrew from the study. Please return the task and we will contact you for
-          partial payment if you are eligible.
+          You have indicated that you withdrew from the study. Please return the task and we will
+          contact you for partial payment if you are eligible.
         </div>
       </article>
     </div>
@@ -41,8 +41,8 @@ api.saveData(true) // force a data save
           <p>Notice about withdraw from our Amazon Mechanical Turk study</p>
         </div>
         <div class="message-body has-text-left">
-          You have indicated that you withdrew from the study. Please return the task and we will contact you for
-          partial payment if you are eligible.
+          You have indicated that you withdrew from the study. Please return the task and we will
+          contact you for partial payment if you are eligible.
         </div>
       </article>
     </div>
@@ -54,8 +54,8 @@ api.saveData(true) // force a data save
           <p>Notice about withdraw from our study</p>
         </div>
         <div class="message-body has-text-left">
-          You have indicated that you withdrew from the study. Please return the task and we will contact you for
-          partial payment if you are eligible.
+          You have indicated that you withdrew from the study. Please return the task and we will
+          contact you for partial payment if you are eligible.
         </div>
       </article>
     </div>
@@ -67,8 +67,8 @@ api.saveData(true) // force a data save
           <p>Notice about withdraw from our web study</p>
         </div>
         <div class="message-body has-text-left">
-          You have indicated that you withdrew from the study. Please return the task and we will contact you for
-          partial payment if you are eligible.
+          You have indicated that you withdrew from the study. Please return the task and we will
+          contact you for partial payment if you are eligible.
         </div>
       </article>
     </div>
@@ -76,8 +76,8 @@ api.saveData(true) // force a data save
 </template>
 
 <style scoped>
-.withdraw {
-  width: 60%;
-  margin: auto;
-}
+  .withdraw {
+    width: 60%;
+    margin: auto;
+  }
 </style>

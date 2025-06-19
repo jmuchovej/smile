@@ -1,46 +1,46 @@
-import { computed, ref } from 'vue'
-import { vi } from 'vitest'
+import { vi } from "vitest";
+import { computed, ref } from "vue";
 
 // Debug flag for controlling console output in tests
-export const DEBUG = false
+export const DEBUG = false;
 
 // Mock Firebase-related methods
-vi.mock('@/core/stores/firestore-db', () => {
-  if (DEBUG) console.log('Mocking firestore-db...')
+vi.mock("@/core/stores/firestore-db", () => {
+  if (DEBUG) console.log("Mocking firestore-db...");
   return {
-    createDoc: vi.fn().mockResolvedValue({ id: 'test-doc-id' }),
-    createPrivateDoc: vi.fn().mockResolvedValue({ id: 'test-private-doc-id' }),
+    createDoc: vi.fn().mockResolvedValue({ id: "test-doc-id" }),
+    createPrivateDoc: vi.fn().mockResolvedValue({ id: "test-private-doc-id" }),
     updateSubjectDataRecord: vi.fn().mockResolvedValue(true),
     updatePrivateSubjectDataRecord: vi.fn().mockResolvedValue(true),
-    loadDoc: vi.fn().mockResolvedValue({ data: () => ({ test: 'data' }) }),
+    loadDoc: vi.fn().mockResolvedValue({ data: () => ({ test: "data" }) }),
     fsnow: vi.fn().mockReturnValue(new Date().toISOString()),
-  }
-})
+  };
+});
 
 // Mock log store
-vi.mock('@/core/stores/log', () => {
-  if (DEBUG) console.log('Mocking log store...')
+vi.mock("@/core/stores/log", () => {
+  if (DEBUG) console.log("Mocking log store...");
   const mockLogFn =
     (type) =>
     (...args) => {
       // Always call the appropriate console method
       switch (type) {
-        case 'error':
+        case "error":
           if (DEBUG) {
-            console.error(...args)
+            console.error(...args);
           }
-          break
-        case 'warn':
+          break;
+        case "warn":
           if (DEBUG) {
-            console.warn(...args)
+            console.warn(...args);
           }
-          break
+          break;
         default:
           if (DEBUG) {
-            console.log(`[${type}]`, ...args)
+            console.log(`[${type}]`, ...args);
           }
       }
-    }
+    };
 
   return {
     default: vi.fn().mockReturnValue({
@@ -48,36 +48,36 @@ vi.mock('@/core/stores/log', () => {
       page_history: [],
       addToHistory: vi.fn(),
       clearPageHistory: vi.fn(),
-      log: vi.fn(mockLogFn('log')),
-      debug: vi.fn(mockLogFn('debug')),
-      warn: vi.fn(mockLogFn('warn')),
-      error: vi.fn(mockLogFn('error')),
-      success: vi.fn(mockLogFn('success')),
+      log: vi.fn(mockLogFn("log")),
+      debug: vi.fn(mockLogFn("debug")),
+      warn: vi.fn(mockLogFn("warn")),
+      error: vi.fn(mockLogFn("error")),
+      success: vi.fn(mockLogFn("success")),
     }),
-  }
-})
+  };
+});
 
 // Mock axios for getBrowserFingerprint
-vi.mock('axios', () => {
-  if (DEBUG) console.log('Mocking axios...')
+vi.mock("axios", () => {
+  if (DEBUG) console.log("Mocking axios...");
   return {
     default: {
-      get: vi.fn().mockResolvedValue({ data: { ip: '127.0.0.1' } }),
+      get: vi.fn().mockResolvedValue({ data: { ip: "127.0.0.1" } }),
     },
-  }
-})
+  };
+});
 
 // Mock randomization functions
-vi.mock('@/core/utils/randomization', () => {
-  if (DEBUG) console.log('Mocking randomization...')
+vi.mock("@/core/utils/randomization", () => {
+  if (DEBUG) console.log("Mocking randomization...");
   return {
     randomInt: vi.fn(),
     shuffle: vi.fn(),
     sampleWithReplacement: vi.fn((arr) => arr[0]),
     sampleWithoutReplacement: vi.fn(),
     fakerDistributions: {},
-  }
-})
+  };
+});
 
 // Mock meta.env
 // vi.mock('@/core/config', () => {
@@ -112,23 +112,23 @@ export function setupBrowserEnvironment() {
   // })
 
   // Mock window.location
-  Object.defineProperty(window, 'location', {
+  Object.defineProperty(window, "location", {
     value: {
-      href: 'http://localhost:3000',
-      search: '',
-      pathname: '/',
-      hash: '',
+      href: "http://localhost:3000",
+      search: "",
+      pathname: "/",
+      hash: "",
     },
     writable: true,
-  })
+  });
 
   // Mock import.meta.env
   import.meta.env = {
-    VITE_DEPLOY_BASE_PATH: '/test/',
-  }
+    VITE_DEPLOY_BASE_PATH: "/test/",
+  };
 
   // Mock import.meta.url
-  import.meta.url = 'http://localhost:3000/src/core/composables/useAPI.js'
+  import.meta.url = "http://localhost:3000/src/core/composables/useAPI.js";
 }
 
 // Export mock implementations for direct access if needed

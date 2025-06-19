@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-const text = ref('')
+  import { ref } from "vue";
+  const text = ref("");
 </script>
 
 <template>
@@ -9,13 +9,13 @@ const text = ref('')
 </template>
 
 <style scoped>
-.bulma-input {
-  font-weight: bold;
-  color: black;
-  background-color: #fff;
-}
+  .bulma-input {
+    font-weight: bold;
+    color: black;
+    background-color: #fff;
+  }
 
-::placeholder {
-  color: #d1d1d1;
-}
+  ::placeholder {
+    color: #d1d1d1;
+  }
 </style>

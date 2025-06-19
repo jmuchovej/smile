@@ -1,81 +1,85 @@
 <script setup>
-//import { useTimeAgo } from '@vueuse/core'
-import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+  //import { useTimeAgo } from '@vueuse/core'
+  import { computed, ref, onMounted, onBeforeUnmount, watch } from "vue";
 
-import SmileAPI from '@/core/composables/useAPI'
-const api = SmileAPI()
+  import SmileAPI from "@/core/composables/useAPI";
+  const api = SmileAPI();
 
-import useSmileStore from '@/core/stores/smilestore'
-const smilestore = useSmileStore()
+  import useSmileStore from "@/core/stores/smilestore";
+  const smilestore = useSmileStore();
 
-var timer = ref(null)
+  var timer = ref(null);
 
-const firebase_url = computed(() => {
-  const mode = api.config.mode == 'development' ? 'testing' : 'real'
+  const firebase_url = computed(() => {
+    const mode = api.config.mode == "development" ? "testing" : "real";
 
-  return `https://console.firebase.google.com/u/0/project/${api.config.firebaseConfig.projectId}/firestore/data/~2F${mode}~2F${api.config.projectRef}~2Fdata~2F${api.store.browserPersisted.docRef}`
-})
+    return `https://console.firebase.google.com/u/0/project/${api.config.firebaseConfig.projectId}/firestore/data/~2F${mode}~2F${api.config.projectRef}~2Fdata~2F${api.store.browserPersisted.docRef}`;
+  });
 
-function open_firebase_console(url) {
-  window.open(url, '_new')
-}
-
-const sync_state = computed(() => {
-  if (api.store.browserEphemeral.dbChanges && api.store.browserEphemeral.dbConnected) {
-    return 'is-warning is-completed'
-  } else if (!api.store.browserEphemeral.dbChanges && api.store.browserEphemeral.dbConnected) {
-    return 'is-success is-completed'
-  } else {
-    return ''
+  function open_firebase_console(url) {
+    window.open(url, "_new");
   }
-})
 
-const stopTimer = () => {
-  clearInterval(timer.value)
-  timer.value = null
-}
-
-const startTimer = () => {
-  timer.value = setInterval(() => {
-    //api.debug("updating timer", api.store.dev.showConsoleBar)
-    if (!api.store.browserEphemeral.dbConnected) {
-      last_write_time_string.value = `Never happened`
+  const sync_state = computed(() => {
+    if (api.store.browserEphemeral.dbChanges && api.store.browserEphemeral.dbConnected) {
+      return "is-warning is-completed";
+    } else if (!api.store.browserEphemeral.dbChanges && api.store.browserEphemeral.dbConnected) {
+      return "is-success is-completed";
     } else {
-      var time = ((Date.now() - api.store.browserPersisted.lastWrite) / 1000).toFixed(1)
-      if (time < 60) {
-        last_write_time_string.value = `${time} secs ago`
-      } else if (time < 180) {
-        time = (time / 60).toFixed(2)
-        last_write_time_string.value = `${time} mins ago`
-      } else if (time < 60 * 10) {
-        // say, 10 mins
-        last_write_time_string.value = `a few mins ago`
-      } else {
-        last_write_time_string.value = `a long time ago`
-      }
+      return "";
     }
-  }, 500)
-}
-const last_write_time_string = ref('') // default
+  });
 
-onMounted(() => {
-  startTimer()
-})
+  const stopTimer = () => {
+    clearInterval(timer.value);
+    timer.value = null;
+  };
 
-onBeforeUnmount(() => {
-  stopTimer()
-})
+  const startTimer = () => {
+    timer.value = setInterval(() => {
+      //api.debug("updating timer", api.store.dev.showConsoleBar)
+      if (!api.store.browserEphemeral.dbConnected) {
+        last_write_time_string.value = `Never happened`;
+      } else {
+        var time = ((Date.now() - api.store.browserPersisted.lastWrite) / 1000).toFixed(1);
+        if (time < 60) {
+          last_write_time_string.value = `${time} secs ago`;
+        } else if (time < 180) {
+          time = (time / 60).toFixed(2);
+          last_write_time_string.value = `${time} mins ago`;
+        } else if (time < 60 * 10) {
+          // say, 10 mins
+          last_write_time_string.value = `a few mins ago`;
+        } else {
+          last_write_time_string.value = `a long time ago`;
+        }
+      }
+    }, 500);
+  };
+  const last_write_time_string = ref(""); // default
 
-const showServiceSelect = ref(false)
+  onMounted(() => {
+    startTimer();
+  });
+
+  onBeforeUnmount(() => {
+    stopTimer();
+  });
+
+  const showServiceSelect = ref(false);
 </script>
 <template>
   <!-- content of panel here -->
   <div class="database-info-sidebar-panel">
     <div class="steps is-hidden-small">
-      <div class="step-item" :class="{ 'is-success is-completed': api.store.browserPersisted.knownUser }">
+      <div
+        class="step-item"
+        :class="{ 'is-success is-completed': api.store.browserPersisted.knownUser }">
         <div class="step-marker" v-if="!api.store.browserPersisted.knownUser">1</div>
         <div class="step-marker" v-else><FAIcon icon="fa-solid fa-check" /></div>
-        <div class="step-details" :class="{ 'is-success is-completed': api.store.browserPersisted.knownUser }">
+        <div
+          class="step-details"
+          :class="{ 'is-success is-completed': api.store.browserPersisted.knownUser }">
           <p class="step-title is-size-7">
             <FAIcon icon="fa-solid fa-user-plus" v-if="api.store.browserPersisted.knownUser" />
             <FAIcon icon="fa-solid fa-user-minus" v-else />
@@ -97,11 +101,12 @@ const showServiceSelect = ref(false)
       <div
         class="step-item"
         :class="{ 'is-success is-completed': api.store.browserEphemeral.dbConnected }"
-        @click="api.connectDB()"
-      >
+        @click="api.connectDB()">
         <div class="step-marker" v-if="!api.store.browserEphemeral.dbConnected">2</div>
         <div class="step-marker" v-else><FAIcon icon="fa-solid fa-check" /></div>
-        <div class="step-details" :class="{ 'is-success is-completed': api.store.browserEphemeral.dbConnected }">
+        <div
+          class="step-details"
+          :class="{ 'is-success is-completed': api.store.browserEphemeral.dbConnected }">
           <p class="step-title is-size-7">
             <img src="/src/assets/dev/logo_lockup_firebase_vertical.svg" width="15" />
           </p>
@@ -112,19 +117,23 @@ const showServiceSelect = ref(false)
       </div>
       <div class="step-item" :class="sync_state">
         <div class="step-marker" v-if="!api.store.browserEphemeral.dbConnected">3</div>
-        <div class="step-marker" v-if="api.store.browserEphemeral.dbConnected && api.store.browserEphemeral.dbChanges">
+        <div
+          class="step-marker"
+          v-if="api.store.browserEphemeral.dbConnected && api.store.browserEphemeral.dbChanges">
           <FAIcon icon="fa-solid fa-xmark" />
         </div>
         <div class="step-marker" v-else><FAIcon icon="fa-solid fa-check" /></div>
         <div class="step-details">
-          <p class="step-title is-size-7" :class="sync_state"><FAIcon icon="fa-solid fa-rotate" /></p>
+          <p class="step-title is-size-7" :class="sync_state">
+            <FAIcon icon="fa-solid fa-rotate" />
+          </p>
           <p v-if="!api.store.browserEphemeral.dbConnected">Data never synced.</p>
           <p v-else-if="api.store.browserEphemeral.dbChanges">Data out of sync.</p>
           <p v-else>Database is synced.</p>
         </div>
       </div>
     </div>
-    <table class="table is-hoverable is-striped is-fullwidth">
+    <table class="is-hoverable is-striped is-fullwidth table">
       <tbody>
         <tr>
           <th></th>
@@ -141,8 +150,7 @@ const showServiceSelect = ref(false)
                 type="checkbox"
                 name="switchRoundedDefault1"
                 class="switch is-rounded is-rtl is-small"
-                v-model="smilestore.browserPersisted.consented"
-              />
+                v-model="smilestore.browserPersisted.consented" />
               <label for="switchRoundedDefault1"></label>
             </div>
           </td>
@@ -154,8 +162,7 @@ const showServiceSelect = ref(false)
                 type="checkbox"
                 name="switchRoundedDefault2"
                 class="switch is-rounded is-rtl is-small"
-                v-model="smilestore.browserPersisted.knownUser"
-              />
+                v-model="smilestore.browserPersisted.knownUser" />
               <label for="switchRoundedDefault2"></label>
             </div>
           </td>
@@ -167,8 +174,7 @@ const showServiceSelect = ref(false)
                 type="checkbox"
                 name="switchRoundedDefault3"
                 class="switch is-rounded is-rtl is-small"
-                v-model="smilestore.browserPersisted.done"
-              />
+                v-model="smilestore.browserPersisted.done" />
               <label for="switchRoundedDefault3"></label>
             </div>
           </td>
@@ -180,15 +186,14 @@ const showServiceSelect = ref(false)
                 type="checkbox"
                 name="switchRoundedDefault4"
                 class="switch is-rounded is-rtl is-small"
-                v-model="smilestore.browserPersisted.withdrawn"
-              />
+                v-model="smilestore.browserPersisted.withdrawn" />
               <label for="switchRoundedDefault4"></label>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
-    <table class="table is-hoverable is-striped is-fullwidth">
+    <table class="is-hoverable is-striped is-fullwidth table">
       <tbody>
         <tr>
           <th width="30%"></th>
@@ -209,8 +214,7 @@ const showServiceSelect = ref(false)
                   v-model="smilestore.data.recruitmentService"
                   class="select is-small"
                   @change="showServiceSelect = false"
-                  @blur="showServiceSelect = false"
-                >
+                  @blur="showServiceSelect = false">
                   <option v-for="(cond, key) in smilestore.browserEphemeral.urls" :key="cond">
                     {{ key }}
                   </option>
@@ -221,7 +225,9 @@ const showServiceSelect = ref(false)
         </tr>
         <tr class="is-hidden-small">
           <td class="has-text-left"><b>Last route:</b></td>
-          <td class="has-text-left is-family-code">{{ '/' + api.store.browserPersisted.lastRoute }}</td>
+          <td class="has-text-left is-family-code">
+            {{ "/" + api.store.browserPersisted.lastRoute }}
+          </td>
         </tr>
         <tr class="is-hidden-small">
           <td class="has-text-left"><b>Mode:</b></td>
@@ -277,140 +283,140 @@ const showServiceSelect = ref(false)
 </template>
 
 <style scoped>
-.table td {
-  padding: 1 0 1 1;
-  font-size: 0.6em;
-}
-.table th {
-  padding: 0;
-  margin: 0;
-}
-
-.is-hidden-small {
-  @media screen and (max-height: 900px) {
-    display: none !important;
+  .table td {
+    padding: 1 0 1 1;
+    font-size: 0.6em;
   }
-}
-
-.table {
-  margin-bottom: 0px;
-  padding-bottom: 0px;
-  border-top: none;
-  padding-top: 0px;
-}
-.database-info-sidebar-panel {
-  height: fit-content;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-right: 0px;
-  padding-left: 0px;
-  margin: 0px;
-  background-color: #fff;
-}
-.step-title {
-  font-size: 0.8em;
-  font-weight: bold;
-}
-
-.steps {
-  padding-top: 10px;
-}
-.step-details {
-  font-size: 0.65em;
-  padding: 0px;
-}
-
-@media screen and (max-width: 1024px) {
-  .step-details {
-    padding: 0px;
+  .table th {
+    padding: 0;
+    margin: 0;
   }
-}
 
-.info {
-  margin: 20px;
-}
-.statusinfo {
-  padding: 10px;
-  font-size: 2em;
-  border: 1px solid #d5d5d5;
-  border-radius: 0.8em;
-  background-color: #f7f7f7;
-}
+  .is-hidden-small {
+    @media screen and (max-height: 900px) {
+      display: none !important;
+    }
+  }
 
-.connected {
-  color: #00c42e;
-}
-.warning {
-  color: #d5d808;
-}
-.outofsync {
-  color: red;
-}
-.insync {
-  color: rgb(13, 206, 13);
-}
-.disconnected {
-  color: #f60909;
-}
-.connected {
-  color: #00d1b2;
-}
-.divider {
-  border: 0.1px solid;
-  margin: 10px 0;
-}
-.bignumber {
-  font-size: 5em;
-  padding: 0;
-}
-.contentpanel {
-  padding-left: 0px;
-  height: 100%;
-}
-.isdark {
-  background: #414141;
-  color: #fff;
-}
-.islight {
-  background: #828282;
-  color: #fff;
-}
-.islighter {
-  background: #b0adad;
-  color: #fff;
-}
-.colcontent {
-  height: 100%;
-  user-select: none;
-}
-.edge {
-  border-right: 1px solid #e9e9e9;
-  margin: 0px;
-}
-
-@media screen and (max-width: 599px) {
-  .steps .step-item::before {
-    display: none;
+  .table {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    border-top: none;
+    padding-top: 0px;
+  }
+  .database-info-sidebar-panel {
+    height: fit-content;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin: 0px;
+    background-color: #fff;
+  }
+  .step-title {
+    font-size: 0.8em;
+    font-weight: bold;
   }
 
   .steps {
-    display: flex;
-    flex-direction: row;
+    padding-top: 10px;
   }
   .step-details {
-    width: 100%;
+    font-size: 0.65em;
     padding: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-    margin-left: auto;
-    margin-right: auto;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .step-details {
+      padding: 0px;
+    }
   }
 
   .info {
-    overflow-y: scroll;
-    height: 100%;
-    margin: 0px;
-    padding-top: 20px;
+    margin: 20px;
   }
-}
+  .statusinfo {
+    padding: 10px;
+    font-size: 2em;
+    border: 1px solid #d5d5d5;
+    border-radius: 0.8em;
+    background-color: #f7f7f7;
+  }
+
+  .connected {
+    color: #00c42e;
+  }
+  .warning {
+    color: #d5d808;
+  }
+  .outofsync {
+    color: red;
+  }
+  .insync {
+    color: rgb(13, 206, 13);
+  }
+  .disconnected {
+    color: #f60909;
+  }
+  .connected {
+    color: #00d1b2;
+  }
+  .divider {
+    border: 0.1px solid;
+    margin: 10px 0;
+  }
+  .bignumber {
+    font-size: 5em;
+    padding: 0;
+  }
+  .contentpanel {
+    padding-left: 0px;
+    height: 100%;
+  }
+  .isdark {
+    background: #414141;
+    color: #fff;
+  }
+  .islight {
+    background: #828282;
+    color: #fff;
+  }
+  .islighter {
+    background: #b0adad;
+    color: #fff;
+  }
+  .colcontent {
+    height: 100%;
+    user-select: none;
+  }
+  .edge {
+    border-right: 1px solid #e9e9e9;
+    margin: 0px;
+  }
+
+  @media screen and (max-width: 599px) {
+    .steps .step-item::before {
+      display: none;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: row;
+    }
+    .step-details {
+      width: 100%;
+      padding: 0px;
+      padding-left: 0px;
+      padding-right: 0px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .info {
+      overflow-y: scroll;
+      height: 100%;
+      margin: 0px;
+      padding-top: 20px;
+    }
+  }
 </style>

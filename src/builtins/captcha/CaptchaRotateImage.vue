@@ -1,55 +1,55 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-const emit = defineEmits(['nextPageCaptcha'])
+  import { ref, onMounted } from "vue";
+  const emit = defineEmits(["nextPageCaptcha"]);
 
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
 
-let MAX_TIME = 15000
-let start_time
-let timeout = ref(0)
+  let MAX_TIME = 15000;
+  let start_time;
+  let timeout = ref(0);
 
-const imageURL = ref('cup.jpg') // Image Refs remains confusing -- need to sort this out
-const imageRef = ref()
-let initRotation = getRandomRotation() // chose this randomly
+  const imageURL = ref("cup.jpg"); // Image Refs remains confusing -- need to sort this out
+  const imageRef = ref();
+  let initRotation = getRandomRotation(); // chose this randomly
 
-function getRandomRotation() {
-  // Generate a random number between -9 and 9
-  const randomNum = Math.floor(Math.random() * 19) - 9
-  // Multiply the random number by 10 to get increments of 10
-  return randomNum * 10
-}
-
-const rotateImage = (rotationAmount) => {
-  //const rotationAmount = direction === 'left' ? -90 : 90
-  if (imageRef.value) {
-    imageRef.value.style.transform = `rotate(${rotationAmount}deg)`
+  function getRandomRotation() {
+    // Generate a random number between -9 and 9
+    const randomNum = Math.floor(Math.random() * 19) - 9;
+    // Multiply the random number by 10 to get increments of 10
+    return randomNum * 10;
   }
-}
 
-const rotateImageDelta = (rotationAmount) => {
-  //const rotationAmount = direction === 'left' ? -90 : 90
-  if (imageRef.value) {
-    initRotation += rotationAmount
-    api.log.log(`${initRotation}`)
-    imageRef.value.style.transform = `rotate(${initRotation}deg)`
-  }
-}
+  const rotateImage = (rotationAmount) => {
+    //const rotationAmount = direction === 'left' ? -90 : 90
+    if (imageRef.value) {
+      imageRef.value.style.transform = `rotate(${rotationAmount}deg)`;
+    }
+  };
 
-onMounted(() => {
-  rotateImage(initRotation)
-  start_time = Date.now()
-  timeout.value = ((MAX_TIME - (Date.now(0) - start_time)) / MAX_TIME) * 100
-  api.log.log(`${timeout}`)
-})
+  const rotateImageDelta = (rotationAmount) => {
+    //const rotationAmount = direction === 'left' ? -90 : 90
+    if (imageRef.value) {
+      initRotation += rotationAmount;
+      api.log.log(`${initRotation}`);
+      imageRef.value.style.transform = `rotate(${initRotation}deg)`;
+    }
+  };
 
-var myInterval = setInterval(() => {
-  timeout.value = ((MAX_TIME - (Date.now(0) - start_time)) / MAX_TIME) * 100
-  if (timeout.value <= 0) {
-    clearInterval(myInterval)
-    emit('nextPageCaptcha')
-  }
-}, 2)
+  onMounted(() => {
+    rotateImage(initRotation);
+    start_time = Date.now();
+    timeout.value = ((MAX_TIME - (Date.now(0) - start_time)) / MAX_TIME) * 100;
+    api.log.log(`${timeout}`);
+  });
+
+  var myInterval = setInterval(() => {
+    timeout.value = ((MAX_TIME - (Date.now(0) - start_time)) / MAX_TIME) * 100;
+    if (timeout.value <= 0) {
+      clearInterval(myInterval);
+      emit("nextPageCaptcha");
+    }
+  }, 2);
 </script>
 
 <template>
@@ -67,7 +67,11 @@ var myInterval = setInterval(() => {
               </button>
             </td>
             <td>
-              <img ref="imageRef" src="@/assets/captcha/cup.jpg" class="circular-image" alt="Circular Image" />
+              <img
+                ref="imageRef"
+                src="@/assets/captcha/cup.jpg"
+                class="circular-image"
+                alt="Circular Image" />
             </td>
             <td>
               <button class="button" @click="rotateImageDelta(10)">
@@ -77,7 +81,9 @@ var myInterval = setInterval(() => {
           </tr>
         </tbody>
       </table>
-      <button class="button is-success" id="finish" @click="$emit('nextPageCaptcha')">Looks good to me!</button>
+      <button class="button is-success" id="finish" @click="$emit('nextPageCaptcha')">
+        Looks good to me!
+      </button>
     </div>
     <br />
     <br />
@@ -86,51 +92,51 @@ var myInterval = setInterval(() => {
 </template>
 
 <style scoped>
-.instructions {
-  width: 60%;
-  margin: auto;
-}
+  .instructions {
+    width: 60%;
+    margin: auto;
+  }
 
-.instructions p {
-  padding-bottom: 20px;
-}
+  .instructions p {
+    padding-bottom: 20px;
+  }
 </style>
 
 <style>
-.image-container {
-  margin: 0 auto;
-}
+  .image-container {
+    margin: 0 auto;
+  }
 
-.rotator {
-  margin-top: 20px;
-  width: 50%;
-}
+  .rotator {
+    margin-top: 20px;
+    width: 50%;
+  }
 
-.table {
-  margin: 0 auto;
-}
+  .table {
+    margin: 0 auto;
+  }
 
-.image-container td {
-  vertical-align: middle;
-  border: none;
-}
+  .image-container td {
+    vertical-align: middle;
+    border: none;
+  }
 
-.circular-image {
-  display: block;
-  width: 200px; /* Adjust as needed */
-  border-radius: 50%;
-  overflow: hidden;
-  object-fit: cover;
-}
+  .circular-image {
+    display: block;
+    width: 200px; /* Adjust as needed */
+    border-radius: 50%;
+    overflow: hidden;
+    object-fit: cover;
+  }
 
-.button-container {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
+  .button-container {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-.button-container button {
-  margin: 0 5px;
-}
+  .button-container button {
+    margin: 0 5px;
+  }
 </style>

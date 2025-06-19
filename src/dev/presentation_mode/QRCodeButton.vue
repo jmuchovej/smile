@@ -6,13 +6,13 @@
         <FAIcon icon=" fa-solid fa-qrcode" />
       </button>
     </div>
-    <div class="dropdown-menu pt-0 mt-0" id="dropdown-menu" role="menu">
+    <div class="dropdown-menu mt-0 pt-0" id="dropdown-menu" role="menu">
       <div class="dropdown-content">
         <div class="qrcontent is-right">
           <h1 class="title is-6">QR Code</h1>
           <p>
-            Use the QR code to quickly access the current page from a mobile device. Can be downloaded as a .svg to add
-            to posters and talks.
+            Use the QR code to quickly access the current page from a mobile device. Can be
+            downloaded as a .svg to add to posters and talks.
           </p>
           <img src="/qr.svg" />
           <br />
@@ -29,23 +29,23 @@
 </template>
 
 <style scoped>
-.dropdown-content {
-  padding: 20;
-  padding-top: 8px;
-  margin: 10;
-  width: 300px;
-  text-align: left;
-  padding-bottom: 20px;
-}
+  .dropdown-content {
+    padding: 20;
+    padding-top: 8px;
+    margin: 10;
+    width: 300px;
+    text-align: left;
+    padding-bottom: 20px;
+  }
 
-.qr {
-  width: 300px;
-  height: auto;
-}
+  .qr {
+    width: 300px;
+    height: auto;
+  }
 
-.qrcontent {
-  width: 100%;
-  padding: 15px;
-  text-align: left;
-}
+  .qrcontent {
+    width: 100%;
+    padding: 15px;
+    text-align: left;
+  }
 </style>

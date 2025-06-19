@@ -1,60 +1,63 @@
 <script setup>
-import { ref, watch, onBeforeUnmount } from 'vue'
-import { animate } from 'motion'
-import appconfig from '@/core/config'
+  import { animate } from "motion";
+  import { ref, watch, onBeforeUnmount } from "vue";
 
-//import InformedConsentText from '@/user/components/InformedConsentText.vue'
-const props = defineProps({
-  informedConsentText: {
-    type: Object,
-    required: true,
-  },
-})
-// import and initalize smile API
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  import appconfig from "@/core/config";
 
-function finish() {
-  api.goNextView()
-}
+  //import InformedConsentText from '@/user/components/InformedConsentText.vue'
+  const props = defineProps({
+    informedConsentText: {
+      type: Object,
+      required: true,
+    },
+  });
+  // import and initialize smile API
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
 
-if (appconfig.anonymousMode) {
-  // Skip the consent form if in anonymous mode
-  finish()
-}
-
-function wiggle() {
-  if (api.persist.agree) {
-    animate(button.value, { rotate: [0, 5, -5, 5, -5, 0] }, { duration: 1.25 }).finished.then(() => {
-      timer = setTimeout(wiggle, 2000) // Reinitialize the timer after animation
-    })
+  function finish() {
+    api.goNextView();
   }
-}
 
-// if (!api.persist.agree?.value) {
-//   api.persist.agree = ref(false)
-// }
-const name = ref('enter your name')
-const button = ref(null)
-let timer
+  if (appconfig.anonymousMode) {
+    // Skip the consent form if in anonymous mode
+    finish();
+  }
 
-if (!('agree' in api.persist)) {
-  api.persist.agree = ref(false)
-}
-
-if (api.persist.agree) {
-  watch(api.persist.agree, (newVal) => {
-    if (newVal) {
-      console.log('agree changed')
-      //button.value.focus()
-      timer = setTimeout(wiggle, 3000)
+  function wiggle() {
+    if (api.persist.agree) {
+      animate(button.value, { rotate: [0, 5, -5, 5, -5, 0] }, { duration: 1.25 }).finished.then(
+        () => {
+          timer = setTimeout(wiggle, 2000); // Reinitialize the timer after animation
+        },
+      );
     }
-  })
-}
+  }
 
-onBeforeUnmount(() => {
-  clearTimeout(timer)
-})
+  // if (!api.persist.agree?.value) {
+  //   api.persist.agree = ref(false)
+  // }
+  const name = ref("enter your name");
+  const button = ref(null);
+  let timer;
+
+  if (!("agree" in api.persist)) {
+    api.persist.agree = ref(false);
+  }
+
+  if (api.persist.agree) {
+    watch(api.persist.agree, (newVal) => {
+      if (newVal) {
+        console.log("agree changed");
+        //button.value.focus()
+        timer = setTimeout(wiggle, 3000);
+      }
+    });
+  }
+
+  onBeforeUnmount(() => {
+    clearTimeout(timer);
+  });
 </script>
 
 <template>
@@ -70,8 +73,8 @@ onBeforeUnmount(() => {
           <div class="column is-5">
             <div class="box consentbox">
               <p class="has-text-left has-text-weight-semibold">
-                We first must verify that you are participating willingly and know your rights. Please take the time to
-                read the consent form (you can scroll the page).
+                We first must verify that you are participating willingly and know your rights.
+                Please take the time to read the consent form (you can scroll the page).
               </p>
               <hr />
 
@@ -82,8 +85,7 @@ onBeforeUnmount(() => {
                 label="I consent and am over 18 years old."
                 validation="accepted"
                 validation-visibility="dirty"
-                label-class="has-text-left"
-              />
+                label-class="has-text-left" />
               <div class="hname">
                 Required! Please enter your name:
                 <input type="text" name="your_name" label="enter your name" v-model="name" />
@@ -96,8 +98,7 @@ onBeforeUnmount(() => {
                 class="button is-warning is-fullwidth"
                 id="finish"
                 v-if="api.persist.agree"
-                @click="finish()"
-              >
+                @click="finish()">
                 Let's start &nbsp;
                 <FAIcon icon="fa-solid fa-arrow-right" />
               </button>
@@ -110,27 +111,27 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.bumper {
-  border-radius: 2%;
-}
-.consentbox {
-  margin-bottom: 20px;
-  margin-top: 30px;
-  margin-right: 2vw;
-  margin-left: 2vw;
-}
+  .bumper {
+    border-radius: 2%;
+  }
+  .consentbox {
+    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-right: 2vw;
+    margin-left: 2vw;
+  }
 
-.consenttext {
-  margin-right: 2vw;
-  margin-left: 2vw;
-}
+  .consenttext {
+    margin-right: 2vw;
+    margin-left: 2vw;
+  }
 
-.widetoggle {
-  --toggle-width: 5.9rem;
-}
+  .widetoggle {
+    --toggle-width: 5.9rem;
+  }
 
-.hname {
-  visibility: hidden;
-  display: none;
-}
+  .hname {
+    visibility: hidden;
+    display: none;
+  }
 </style>

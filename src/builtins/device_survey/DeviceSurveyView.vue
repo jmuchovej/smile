@@ -1,65 +1,67 @@
 <script setup>
-import { reactive, computed } from 'vue'
+  import { reactive, computed } from "vue";
 
-// import and initalize smile API
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  // import and initialize smile API
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
 
-api.steps.append([{ id: 'device_page1' }, { id: 'device_page2' }])
+  api.steps.append([{ id: "device_page1" }, { id: "device_page2" }]);
 
-// persists the form info in local storage, otherwise initialize
-if (!api.persist.isDefined('forminfo')) {
-  api.persist.forminfo = reactive({
-    device_type: '', // type of device (e.g., desktop, laptop, tablet, phone)
-    connection: '', // type of internet connection (e.g., wifi, ethernet, cellular)
-    connection_quality: '', // self-reported connection quality
-    browser: '', // self-reported browser
-    pointer: '', // self-reported pointing device (mouse, trackpad, touchscreen)
-    assistive_technology: '', // self-reported assistive technology
-    tools: '', // self-report of tools
-  })
-}
+  // persists the form info in local storage, otherwise initialize
+  if (!api.persist.isDefined("forminfo")) {
+    api.persist.forminfo = reactive({
+      device_type: "", // type of device (e.g., desktop, laptop, tablet, phone)
+      connection: "", // type of internet connection (e.g., wifi, ethernet, cellular)
+      connection_quality: "", // self-reported connection quality
+      browser: "", // self-reported browser
+      pointer: "", // self-reported pointing device (mouse, trackpad, touchscreen)
+      assistive_technology: "", // self-reported assistive technology
+      tools: "", // self-report of tools
+    });
+  }
 
-const page_one_complete = computed(
-  () =>
-    api.persist.forminfo.device_type !== '' &&
-    api.persist.forminfo.connection !== '' &&
-    api.persist.forminfo.connection_quality !== '' &&
-    api.persist.forminfo.browser !== ''
-)
+  const page_one_complete = computed(
+    () =>
+      api.persist.forminfo.device_type !== "" &&
+      api.persist.forminfo.connection !== "" &&
+      api.persist.forminfo.connection_quality !== "" &&
+      api.persist.forminfo.browser !== "",
+  );
 
-const page_two_complete = computed(
-  () =>
-    api.persist.forminfo.pointer !== '' &&
-    api.persist.forminfo.assistive_technology !== '' &&
-    api.persist.forminfo.tools !== ''
-)
+  const page_two_complete = computed(
+    () =>
+      api.persist.forminfo.pointer !== "" &&
+      api.persist.forminfo.assistive_technology !== "" &&
+      api.persist.forminfo.tools !== "",
+  );
 
-function autofill() {
-  api.persist.forminfo.device_type = 'Desktop Computer'
-  api.persist.forminfo.connection = 'Wifi'
-  api.persist.forminfo.connection_quality = 'Fast'
-  api.persist.forminfo.browser = 'ARC'
-  api.persist.forminfo.pointer = 'Mouse'
-  api.persist.forminfo.assistive_technology = 'No'
-  api.persist.forminfo.tools = 'No'
-}
+  function autofill() {
+    api.persist.forminfo.device_type = "Desktop Computer";
+    api.persist.forminfo.connection = "Wifi";
+    api.persist.forminfo.connection_quality = "Fast";
+    api.persist.forminfo.browser = "ARC";
+    api.persist.forminfo.pointer = "Mouse";
+    api.persist.forminfo.assistive_technology = "No";
+    api.persist.forminfo.tools = "No";
+  }
 
-api.setAutofill(autofill)
+  api.setAutofill(autofill);
 
-function finish() {
-  api.recordForm('deviceForm', api.persist.forminfo)
-  api.goNextView()
-}
+  function finish() {
+    api.recordForm("deviceForm", api.persist.forminfo);
+    api.goNextView();
+  }
 </script>
 
 <template>
   <div class="page prevent-select">
     <div class="formcontent">
-      <h3 class="is-size-3 has-text-weight-bold"><FAIcon icon="fa-solid fa-desktop" /> Computer/Device Information</h3>
+      <h3 class="is-size-3 has-text-weight-bold">
+        <FAIcon icon="fa-solid fa-desktop" /> Computer/Device Information
+      </h3>
       <p class="is-size-6">
-        We request some basic information about the computer you are using right now. We also can use this information
-        to improve the quality of our experiments in the future.
+        We request some basic information about the computer you are using right now. We also can
+        use this information to improve the quality of our experiments in the future.
       </p>
 
       <div class="formstep" v-if="api.pathString === 'device_page1'">
@@ -69,7 +71,8 @@ function finish() {
               <h3 class="is-size-6 has-text-weight-bold">Important Note</h3>
               <p class="is-size-6">
                 If this is a paid study your answers to these questions will have
-                <b>no effect on your final payment</b>. We are just interested in your honest answers.
+                <b>no effect on your final payment</b>. We are just interested in your honest
+                answers.
               </p>
             </div>
           </div>
@@ -91,8 +94,7 @@ function finish() {
                   'I\'m not sure',
                   'I\'d rather not say',
                 ]"
-                v-model="api.persist.forminfo.device_type"
-              />
+                v-model="api.persist.forminfo.device_type" />
               <FormKit
                 type="select"
                 label="What type of Internet connection are you using right now?"
@@ -111,8 +113,7 @@ function finish() {
                   'I\'m not sure',
                   'I\'d rather not say',
                 ]"
-                v-model="api.persist.forminfo.connection"
-              />
+                v-model="api.persist.forminfo.connection" />
               <FormKit
                 type="select"
                 label="How would you rate you Internet connection quality today?"
@@ -127,8 +128,7 @@ function finish() {
                   'I\'m not sure',
                   'I\'d rather not say',
                 ]"
-                v-model="api.persist.forminfo.connection_quality"
-              />
+                v-model="api.persist.forminfo.connection_quality" />
               <FormKit
                 type="select"
                 label="What web browser are you using?"
@@ -150,13 +150,16 @@ function finish() {
                   'I\'m not sure',
                   'I\'d rather not say',
                 ]"
-                v-model="api.persist.forminfo.browser"
-              />
+                v-model="api.persist.forminfo.browser" />
               <hr />
               <div class="columns">
                 <div class="column">
                   <div class="has-text-right">
-                    <button class="button is-warning" id="finish" v-if="page_one_complete" @click="api.goNextStep()">
+                    <button
+                      class="button is-warning"
+                      id="finish"
+                      v-if="page_one_complete"
+                      @click="api.goNextStep()">
                       Continue &nbsp;
                       <FAIcon icon="fa-solid fa-arrow-right" />
                     </button>
@@ -175,7 +178,8 @@ function finish() {
               <h3 class="is-size-6 has-text-weight-bold">Important Note</h3>
               <p class="is-size-6">
                 If this is a paid study your answers to these questions will have
-                <b>no effect on your final payment</b>. We are just interested in your honest answers.
+                <b>no effect on your final payment</b>. We are just interested in your honest
+                answers.
               </p>
             </div>
           </div>
@@ -200,8 +204,7 @@ function finish() {
                   'I\'m not sure',
                   'I\'d rather not say',
                 ]"
-                v-model="api.persist.forminfo.pointer"
-              />
+                v-model="api.persist.forminfo.pointer" />
               <FormKit
                 type="select"
                 label="Are you using any assistive technologies?"
@@ -209,8 +212,7 @@ function finish() {
                 help="Examples include screen readers, screen magnifiers, or voice input systems."
                 placeholder="Select an option"
                 :options="['No', 'Yes', 'I\'m not sure', 'I\'d rather not say']"
-                v-model="api.persist.forminfo.assistive_technology"
-              />
+                v-model="api.persist.forminfo.assistive_technology" />
               <FormKit
                 type="select"
                 label="Did you use any tools to help you complete this experiment?"
@@ -218,8 +220,7 @@ function finish() {
                 help="Examples include browser extensions that help you fill forms, enter text, or navigate the web or copying answers from AI/Large Language Models."
                 placeholder="Select an option"
                 :options="['No', 'Yes', 'I\'m not sure', 'I\'d rather not say']"
-                v-model="api.persist.forminfo.tools"
-              />
+                v-model="api.persist.forminfo.tools" />
               <hr />
               <div class="columns">
                 <div class="column">
@@ -231,7 +232,11 @@ function finish() {
                 </div>
                 <div class="column">
                   <div class="has-text-right">
-                    <button class="button is-success" id="finish" v-if="page_two_complete" @click="finish()">
+                    <button
+                      class="button is-success"
+                      id="finish"
+                      v-if="page_two_complete"
+                      @click="finish()">
                       I'm done!
                     </button>
                   </div>
@@ -246,35 +251,35 @@ function finish() {
 </template>
 
 <style>
-.formstep {
-  margin-top: 40px;
-}
+  .formstep {
+    margin-top: 40px;
+  }
 
-:root {
-  --fk-bg-input: #fff;
-  --fk-max-width-input: 100%;
-}
+  :root {
+    --fk-bg-input: #fff;
+    --fk-max-width-input: 100%;
+  }
 
-.formbox {
-  border: 1px solid #dfdfdf;
-  text-align: left;
-  background-color: rgb(248, 248, 248);
-}
+  .formbox {
+    border: 1px solid #dfdfdf;
+    text-align: left;
+    background-color: rgb(248, 248, 248);
+  }
 
-.formkit-input select {
-  background-color: #fff;
-}
+  .formkit-input select {
+    background-color: #fff;
+  }
 
-.formcontent {
-  width: 80%;
-  margin: auto;
-  margin-bottom: 40px;
-  padding-bottom: 200px;
-  text-align: left;
-}
+  .formcontent {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 40px;
+    padding-bottom: 200px;
+    text-align: left;
+  }
 
-.formsectionexplainer {
-  text-align: left;
-  color: #777;
-}
+  .formsectionexplainer {
+    text-align: left;
+    color: #777;
+  }
 </style>

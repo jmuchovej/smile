@@ -1,53 +1,55 @@
 <script setup>
-import { reactive, computed } from 'vue'
+  import { reactive, computed } from "vue";
 
-// import and initalize smile API
-import useViewAPI from '@/core/composables/useViewAPI'
-const api = useViewAPI()
+  // import and initialize smile API
+  import useViewAPI from "@/core/composables/useViewAPI";
+  const api = useViewAPI();
 
-// const pages = api.spec().append([{ id: 'feedback_page1' }])
-// api.addSpec(pages)
+  // const pages = api.spec().append([{ id: 'feedback_page1' }])
+  // api.addSpec(pages)
 
-if (!api.persist.isDefined('forminfo')) {
-  api.persist.forminfo = reactive({
-    difficulty_rating: '', // how difficulty
-    enjoyment_rating: '', // how enjoyable
-    feedback: '', // general feedback
-    issues: '', // any issues
-  })
-}
+  if (!api.persist.isDefined("forminfo")) {
+    api.persist.forminfo = reactive({
+      difficulty_rating: "", // how difficulty
+      enjoyment_rating: "", // how enjoyable
+      feedback: "", // general feedback
+      issues: "", // any issues
+    });
+  }
 
-const complete = computed(
-  () =>
-    api.persist.forminfo.difficulty_rating !== '' &&
-    api.persist.forminfo.enjoyment_rating !== '' &&
-    api.persist.forminfo.feedback !== '' &&
-    api.persist.forminfo.issues !== ''
-)
+  const complete = computed(
+    () =>
+      api.persist.forminfo.difficulty_rating !== "" &&
+      api.persist.forminfo.enjoyment_rating !== "" &&
+      api.persist.forminfo.feedback !== "" &&
+      api.persist.forminfo.issues !== "",
+  );
 
-function autofill() {
-  api.persist.forminfo.difficulty_rating = '0 - Very Easy'
-  api.persist.forminfo.enjoyment_rating = '6 - Very Fun'
-  api.persist.forminfo.feedback = 'It was good.'
-  api.persist.forminfo.issues = 'Too fun?'
-}
+  function autofill() {
+    api.persist.forminfo.difficulty_rating = "0 - Very Easy";
+    api.persist.forminfo.enjoyment_rating = "6 - Very Fun";
+    api.persist.forminfo.feedback = "It was good.";
+    api.persist.forminfo.issues = "Too fun?";
+  }
 
-api.setAutofill(autofill)
+  api.setAutofill(autofill);
 
-function finish() {
-  api.recordForm('feedbackForm', api.persist.forminfo)
-  api.saveData(true) // force a data save
-  api.goNextView()
-}
+  function finish() {
+    api.recordForm("feedbackForm", api.persist.forminfo);
+    api.saveData(true); // force a data save
+    api.goNextView();
+  }
 </script>
 
 <template>
   <div class="page prevent-select">
     <div class="formcontent">
-      <h3 class="is-size-3 has-text-weight-bold"><FAIcon icon="fa-solid fa-pencil" /> Give us feedback</h3>
+      <h3 class="is-size-3 has-text-weight-bold">
+        <FAIcon icon="fa-solid fa-pencil" /> Give us feedback
+      </h3>
       <p class="is-size-6">
-        Please give us feedback about your experience with the study. Your feedback will help us improve our study and
-        we appreciate your effort and thoughts.
+        Please give us feedback about your experience with the study. Your feedback will help us
+        improve our study and we appreciate your effort and thoughts.
       </p>
 
       <div class="formstep">
@@ -57,7 +59,8 @@ function finish() {
               <h3 class="is-size-6 has-text-weight-bold">Important Note</h3>
               <p class="is-size-6">
                 If this is a paid study your answers to these questions will have
-                <b>no effect on your final payment</b>. We are just interested in your honest answers.
+                <b>no effect on your final payment</b>. We are just interested in your honest
+                answers.
               </p>
             </div>
           </div>
@@ -79,8 +82,7 @@ function finish() {
                   '6 - Very Difficult',
                   'I\'d rather not say',
                 ]"
-                v-model="api.persist.forminfo.difficulty_rating"
-              />
+                v-model="api.persist.forminfo.difficulty_rating" />
 
               <FormKit
                 type="select"
@@ -98,23 +100,20 @@ function finish() {
                   '6 - Very Fun',
                   'I\'d rather not say',
                 ]"
-                v-model="api.persist.forminfo.enjoyment_rating"
-              />
+                v-model="api.persist.forminfo.enjoyment_rating" />
 
               <FormKit
                 type="textarea"
                 name="instructions"
                 label="Any general feedback for the study team?"
                 placeholder="Please provide general thoughts, reactions, or ideas here."
-                v-model="api.persist.forminfo.feedback"
-              />
+                v-model="api.persist.forminfo.feedback" />
               <FormKit
                 type="textarea"
                 name="instructions"
                 label="Any specific issues to report that might improve the study?"
                 placeholder="Please report any specific issues you had, if any"
-                v-model="api.persist.forminfo.issues"
-              />
+                v-model="api.persist.forminfo.issues" />
               <hr />
               <div class="columns">
                 <div class="column">
@@ -134,39 +133,39 @@ function finish() {
 </template>
 
 <style>
-.formstep {
-  margin-top: 40px;
-}
+  .formstep {
+    margin-top: 40px;
+  }
 
-:root {
-  --fk-bg-input: #fff;
-  --fk-max-width-input: 100%;
-}
+  :root {
+    --fk-bg-input: #fff;
+    --fk-max-width-input: 100%;
+  }
 
-.formbox {
-  border: 1px solid #dfdfdf;
-  text-align: left;
-  background-color: rgb(248, 248, 248);
-}
+  .formbox {
+    border: 1px solid #dfdfdf;
+    text-align: left;
+    background-color: rgb(248, 248, 248);
+  }
 
-.formkit-input select {
-  background-color: #fff;
-}
+  .formkit-input select {
+    background-color: #fff;
+  }
 
-.formkit-input input[type='range'] {
-  background-color: #000;
-}
+  .formkit-input input[type="range"] {
+    background-color: #000;
+  }
 
-.formcontent {
-  width: 80%;
-  margin: auto;
-  margin-bottom: 40px;
-  padding-bottom: 200px;
-  text-align: left;
-}
+  .formcontent {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 40px;
+    padding-bottom: 200px;
+    text-align: left;
+  }
 
-.formsectionexplainer {
-  text-align: left;
-  color: #777;
-}
+  .formsectionexplainer {
+    text-align: left;
+    color: #777;
+  }
 </style>

@@ -6,7 +6,7 @@ url=$(git config --get remote.origin.url)
 repo_path=$(echo "$url" | sed -E 's|.*/([^/]+)/([^/.]+)(\.git)?|\1/\2|')
 
 
-# update the app configs using a base64 encoding of 
+# update the app configs using a base64 encoding of
 # all the variables
 ENC=$(cat env/.env.local | base64)
 gh secret set SECRET_APP_CONFIG --body "$ENC" --repo $repo_path
@@ -16,7 +16,7 @@ gh secret set SECRET_APP_CONFIG --body "$ENC" --repo $repo_path
 # only do this if repo name is nyuccl/docs
 re="^(https|git)(:\/\/|@)([^\/:]+)[\/:]([^\/:]+)\/(.+)(.git)*$"
 
-if [[ $url =~ $re ]]; then    
+if [[ $url =~ $re ]]; then
     protocol=${BASH_REMATCH[1]}
     separator=${BASH_REMATCH[2]}
     hostname=${BASH_REMATCH[3]}

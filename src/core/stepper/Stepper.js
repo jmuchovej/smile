@@ -1,9 +1,10 @@
-import { StepState } from '@/core/stepper/StepState'
-import config from '@/core/config'
-import { StepperSerializer } from '@/core/stepper/StepperSerializer'
-import StepperProxy from '@/core/stepper/StepperProxy'
-import useLog from '@/core/stores/log'
-import seedrandom from 'seedrandom'
+import seedrandom from "seedrandom";
+
+import config from "@/core/config";
+import StepperProxy from "@/core/stepper/StepperProxy";
+import { StepperSerializer } from "@/core/stepper/StepperSerializer";
+import { StepState } from "@/core/stepper/StepState";
+import useLog from "@/core/stores/log";
 
 // to be implemented functions
 
@@ -17,8 +18,8 @@ import seedrandom from 'seedrandom'
 // zip()  - done
 
 // TO BE IMPLEMENTED IN THE FUTURE
-// sample() - mid priorty
-// range() - mid priorty
+// sample() - mid priority
+// range() - mid priority
 // repeat()  tricky?
 // interleave()  low priority
 // print()  low priority
@@ -40,24 +41,24 @@ export class Stepper extends StepState {
    * @param {Object} [options.store] - Optional reference to the store where this stepper is saved
    */
   constructor(options = {}) {
-    const { id = null, parent = null, data = null, serializedState = null, store = null } = options
-    const log = useLog()
-    super(id, parent, data)
+    const { id = null, parent = null, data = null, serializedState = null, store = null } = options;
+    const log = useLog();
+    super(id, parent, data);
 
     // Store the store reference
-    this._store = store
-    this._log = log
-    this._shuffled = false // Add shuffled property
-    this._onModify = null // Add callback property
-    this._needsWrite = false // Track if we need to write
+    this._store = store;
+    this._log = log;
+    this._shuffled = false; // Add shuffled property
+    this._onModify = null; // Add callback property
+    this._needsWrite = false; // Track if we need to write
 
     // If serialized state is provided, load it
     if (serializedState !== null) {
-      this._log.debug('STEPSTATE:loading serialized state')
-      this.loadFromJSON(serializedState)
+      this._log.debug("STEPSTATE:loading serialized state");
+      this.loadFromJSON(serializedState);
     }
 
-    return new StepperProxy(this)
+    return new StepperProxy(this);
   }
 
   /**
@@ -65,7 +66,7 @@ export class Stepper extends StepState {
    * @param {Function} callback - The callback function to call on modification
    */
   setOnModify(callback) {
-    this._onModify = callback
+    this._onModify = callback;
   }
 
   /**
@@ -73,9 +74,9 @@ export class Stepper extends StepState {
    * @private
    */
   _markForWrite() {
-    this._needsWrite = true
+    this._needsWrite = true;
     if (this._onModify) {
-      this._onModify()
+      this._onModify();
     }
   }
   /**
@@ -86,7 +87,7 @@ export class Stepper extends StepState {
    * @returns {Stepper} A new Stepper instance
    */
   _createNew(id, parent) {
-    return new Stepper({ id, parent })
+    return new Stepper({ id, parent });
   }
 
   /**
@@ -103,47 +104,47 @@ export class Stepper extends StepState {
    */
   _hasDuplicatePaths(items) {
     // Convert single item to array if needed
-    const itemsToCheck = Array.isArray(items) ? items : [items]
+    const itemsToCheck = Array.isArray(items) ? items : [items];
 
     // First check for duplicates among the input items
-    const seenPaths = new Set()
-    const seenData = new Set()
+    const seenPaths = new Set();
+    const seenData = new Set();
     for (const item of itemsToCheck) {
       // Check for explicit path duplicates
       if (item.id !== undefined) {
         if (seenPaths.has(item.id)) {
-          return true
+          return true;
         }
-        seenPaths.add(item.id)
+        seenPaths.add(item.id);
       }
 
       // Check for data content duplicates
-      const dataStr = JSON.stringify(item)
+      const dataStr = JSON.stringify(item);
       if (seenData.has(dataStr)) {
-        return true
+        return true;
       }
-      seenData.add(dataStr)
+      seenData.add(dataStr);
     }
 
     // Get all existing paths in the tree
-    const existingPaths = this.existingPaths
-    const existingData = new Set(this._states.map((state) => JSON.stringify(state.data)))
+    const existingPaths = this.existingPaths;
+    const existingData = new Set(this._states.map((state) => JSON.stringify(state.data)));
 
     // Check if any new items would create duplicate paths with existing ones
     return itemsToCheck.some((item) => {
       // Create a temporary state to get its path
-      let state
+      let state;
       if (item.id !== undefined) {
-        state = new Stepper({ id: item.id, parent: this })
+        state = new Stepper({ id: item.id, parent: this });
       } else {
-        state = new Stepper({ parent: this })
+        state = new Stepper({ parent: this });
       }
-      state.data = item
-      const newPath = state.pathString
+      state.data = item;
+      const newPath = state.pathString;
 
       // Check both path and data content
-      return existingPaths.has(newPath) || existingData.has(JSON.stringify(item))
-    })
+      return existingPaths.has(newPath) || existingData.has(JSON.stringify(item));
+    });
   }
 
   /**
@@ -155,18 +156,18 @@ export class Stepper extends StepState {
    * If the item contains an 'id' field, it will be used as the state's id.
    */
   _addState(item) {
-    let state
+    let state;
     try {
       // Create a new state with auto-incremented id
       if (item.id !== undefined) {
-        state = this.push(item.id, item)
+        state = this.push(item.id, item);
       } else {
-        state = this.push(null, item)
+        state = this.push(null, item);
       }
     } catch (error) {
-      this._log.error(error.message)
+      this._log.error(error.message);
     }
-    return state
+    return state;
   }
 
   /**
@@ -176,32 +177,32 @@ export class Stepper extends StepState {
    * @throws {Error} If items is not an object or array, or if adding items would exceed maxStepperRows
    */
   append(items) {
-    this._log.debug('\tappend', items)
+    this._log.debug("\tappend", items);
     // Convert single item to array if needed
-    const itemsToAdd = Array.isArray(items) ? items : [items]
+    const itemsToAdd = Array.isArray(items) ? items : [items];
 
     // Check if adding these items would exceed maxStepperRows
     if (this._states.length + itemsToAdd.length > config.maxStepperRows) {
       this._log.error(
-        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${config.maxStepperRows}`
-      )
+        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${config.maxStepperRows}`,
+      );
       throw new Error(
-        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${config.maxStepperRows}`
-      )
+        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${config.maxStepperRows}`,
+      );
     }
 
     // Try to add each item individually
     itemsToAdd.forEach((item) => {
       // Check if this specific item would create a duplicate path
       if (this._hasDuplicatePaths(item)) {
-        this._log.warn(`Warning: Skipping item that would create duplicate path`)
+        this._log.warn(`Warning: Skipping item that would create duplicate path`);
       } else {
-        this._addState(item)
+        this._addState(item);
       }
-    })
+    });
 
-    this._markForWrite()
-    return this
+    this._markForWrite();
+    return this;
   }
 
   /**
@@ -214,66 +215,66 @@ export class Stepper extends StepState {
    * @throws {Error} If trials is not an object or if operation would exceed maxStepperRows
    */
   outer(trials, idGenerator = null) {
-    if (typeof trials !== 'object' || trials === null) {
-      throw new Error('outer() requires an object with arrays as values')
+    if (typeof trials !== "object" || trials === null) {
+      throw new Error("outer() requires an object with arrays as values");
     }
 
-    const columns = Object.entries(trials)
+    const columns = Object.entries(trials);
     if (columns.length === 0) {
-      throw new Error('outer() requires at least one column')
+      throw new Error("outer() requires at least one column");
     }
 
     // Convert non-array values to single-element arrays
     const processedColumns = columns.map(([key, value]) => {
-      if (Array.isArray(value)) return [key, value]
-      return [key, [value]]
-    })
+      if (Array.isArray(value)) return [key, value];
+      return [key, [value]];
+    });
 
     // Calculate total number of combinations
-    const totalCombinations = processedColumns.reduce((total, [_, arr]) => total * arr.length, 1)
+    const totalCombinations = processedColumns.reduce((total, [_, arr]) => total * arr.length, 1);
 
     // Check if adding these combinations would exceed maxStepperRows
     if (this._states.length + totalCombinations > config.maxStepperRows) {
       throw new Error(
-        `Cannot create ${totalCombinations} combinations: would exceed maximum of ${config.maxStepperRows} rows`
-      )
+        `Cannot create ${totalCombinations} combinations: would exceed maximum of ${config.maxStepperRows} rows`,
+      );
     }
 
     // Helper function to generate combinations
     function generateCombinations(arrays) {
-      if (arrays.length === 0) return [{}]
+      if (arrays.length === 0) return [{}];
 
-      const [key, values] = arrays[0]
-      const rest = arrays.slice(1)
-      const restCombinations = generateCombinations(rest)
+      const [key, values] = arrays[0];
+      const rest = arrays.slice(1);
+      const restCombinations = generateCombinations(rest);
 
       return values.flatMap((value) =>
         restCombinations.map((combo) => ({
           [key]: value,
           ...combo,
-        }))
-      )
+        })),
+      );
     }
 
-    const outerRows = generateCombinations(processedColumns)
+    const outerRows = generateCombinations(processedColumns);
 
     // Try to add each combination individually
     outerRows.forEach((row) => {
       // If an idGenerator function is provided, use it to generate the ID
-      if (typeof idGenerator === 'function') {
-        row.id = idGenerator(row)
+      if (typeof idGenerator === "function") {
+        row.id = idGenerator(row);
       }
 
       // Check if this specific combination would create a duplicate path
       if (this._hasDuplicatePaths(row)) {
-        this._log.warn(`Warning: Skipping combination that would create duplicate path`)
+        this._log.warn(`Warning: Skipping combination that would create duplicate path`);
       } else {
-        this._addState(row)
+        this._addState(row);
       }
-    })
+    });
 
-    this._markForWrite()
-    return this
+    this._markForWrite();
+    return this;
   }
 
   /**
@@ -289,111 +290,114 @@ export class Stepper extends StepState {
    * @throws {Error} If trials is not an object or if operation would exceed maxStepperRows
    */
   zip(trials, idGeneratorOrOptions = {}, options = {}) {
-    if (typeof trials !== 'object' || trials === null) {
-      throw new Error('zip() requires an object with arrays as values')
+    if (typeof trials !== "object" || trials === null) {
+      throw new Error("zip() requires an object with arrays as values");
     }
 
     // Handle both API styles:
     // 1. zip(trials, options)
     // 2. zip(trials, idGenerator, options)
-    const idGenerator = typeof idGeneratorOrOptions === 'function' ? idGeneratorOrOptions : null
-    const actualOptions = typeof idGeneratorOrOptions === 'function' ? options : idGeneratorOrOptions
+    const idGenerator = typeof idGeneratorOrOptions === "function" ? idGeneratorOrOptions : null;
+    const actualOptions =
+      typeof idGeneratorOrOptions === "function" ? options : idGeneratorOrOptions;
 
-    const columns = Object.entries(trials)
+    const columns = Object.entries(trials);
     if (columns.length === 0) {
-      throw new Error('zip() requires at least one column')
+      throw new Error("zip() requires at least one column");
     }
 
     // Convert non-array values to single-element arrays
     const processedColumns = columns.map(([key, value]) => {
-      if (Array.isArray(value)) return [key, value]
-      return [key, [value]]
-    })
+      if (Array.isArray(value)) return [key, value];
+      return [key, [value]];
+    });
 
     // Get the maximum length of any column
-    const maxLength = Math.max(...processedColumns.map(([_, arr]) => arr.length))
+    const maxLength = Math.max(...processedColumns.map(([_, arr]) => arr.length));
 
     // Check if adding these combinations would exceed maxStepperRows
     if (this._states.length + maxLength > config.maxStepperRows) {
-      throw new Error(`Cannot create ${maxLength} combinations: would exceed maximum of ${config.maxStepperRows} rows`)
+      throw new Error(
+        `Cannot create ${maxLength} combinations: would exceed maximum of ${config.maxStepperRows} rows`,
+      );
     }
 
     // Check if any column has a different length
-    const hasDifferentLengths = processedColumns.some(([_, arr]) => arr.length !== maxLength)
+    const hasDifferentLengths = processedColumns.some(([_, arr]) => arr.length !== maxLength);
 
     // By default, throw error if lengths are different
     if (hasDifferentLengths && !actualOptions.method) {
       throw new Error(
-        'All columns must have the same length when using zip(). Specify a method (loop, pad, last) to handle different lengths.'
-      )
+        "All columns must have the same length when using zip(). Specify a method (loop, pad, last) to handle different lengths.",
+      );
     }
 
     // Helper function to adjust array length
     const adjustArrayLength = (arr, targetLength, method, padValue) => {
-      if (arr.length === targetLength) return arr
+      if (arr.length === targetLength) return arr;
 
-      if (method === 'loop') {
-        const result = []
+      if (method === "loop") {
+        const result = [];
         for (let i = 0; i < targetLength; i++) {
-          result.push(arr[i % arr.length])
+          result.push(arr[i % arr.length]);
         }
-        return result
-      } else if (method === 'pad' || method === 'last') {
-        const value = method === 'last' ? arr[arr.length - 1] : padValue
-        return [...arr, ...Array(targetLength - arr.length).fill(value)]
+        return result;
+      } else if (method === "pad" || method === "last") {
+        const value = method === "last" ? arr[arr.length - 1] : padValue;
+        return [...arr, ...Array(targetLength - arr.length).fill(value)];
       }
-      return arr
-    }
+      return arr;
+    };
 
     // Process each column according to the specified method
     const processedArrays = processedColumns.map(([key, arr]) => {
-      if (arr.length === maxLength) return arr
+      if (arr.length === maxLength) return arr;
 
-      const method = actualOptions.method
-      const padValue = actualOptions.padValue
+      const method = actualOptions.method;
+      const padValue = actualOptions.padValue;
 
-      if (method === 'loop') {
-        return adjustArrayLength(arr, maxLength, 'loop')
-      } else if (method === 'pad') {
+      if (method === "loop") {
+        return adjustArrayLength(arr, maxLength, "loop");
+      } else if (method === "pad") {
         if (padValue === undefined) {
-          throw new Error('padValue is required when using the pad method')
+          throw new Error("padValue is required when using the pad method");
         }
-        return adjustArrayLength(arr, maxLength, 'pad', padValue)
-      } else if (method === 'last') {
-        return adjustArrayLength(arr, maxLength, 'pad', arr[arr.length - 1])
+        return adjustArrayLength(arr, maxLength, "pad", padValue);
+      } else if (method === "last") {
+        return adjustArrayLength(arr, maxLength, "pad", arr[arr.length - 1]);
       } else {
-        throw new Error(`Invalid method: ${method}. Must be one of: loop, pad, last`)
+        throw new Error(`Invalid method: ${method}. Must be one of: loop, pad, last`);
       }
-    })
+    });
 
     // Create the zipped rows
     const zippedRows = Array(maxLength)
       .fill(null)
       .map((_, i) => {
-        const row = {}
+        const row = {};
         processedColumns.forEach(([key], colIndex) => {
-          row[key] = processedArrays[colIndex][i]
-        })
-        return row
-      })
+          row[key] = processedArrays[colIndex][i];
+        });
+        return row;
+      });
 
     // Try to add each combination individually
     zippedRows.forEach((row) => {
       // If an idGenerator function is provided, use it to generate the ID
-      if (typeof idGenerator === 'function') {
-        row.id = idGenerator(row)
+      if (typeof idGenerator === "function") {
+        row.id = idGenerator(row);
       }
 
       // Check if this specific combination would create a duplicate path
       if (this._hasDuplicatePaths(row)) {
-        this._log.warn(`Warning: Skipping combination that would create duplicate path`)
+        this._log.warn(`Warning: Skipping combination that would create duplicate path`);
       } else {
-        this._addState(row)
+        this._addState(row);
       }
-    })
+    });
 
-    this._markForWrite()
-    return this
+    this._markForWrite();
+    return this;
   }
 
   /**
@@ -406,41 +410,42 @@ export class Stepper extends StepState {
    * @returns {Stepper} Returns this instance for method chaining
    */
   shuffle(options = {}) {
-    const { seed = null, always = false } = typeof options === 'string' ? { seed: options } : options
+    const { seed = null, always = false } =
+      typeof options === "string" ? { seed: options } : options;
 
     // Skip if already shuffled and always is false
     if (this._shuffled && !always) {
-      return this
+      return this;
     }
 
     // Skip if there's only one or zero states
-    if (this._states.length <= 1) return this
+    if (this._states.length <= 1) return this;
 
     // Create RNG function - either seeded or Math.random
-    let rng
+    let rng;
     if (seed) {
       // Create a new seeded RNG instance
-      const seededRng = seedrandom(seed)
-      rng = () => seededRng()
+      const seededRng = seedrandom(seed);
+      rng = () => seededRng();
     } else {
-      rng = Math.random
+      rng = Math.random;
     }
 
     // For other depths, shuffle all elements
     for (let i = this._states.length - 1; i > 0; i--) {
-      const j = Math.floor(rng() * (i + 1))
-      ;[this._states[i], this._states[j]] = [this._states[j], this._states[i]]
+      const j = Math.floor(rng() * (i + 1));
+      [this._states[i], this._states[j]] = [this._states[j], this._states[i]];
 
       // Update indices for the swapped elements
-      this._states[i]._currentIndex = i
-      this._states[j]._currentIndex = j
+      this._states[i]._currentIndex = i;
+      this._states[j]._currentIndex = j;
     }
 
     // Mark as shuffled
-    this._shuffled = true
+    this._shuffled = true;
 
-    this._markForWrite()
-    return this
+    this._markForWrite();
+    return this;
   }
 
   /**
@@ -459,40 +464,40 @@ export class Stepper extends StepState {
   forEach(callback) {
     this._states.forEach((item, index) => {
       // Call the callback and check if it returns a new value
-      const result = callback(item, index)
+      const result = callback(item, index);
       if (result !== undefined) {
         // If result is an object with properties from the proxy, extract just the data properties
-        if (typeof result === 'object' && result !== null) {
+        if (typeof result === "object" && result !== null) {
           // Create a new data object by starting with the original data
-          const newData = { ...item.data }
+          const newData = { ...item.data };
 
           // Add or update properties from the result object
           // This allows new properties to be added that weren't in the original data
           Object.keys(result).forEach((key) => {
             // Only copy properties that are not internal properties of the Stepper
             if (
-              key !== '_id' &&
-              key !== '_states' &&
-              key !== '_parent' &&
-              key !== '_path' &&
-              key !== 'data' &&
-              typeof result[key] !== 'function'
+              key !== "_id" &&
+              key !== "_states" &&
+              key !== "_parent" &&
+              key !== "_path" &&
+              key !== "data" &&
+              typeof result[key] !== "function"
             ) {
-              newData[key] = result[key]
+              newData[key] = result[key];
             }
-          })
+          });
 
           // Check for duplicate paths before updating
           if (this._hasDuplicatePaths(newData)) {
-            throw new Error('Cannot update item: would create duplicate paths')
+            throw new Error("Cannot update item: would create duplicate paths");
           }
 
-          item.data = newData
+          item.data = newData;
         }
       }
-    })
-    this._markForWrite()
-    return this
+    });
+    this._markForWrite();
+    return this;
   }
 
   /**
@@ -500,7 +505,7 @@ export class Stepper extends StepState {
    * @returns {string} A JSON representation of the StepState object
    */
   get json() {
-    return StepperSerializer.serialize(this)
+    return StepperSerializer.serialize(this);
   }
 
   /**
@@ -508,7 +513,7 @@ export class Stepper extends StepState {
    * @param {string} data - The JSON string to deserialize
    */
   loadFromJSON(data) {
-    StepperSerializer.deserialize(data, this, this)
+    StepperSerializer.deserialize(data, this, this);
   }
 
   /**
@@ -527,18 +532,18 @@ export class Stepper extends StepState {
         isLeaf: state.isLeaf,
         isFirstLeaf: state.isFirstLeaf,
         rows: [],
-      }
+      };
 
       // Process each child state
       state.rows.forEach((childState) => {
-        cleanState.rows.push(processState(childState, level + 1))
-      })
+        cleanState.rows.push(processState(childState, level + 1));
+      });
 
-      return cleanState
-    }
+      return cleanState;
+    };
 
     // Process the root state
-    return processState(this.root)
+    return processState(this.root);
   }
 
   /**
@@ -548,40 +553,42 @@ export class Stepper extends StepState {
    */
   save(page = null) {
     if (!this._store) {
-      this._log.warn('Stepper: Cannot save state - no store reference available')
-      return false
+      this._log.warn("Stepper: Cannot save state - no store reference available");
+      return false;
     }
 
-    const targetPage = page || this.name
+    const targetPage = page || this.name;
     if (!targetPage) {
-      this._log.warn('Stepper: Cannot save state - no page name provided and stepper has no name')
-      return false
+      this._log.warn("Stepper: Cannot save state - no page name provided and stepper has no name");
+      return false;
     }
 
     // Get current localStorage data
-    const existingLocalStorage = JSON.parse(localStorage.getItem(this._store.config.localStorageKey) || '{}')
+    const existingLocalStorage = JSON.parse(
+      localStorage.getItem(this._store.config.localStorageKey) || "{}",
+    );
 
     // Update the viewSteppers in the localStorage data
     if (!existingLocalStorage.viewSteppers) {
-      existingLocalStorage.viewSteppers = {}
+      existingLocalStorage.viewSteppers = {};
     }
     existingLocalStorage.viewSteppers[targetPage] = {
       data: {
         stepperState: this.json,
       },
-    }
+    };
 
     // Save back to localStorage
-    localStorage.setItem(this._store.config.localStorageKey, JSON.stringify(existingLocalStorage))
+    localStorage.setItem(this._store.config.localStorageKey, JSON.stringify(existingLocalStorage));
 
     // Also update the store for consistency
     this._store.browserPersisted.viewSteppers[targetPage] = {
       data: {
         stepperState: this.json,
       },
-    }
+    };
 
-    return true
+    return true;
   }
 
   /**
@@ -590,9 +597,9 @@ export class Stepper extends StepState {
    * does _not_ clear the data from the current node
    */
   clearSubTree() {
-    super.clearSubTree()
+    super.clearSubTree();
 
-    this._shuffled = false
+    this._shuffled = false;
   }
 
   /**
@@ -602,13 +609,13 @@ export class Stepper extends StepState {
    */
   clearCurrentStepData() {
     // Get the current leaf node
-    let current = this._root
+    let current = this._root;
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex]
+      current = current._states[current._currentIndex];
     }
     // Clear data on the current leaf node
-    current.clearData()
+    current.clearData();
   }
 }
 
-export default Stepper
+export default Stepper;

@@ -13,4 +13,3 @@ ln -sf ../../scripts/generate_git_env.sh .git/hooks/post-commit
 # same thing but for when you switch to a new branch
 ln -sf ../../scripts/generate_git_env.sh .git/hooks/post-checkout
 bash scripts/generate_git_env.sh
-

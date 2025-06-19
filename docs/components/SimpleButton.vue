@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-const count = ref(0)
+  import { ref } from "vue";
+  const count = ref(0);
 </script>
 
 <template>
@@ -8,9 +8,9 @@ const count = ref(0)
 </template>
 
 <style scoped>
-button {
-  font-weight: bold;
-  color: black;
-  background-color: lightblue;
-}
+  button {
+    font-weight: bold;
+    color: black;
+    background-color: lightblue;
+  }
 </style>

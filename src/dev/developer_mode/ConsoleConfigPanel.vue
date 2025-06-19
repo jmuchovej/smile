@@ -1,84 +1,85 @@
 <script setup>
-import { reactive, computed, onMounted } from 'vue'
-import ConfigList from '@/dev/developer_mode/ConfigList.vue'
-import SmileAPI from '@/core/composables/useAPI'
-const api = SmileAPI()
+  import { reactive, computed, onMounted } from "vue";
 
-const browse_panels = reactive({ path: ['/', null, null] })
+  import SmileAPI from "@/core/composables/useAPI";
+  import ConfigList from "@/dev/developer_mode/ConfigList.vue";
+  const api = SmileAPI();
 
-onMounted(() => {
-  if (api.store.dev.configPath !== null) {
-    browse_panels.path = JSON.parse(api.store.dev.configPath) // hydrate from api.store
-  }
-})
+  const browse_panels = reactive({ path: ["/", null, null] });
 
-function save_path() {
-  api.store.dev.configPath = JSON.stringify(browse_panels.path)
-}
-
-const n_active_panels = computed(() => {
-  var count = 0
-  for (var i = 0; i < browse_panels.path.length; i++) {
-    if (browse_panels.path[i] !== null) {
-      count++
+  onMounted(() => {
+    if (api.store.dev.configPath !== null) {
+      browse_panels.path = JSON.parse(api.store.dev.configPath); // hydrate from api.store
     }
-  }
-  return count
-})
+  });
 
-function panel_path(cutoff) {
-  var path = ''
-  if (browse_panels.path[browse_panels.path.length - cutoff - 1] == null) {
-    return null
-  } else {
-    for (var i = 0; i < browse_panels.path.length - cutoff; i++) {
-      path += String(browse_panels.path[i])
-      if (i < browse_panels.path.length - cutoff - 1) {
-        path += '.'
+  function save_path() {
+    api.store.dev.configPath = JSON.stringify(browse_panels.path);
+  }
+
+  const n_active_panels = computed(() => {
+    var count = 0;
+    for (var i = 0; i < browse_panels.path.length; i++) {
+      if (browse_panels.path[i] !== null) {
+        count++;
       }
     }
-    return path
-  }
-}
+    return count;
+  });
 
-function panel1_select(option) {
-  browse_panels.path.pop()
-  browse_panels.path.pop()
-  browse_panels.path.push(String(option))
-  if (browse_panels.path.length < 3) {
-    browse_panels.path.push(null)
+  function panel_path(cutoff) {
+    var path = "";
+    if (browse_panels.path[browse_panels.path.length - cutoff - 1] == null) {
+      return null;
+    } else {
+      for (var i = 0; i < browse_panels.path.length - cutoff; i++) {
+        path += String(browse_panels.path[i]);
+        if (i < browse_panels.path.length - cutoff - 1) {
+          path += ".";
+        }
+      }
+      return path;
+    }
   }
-  save_path()
-}
 
-function panel2_select(option) {
-  browse_panels.path.pop()
-  browse_panels.path.push(String(option))
-  save_path()
-}
-
-function panel3_select(option) {
-  browse_panels.path.push(String(option))
-  save_path()
-}
-function panel_jump(index) {
-  // for everything after index set to null
-  for (var i = index + 1; i < browse_panels.path.length; i++) {
-    browse_panels.path[i] = null
+  function panel1_select(option) {
+    browse_panels.path.pop();
+    browse_panels.path.pop();
+    browse_panels.path.push(String(option));
+    if (browse_panels.path.length < 3) {
+      browse_panels.path.push(null);
+    }
+    save_path();
   }
-  // trim browse_panels to length three
-  browse_panels.path = browse_panels.path.slice(0, 3)
-  /*
+
+  function panel2_select(option) {
+    browse_panels.path.pop();
+    browse_panels.path.push(String(option));
+    save_path();
+  }
+
+  function panel3_select(option) {
+    browse_panels.path.push(String(option));
+    save_path();
+  }
+  function panel_jump(index) {
+    // for everything after index set to null
+    for (var i = index + 1; i < browse_panels.path.length; i++) {
+      browse_panels.path[i] = null;
+    }
+    // trim browse_panels to length three
+    browse_panels.path = browse_panels.path.slice(0, 3);
+    /*
   for (var i = index; i < index; i++) {
     browse_panels.path.push(null)
   }
   */
-}
+  }
 
-function resetDevState() {
-  localStorage.removeItem(api.config.devLocalStorageKey) // delete the local store
-  location.reload()
-}
+  function resetDevState() {
+    localStorage.removeItem(api.config.devLocalStorageKey); // delete the local store
+    location.reload();
+  }
 </script>
 <template>
   <!-- content of panel here -->
@@ -103,12 +104,11 @@ function resetDevState() {
             Read more about configuration options
             <a href="https://smile.gureckislab.org/configuration.html">in the docs</a>.
           </p>
-          <div class="resetbutton ml-2 mb-2 mt-2">
+          <div class="resetbutton mt-2 mb-2 ml-2">
             <a
               class="button is-small has-tooltip-arrow has-tooltip-right"
               @click="api.resetLocalState()"
-              data-tooltip="Reset local state"
-            >
+              data-tooltip="Reset local state">
               <b>Local:</b> <FAIcon icon=" fa-solid fa-arrow-rotate-left" />
             </a>
           </div>
@@ -116,8 +116,7 @@ function resetDevState() {
             <a
               class="button is-small has-tooltip-arrow has-tooltip-right"
               @click="resetDevState()"
-              data-tooltip="Reset developer interface"
-            >
+              data-tooltip="Reset developer interface">
               <b>Dev:</b> <FAIcon icon=" fa-solid fa-arrow-rotate-left" />
             </a>
           </div>
@@ -128,16 +127,14 @@ function resetDevState() {
         <ConfigList
           :data="panel_path(2)"
           :selected="browse_panels.path[browse_panels.path.length - 2]"
-          @selected="panel1_select"
-        ></ConfigList>
+          @selected="panel1_select"></ConfigList>
       </div>
       <div class="column colcontent is-3 edge isdark">
         <!-- one from end -->
         <ConfigList
           :data="panel_path(1)"
           :selected="browse_panels.path[browse_panels.path.length - 1]"
-          @selected="panel2_select"
-        ></ConfigList>
+          @selected="panel2_select"></ConfigList>
       </div>
       <div class="column colcontent is-4 edge isdark">
         <!-- zero from end -->
@@ -148,38 +145,38 @@ function resetDevState() {
 </template>
 
 <style scoped>
-.breadcrumb {
-  padding: 5px;
-  padding-top: 5px;
-  padding-bottom: 4px;
-  padding-left: 10px;
-  margin: 0px;
-  height: 30px;
-  background-color: #eeeeee;
-  border-bottom: 1px solid #ccc;
-  border-top: 1px solid #ccc;
-  font-size: 0.8em;
-  color: #434343;
-}
-.breadcrumb li + li::before {
-  color: var(--darker-grey);
-}
-.contentpanel {
-  padding-left: 0px;
-  margin: 0px;
-  height: 100%;
-}
-.colcontent {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-.actionsbar {
-  height: 100%;
-}
-.edge {
-  border-right: 1px solid #e3e3e3;
-  margin: 0px;
-  padding: 0px;
-}
+  .breadcrumb {
+    padding: 5px;
+    padding-top: 5px;
+    padding-bottom: 4px;
+    padding-left: 10px;
+    margin: 0px;
+    height: 30px;
+    background-color: #eeeeee;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    font-size: 0.8em;
+    color: #434343;
+  }
+  .breadcrumb li + li::before {
+    color: var(--darker-grey);
+  }
+  .contentpanel {
+    padding-left: 0px;
+    margin: 0px;
+    height: 100%;
+  }
+  .colcontent {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .actionsbar {
+    height: 100%;
+  }
+  .edge {
+    border-right: 1px solid #e3e3e3;
+    margin: 0px;
+    padding: 0px;
+  }
 </style>

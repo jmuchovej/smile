@@ -1,3 +1,4 @@
+import { push } from "notivue";
 /**
  * @module log
  * @description Pinia store for managing application logging functionality. Provides methods for:
@@ -7,10 +8,10 @@
  * - Notifying users of important events
  * - Integrating with the application's global state management
  */
-import { defineStore } from 'pinia'
-import appconfig from '@/core/config'
-import { push } from 'notivue'
-import useSmileStore from '@/core/stores/smilestore'
+import { defineStore } from "pinia";
+
+import appconfig from "@/core/config";
+import useSmileStore from "@/core/stores/smilestore";
 
 /**
  * Gets a formatted stack trace string from the current execution context
@@ -22,18 +23,20 @@ import useSmileStore from '@/core/stores/smilestore'
  */
 function getLogTrace() {
   // some browsers use 'at ', some use '@'
-  const lines = new Error().stack.split('\n').filter((line) => line.includes('at ') || line.includes('@'))
+  const lines = new Error().stack
+    .split("\n")
+    .filter((line) => line.includes("at ") || line.includes("@"));
   if (lines.length < 4) {
-    return '(could not parse trace)'
+    return "(could not parse trace)";
   }
   // strip leading 'http://localhost:xxx/.../.../.../' and '?t=xxx' query param, if present
   const regex =
-    /(?:at\s|@)(?:.*?\s\()?(http:\/\/localhost:\d+\/\w+\/\w+\/\w+\/)?(?<filePath>.+?)(?:\?.*?)?(?::(?<lineNumber>\d+):(?<columnNumber>\d+))\)?/
-  const match = regex.exec(lines[3])
+    /(?:at\s|@)(?:.*?\s\()?(http:\/\/localhost:\d+\/\w+\/\w+\/\w+\/)?(?<filePath>.+?)(?:\?.*?)?(?::(?<lineNumber>\d+):(?<columnNumber>\d+))\)?/;
+  const match = regex.exec(lines[3]);
   if (match) {
-    return `${match.groups.filePath} (line ${match.groups.lineNumber}, column ${match.groups.columnNumber})`
+    return `${match.groups.filePath} (line ${match.groups.lineNumber}, column ${match.groups.columnNumber})`;
   } else {
-    return '(could not parse trace)'
+    return "(could not parse trace)";
   }
 }
 
@@ -48,17 +51,17 @@ function getLogTrace() {
 function argsToString(args) {
   return args
     .map((arg) => {
-      if (typeof arg === 'object') {
+      if (typeof arg === "object") {
         try {
-          return JSON.stringify(arg)
+          return JSON.stringify(arg);
         } catch (e) {
-          return ''
+          return "";
         }
       } else {
-        return String(arg)
+        return String(arg);
       }
     })
-    .join(' ')
+    .join(" ");
 }
 
 /**
@@ -70,7 +73,7 @@ function argsToString(args) {
  * logStore.warn('Warning message') // Logs a warning
  * logStore.debug('Debug info') // Logs debug info in development mode
  */
-export default defineStore('log', {
+export default defineStore("log", {
   /**
    * State for the log store
    * @returns {Object} Store state object
@@ -87,15 +90,15 @@ export default defineStore('log', {
      * @param {Object} msg - The message object to add to history
      */
     addToHistory(msg) {
-      this.history.push(msg)
-      this.page_history.push(msg)
+      this.history.push(msg);
+      this.page_history.push(msg);
     },
 
     /**
      * Clears the page-specific history array while preserving global history
      */
     clearPageHistory() {
-      this.page_history = []
+      this.page_history = [];
     },
 
     /**
@@ -103,14 +106,14 @@ export default defineStore('log', {
      * @param {...*} args - Arguments to log, will be converted to string
      */
     log(...args) {
-      const message = argsToString(args)
+      const message = argsToString(args);
       const msg = {
-        type: 'log',
-        time: new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }),
+        type: "log",
+        time: new Date().toLocaleTimeString("en-US", { timeZoneName: "short" }),
         message: message,
         trace: getLogTrace(),
-      }
-      this.addToHistory(msg)
+      };
+      this.addToHistory(msg);
     },
 
     /**
@@ -118,17 +121,17 @@ export default defineStore('log', {
      * @param {...*} args - Arguments to log, will be converted to string
      */
     debug(...args) {
-      const message = argsToString(args)
+      const message = argsToString(args);
       const msg = {
-        type: 'debug',
-        time: new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }),
+        type: "debug",
+        time: new Date().toLocaleTimeString("en-US", { timeZoneName: "short" }),
         message: message,
         trace: getLogTrace(),
+      };
+      if (appconfig.mode === "development") {
+        console.log(message);
       }
-      if (appconfig.mode === 'development') {
-        console.log(message)
-      }
-      this.addToHistory(msg)
+      this.addToHistory(msg);
     },
 
     /**
@@ -136,24 +139,24 @@ export default defineStore('log', {
      * @param {...*} args - Arguments to log, will be converted to string
      */
     warn(...args) {
-      const smilestore = useSmileStore()
-      const message = argsToString(args)
+      const smilestore = useSmileStore();
+      const message = argsToString(args);
       const msg = {
-        type: 'warn',
-        time: new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }),
+        type: "warn",
+        time: new Date().toLocaleTimeString("en-US", { timeZoneName: "short" }),
         message: message,
         trace: getLogTrace(),
-      }
+      };
       if (
-        smilestore.dev.notificationFilter !== 'None' &&
-        (smilestore.dev.notificationFilter == 'Warnings and Errors' ||
-          smilestore.dev.notificationFilter == 'Warnings only') &&
-        appconfig.mode === 'development'
+        smilestore.dev.notificationFilter !== "None" &&
+        (smilestore.dev.notificationFilter == "Warnings and Errors" ||
+          smilestore.dev.notificationFilter == "Warnings only") &&
+        appconfig.mode === "development"
       ) {
-        push.warning(message)
+        push.warning(message);
       }
-      console.warn(message)
-      this.addToHistory(msg)
+      console.warn(message);
+      this.addToHistory(msg);
     },
 
     /**
@@ -161,24 +164,24 @@ export default defineStore('log', {
      * @param {...*} args - Arguments to log, will be converted to string
      */
     error(...args) {
-      const smilestore = useSmileStore()
-      const message = argsToString(args)
+      const smilestore = useSmileStore();
+      const message = argsToString(args);
       const msg = {
-        type: 'error',
-        time: new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }),
+        type: "error",
+        time: new Date().toLocaleTimeString("en-US", { timeZoneName: "short" }),
         message: message,
         trace: getLogTrace(),
-      }
+      };
       if (
-        smilestore.dev.notificationFilter !== 'None' &&
-        (smilestore.dev.notificationFilter == 'Warnings and Errors' ||
-          smilestore.dev.notificationFilter == 'Errors only') &&
-        appconfig.mode === 'development'
+        smilestore.dev.notificationFilter !== "None" &&
+        (smilestore.dev.notificationFilter == "Warnings and Errors" ||
+          smilestore.dev.notificationFilter == "Errors only") &&
+        appconfig.mode === "development"
       ) {
-        push.error(message)
+        push.error(message);
       }
-      console.error(message)
-      this.addToHistory(msg)
+      console.error(message);
+      this.addToHistory(msg);
     },
 
     /**
@@ -186,23 +189,24 @@ export default defineStore('log', {
      * @param {...*} args - Arguments to log, will be converted to string
      */
     success(...args) {
-      const smilestore = useSmileStore()
-      const message = argsToString(args)
+      const smilestore = useSmileStore();
+      const message = argsToString(args);
       const msg = {
-        type: 'success',
-        time: new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }),
+        type: "success",
+        time: new Date().toLocaleTimeString("en-US", { timeZoneName: "short" }),
         message: message,
         trace: getLogTrace(),
-      }
+      };
       if (
-        smilestore.dev.notificationFilter !== 'None' &&
-        (smilestore.dev.notificationFilter == 'All' || smilestore.dev.notificationFilter == 'Success only') &&
-        appconfig.mode === 'development'
+        smilestore.dev.notificationFilter !== "None" &&
+        (smilestore.dev.notificationFilter == "All" ||
+          smilestore.dev.notificationFilter == "Success only") &&
+        appconfig.mode === "development"
       ) {
-        push.success(message)
+        push.success(message);
       }
-      console.log(message)
-      this.addToHistory(msg)
+      console.log(message);
+      this.addToHistory(msg);
     },
   },
-})
+});

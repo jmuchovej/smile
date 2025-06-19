@@ -1,3 +1,4 @@
+import { onKeyDown, onKeyPressed, onKeyUp, useMouse, useMousePressed } from "@vueuse/core";
 /**
  * @module useViewAPI
  * @description Creates a view-specific API instance that combines core API functionality with stepper controls
@@ -5,18 +6,18 @@
  * - All methods and properties from the core API
  * - All methods and properties from the stepper
  */
-import { ref, reactive, computed, watch } from 'vue'
-import { SmileAPI } from '@/core/composables/useAPI'
-import useSmileStore from '@/core/stores/smilestore'
-import { useStepper } from '@/core/composables/useStepper'
-import { onKeyDown, onKeyPressed, onKeyUp, useMouse, useMousePressed } from '@vueuse/core'
-import useTimeline from '@/core/composables/useTimeline'
-import { useRoute, useRouter } from 'vue-router'
-import useLog from '@/core/stores/log'
-import config from '@/core/config'
+import { ref, reactive, computed, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
+import { SmileAPI } from "@/core/composables/useAPI";
+import { useStepper } from "@/core/composables/useStepper";
+import useTimeline from "@/core/composables/useTimeline";
+import config from "@/core/config";
+import useLog from "@/core/stores/log";
+import useSmileStore from "@/core/stores/smilestore";
 
 // Singleton instance
-let viewAPIInstance = null
+let viewAPIInstance = null;
 
 /**
  * ViewAPI class extends SmileAPI with view-specific functionality
@@ -29,47 +30,47 @@ let viewAPIInstance = null
  */
 class ViewAPI extends SmileAPI {
   constructor(store, logStore, route, router, timeline) {
-    super(store, logStore, route, router, timeline)
+    super(store, logStore, route, router, timeline);
 
     // Store route as a class property
-    this._route = route
+    this._route = route;
 
     // Make page reactive using computed
-    this._page = computed(() => this._route.name)
+    this._page = computed(() => this._route.name);
     this._stepper = computed(() => {
-      const stepper = useStepper(this._route.name, this.update)
-      stepper.setOnModify(() => this.updateStepper())
-      return stepper
-    })
+      const stepper = useStepper(this._route.name, this.update);
+      stepper.setOnModify(() => this.updateStepper());
+      return stepper;
+    });
 
     // Internal reactive refs
-    this._dataAlongPath = ref(null)
-    this._path = ref(null)
-    this._pathString = ref('')
-    this._index = ref(null)
-    this._stateMachine = ref(null)
-    this._gvars = ref({})
+    this._dataAlongPath = ref(null);
+    this._path = ref(null);
+    this._pathString = ref("");
+    this._index = ref(null);
+    this._stateMachine = ref(null);
+    this._gvars = ref({});
 
     // Component registry
-    this.componentRegistry = new Map()
+    this.componentRegistry = new Map();
 
     // Watch for stepper changes and update internal state
     watch(
       this._stepper,
       (newStepper) => {
-        this._updateStepperState(newStepper, false) // don't save because it will trigger recursive updates
+        this._updateStepperState(newStepper, false); // don't save because it will trigger recursive updates
       },
-      { immediate: true, deep: true }
-    )
+      { immediate: true, deep: true },
+    );
 
     // Add keyboard event handlers from VueUse
-    this.onKeyDown = onKeyDown
-    this.onKeyPressed = onKeyPressed
-    this.onKeyUp = onKeyUp
+    this.onKeyDown = onKeyDown;
+    this.onKeyPressed = onKeyPressed;
+    this.onKeyUp = onKeyUp;
 
     // Add mouse event handlers from VueUse
-    this.useMouse = useMouse
-    this.useMousePressed = useMousePressed
+    this.useMouse = useMouse;
+    this.useMousePressed = useMousePressed;
   }
 
   /**
@@ -82,8 +83,8 @@ class ViewAPI extends SmileAPI {
    * This allows advanced manipulation of the state machine when needed.
    */
   get steps() {
-    if (!this._stepper.value) return null
-    return this._stepper.value
+    if (!this._stepper.value) return null;
+    return this._stepper.value;
   }
 
   /**
@@ -93,7 +94,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   hasNextStep() {
-    return this._stepper.value.hasNext()
+    return this._stepper.value.hasNext();
   }
 
   /**
@@ -103,7 +104,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   hasPrevStep() {
-    return this._stepper.value.hasPrev()
+    return this._stepper.value.hasPrev();
   }
 
   /**
@@ -115,8 +116,8 @@ class ViewAPI extends SmileAPI {
    */
   hasSteps() {
     // has steps calls on the root to find if it has steps
-    // if not then no need to check for leafs
-    return this._stepper.value.hasSteps()
+    // if not then no need to check for leaves
+    return this._stepper.value.hasSteps();
   }
 
   /**
@@ -127,11 +128,11 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   goNextStep() {
-    let next = this._stepper.value.next()
+    let next = this._stepper.value.next();
     if (next !== null) {
-      this._updateStepperState(next)
+      this._updateStepperState(next);
     }
-    return next
+    return next;
   }
 
   /**
@@ -142,11 +143,11 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   goPrevStep() {
-    let prev = this._stepper.value.prev()
+    let prev = this._stepper.value.prev();
     if (prev !== null) {
-      this._updateStepperState(prev)
+      this._updateStepperState(prev);
     }
-    return prev
+    return prev;
   }
 
   /**
@@ -157,8 +158,8 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   goFirstStep() {
-    this._stepper.value.reset()
-    this._updateStepperState(this._stepper.value)
+    this._stepper.value.reset();
+    this._updateStepperState(this._stepper.value);
   }
 
   /**
@@ -170,8 +171,8 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   goToStep(path) {
-    this._stepper.value.goTo(path)
-    this._updateStepperState(this._stepper.value)
+    this._stepper.value.goTo(path);
+    this._updateStepperState(this._stepper.value);
   }
 
   /**
@@ -183,8 +184,8 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   get stepIndex() {
-    const leafNodes = this._stepper.value.leafNodes
-    return leafNodes.indexOf(this._pathString.value)
+    const leafNodes = this._stepper.value.leafNodes;
+    return leafNodes.indexOf(this._pathString.value);
   }
 
   /**
@@ -195,7 +196,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   get blockIndex() {
-    return this._stepper.value.blockIndex
+    return this._stepper.value.blockIndex;
   }
 
   /**
@@ -207,7 +208,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   get pathString() {
-    return this._pathString.value
+    return this._pathString.value;
   }
 
   /**
@@ -219,7 +220,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   get path() {
-    return this._path.value
+    return this._path.value;
   }
 
   /**
@@ -230,7 +231,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   get length() {
-    return this._stepper.value.countLeafNodes
+    return this._stepper.value.countLeafNodes;
   }
 
   /**
@@ -241,7 +242,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   isLastStep() {
-    return this.stepIndex === this.nSteps - 1
+    return this.stepIndex === this.nSteps - 1;
   }
 
   /**
@@ -252,7 +253,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   isLastBlockStep() {
-    return this.blockIndex === this.blockLength - 1
+    return this.blockIndex === this.blockLength - 1;
   }
 
   /**
@@ -263,7 +264,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   get blockLength() {
-    return this._stepper.value.blockLength
+    return this._stepper.value.blockLength;
   }
 
   /**
@@ -275,7 +276,7 @@ class ViewAPI extends SmileAPI {
    * @see nSteps
    */
   get stepLength() {
-    return this._stepper.value.countLeafNodes
+    return this._stepper.value.countLeafNodes;
   }
 
   /**
@@ -287,7 +288,7 @@ class ViewAPI extends SmileAPI {
    * @see stepLength
    */
   get nSteps() {
-    return this.stepLength
+    return this.stepLength;
   }
 
   /**
@@ -341,35 +342,35 @@ class ViewAPI extends SmileAPI {
    */
   get persist() {
     if (!this._stepper.value.root.data.gvars) {
-      this._stepper.value.root.data.gvars = {}
+      this._stepper.value.root.data.gvars = {};
     }
-    const self = this // capture the outer this context
+    const self = this; // capture the outer this context
 
-    const isDefined = (key) => key in this._stepper.value.root.data.gvars
+    const isDefined = (key) => key in this._stepper.value.root.data.gvars;
 
     const createRecursiveProxy = (target) => {
       return new Proxy(target, {
         get: (target, prop) => {
-          if (prop === 'isDefined') {
-            return isDefined
+          if (prop === "isDefined") {
+            return isDefined;
           }
-          const value = target[prop]
-          if (value && typeof value === 'object' && !Array.isArray(value)) {
-            return createRecursiveProxy(value)
+          const value = target[prop];
+          if (value && typeof value === "object" && !Array.isArray(value)) {
+            return createRecursiveProxy(value);
           }
-          return value
+          return value;
         },
         set: (target, prop, value) => {
-          target[prop] = value
+          target[prop] = value;
           setTimeout(() => {
-            self.updateStepper()
-          }, 2)
-          return true
+            self.updateStepper();
+          }, 2);
+          return true;
         },
-      })
-    }
+      });
+    };
 
-    return createRecursiveProxy(this._stepper.value.root.data.gvars)
+    return createRecursiveProxy(this._stepper.value.root.data.gvars);
   }
 
   /**
@@ -384,9 +385,9 @@ class ViewAPI extends SmileAPI {
    * api.clearPersist()
    */
   clearPersist() {
-    this._gvars.value = reactive({})
-    this._stepper.value.root.data.gvars = {}
-    this._saveStepperState()
+    this._gvars.value = reactive({});
+    this._stepper.value.root.data.gvars = {};
+    this._saveStepperState();
   }
 
   /**
@@ -413,8 +414,8 @@ class ViewAPI extends SmileAPI {
    * @memberof ViewAPI
    * @instance
    */
-  startTimer(name = 'default') {
-    this.persist[`startTime_${name}`] = Date.now()
+  startTimer(name = "default") {
+    this.persist[`startTime_${name}`] = Date.now();
   }
 
   /**
@@ -424,9 +425,9 @@ class ViewAPI extends SmileAPI {
    * @memberof ViewAPI
    * @instance
    */
-  isTimerStarted(name = 'default') {
-    const timerKey = `startTime_${name}`
-    return this.persist.isDefined(timerKey) ? this.persist[timerKey] : false
+  isTimerStarted(name = "default") {
+    const timerKey = `startTime_${name}`;
+    return this.persist.isDefined(timerKey) ? this.persist[timerKey] : false;
   }
 
   /**
@@ -436,8 +437,8 @@ class ViewAPI extends SmileAPI {
    * @memberof ViewAPI
    * @instance
    */
-  elapsedTime(name = 'default') {
-    return Date.now() - this.persist[`startTime_${name}`]
+  elapsedTime(name = "default") {
+    return Date.now() - this.persist[`startTime_${name}`];
   }
 
   /**
@@ -447,8 +448,8 @@ class ViewAPI extends SmileAPI {
    * @memberof ViewAPI
    * @instance
    */
-  elapsedTimeInSeconds(name = 'default') {
-    return (Date.now() - this.persist[`startTime_${name}`]) / 1000
+  elapsedTimeInSeconds(name = "default") {
+    return (Date.now() - this.persist[`startTime_${name}`]) / 1000;
   }
 
   /**
@@ -458,8 +459,8 @@ class ViewAPI extends SmileAPI {
    * @memberof ViewAPI
    * @instance
    */
-  elapsedTimeInMinutes(name = 'default') {
-    return (Date.now() - this.persist[`startTime_${name}`]) / 60000
+  elapsedTimeInMinutes(name = "default") {
+    return (Date.now() - this.persist[`startTime_${name}`]) / 60000;
   }
 
   /**
@@ -511,56 +512,56 @@ class ViewAPI extends SmileAPI {
    * api.stepData.response = 'new value'
    */
   get stepData() {
-    if (!this._dataAlongPath.value) return null
+    if (!this._dataAlongPath.value) return null;
 
     const mergedData = computed(() => {
       return this._dataAlongPath.value.reduce((merged, item) => {
-        return { ...merged, ...item }
-      }, {})
-    })
+        return { ...merged, ...item };
+      }, {});
+    });
 
     const createRecursiveProxy = (obj) => {
-      if (obj === null || typeof obj !== 'object') {
-        return obj
+      if (obj === null || typeof obj !== "object") {
+        return obj;
       }
 
       if (Array.isArray(obj)) {
         return new Proxy(obj, {
           get: (target, prop) => {
-            const value = target[prop]
-            if (typeof prop === 'string' && !isNaN(prop)) {
-              return createRecursiveProxy(value)
+            const value = target[prop];
+            if (typeof prop === "string" && !isNaN(prop)) {
+              return createRecursiveProxy(value);
             }
-            return value
+            return value;
           },
           set: (target, prop, value) => {
-            target[prop] = value
+            target[prop] = value;
             if (this._stepper.value.currentData) {
-              this._stepper.value.currentData[prop] = value
-              this._saveStepperState()
+              this._stepper.value.currentData[prop] = value;
+              this._saveStepperState();
             }
-            return true
+            return true;
           },
-        })
+        });
       }
 
       return new Proxy(obj, {
         get: (target, prop) => {
-          const value = target[prop]
-          return createRecursiveProxy(value)
+          const value = target[prop];
+          return createRecursiveProxy(value);
         },
         set: (target, prop, value) => {
-          target[prop] = value
+          target[prop] = value;
           if (this._stepper.value.currentData) {
-            this._stepper.value.currentData[prop] = value
-            this._saveStepperState()
+            this._stepper.value.currentData[prop] = value;
+            this._saveStepperState();
           }
-          return true
+          return true;
         },
-      })
-    }
+      });
+    };
 
-    return createRecursiveProxy(mergedData.value)
+    return createRecursiveProxy(mergedData.value);
   }
 
   /**
@@ -584,46 +585,46 @@ class ViewAPI extends SmileAPI {
    * api.stepDataLeaf.myArray[0] = 'first item'
    */
   get stepDataLeaf() {
-    if (!this._stepper.value?.currentData) return null
+    if (!this._stepper.value?.currentData) return null;
 
     const createRecursiveProxy = (obj) => {
-      if (obj === null || typeof obj !== 'object') {
-        return obj
+      if (obj === null || typeof obj !== "object") {
+        return obj;
       }
 
       if (Array.isArray(obj)) {
         return new Proxy(obj, {
           get: (target, prop) => {
-            const value = target[prop]
-            if (typeof prop === 'string' && !isNaN(prop)) {
-              return createRecursiveProxy(value)
+            const value = target[prop];
+            if (typeof prop === "string" && !isNaN(prop)) {
+              return createRecursiveProxy(value);
             }
-            return value
+            return value;
           },
           set: (target, prop, value) => {
-            target[prop] = value
-            this._stepper.value.currentData[prop] = value
-            this._saveStepperState()
-            return true
+            target[prop] = value;
+            this._stepper.value.currentData[prop] = value;
+            this._saveStepperState();
+            return true;
           },
-        })
+        });
       }
 
       return new Proxy(obj, {
         get: (target, prop) => {
-          const value = target[prop]
-          return createRecursiveProxy(value)
+          const value = target[prop];
+          return createRecursiveProxy(value);
         },
         set: (target, prop, value) => {
-          target[prop] = value
-          this._stepper.value.currentData[prop] = value
-          this._saveStepperState()
-          return true
+          target[prop] = value;
+          this._stepper.value.currentData[prop] = value;
+          this._saveStepperState();
+          return true;
         },
-      })
-    }
+      });
+    };
 
-    return createRecursiveProxy(this._stepper.value.currentData)
+    return createRecursiveProxy(this._stepper.value.currentData);
   }
 
   /**
@@ -631,7 +632,7 @@ class ViewAPI extends SmileAPI {
    * @returns {Array|null} Array of path data objects with resolved component types, or null if no path data exists
    */
   get dataAlongPath() {
-    if (this._dataAlongPath.value === null) return null
+    if (this._dataAlongPath.value === null) return null;
 
     return this._dataAlongPath.value.map((item) => {
       if (item?.type?.__vueComponent) {
@@ -640,10 +641,10 @@ class ViewAPI extends SmileAPI {
           type: this.componentRegistry.get(item.type.componentName) || {
             template: `<div>Component ${item.type.componentName} not found</div>`,
           },
-        }
+        };
       }
-      return item
-    })
+      return item;
+    });
   }
 
   /**
@@ -662,25 +663,25 @@ class ViewAPI extends SmileAPI {
    */
   queryStepDataLeaf(pathFilter = null) {
     const matchesFilter = (path, filter) => {
-      if (!filter) return true
+      if (!filter) return true;
 
-      let pattern = filter.replace(/\*/g, '.*')
-      pattern = pattern.replace(/[+?^${}()|[\]\\]/g, '\\$&')
-      const regex = new RegExp(`^${pattern}`)
-      return regex.test(path)
-    }
+      let pattern = filter.replace(/\*/g, ".*");
+      pattern = pattern.replace(/[+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`^${pattern}`);
+      return regex.test(path);
+    };
 
     const getLeafData = (state) => {
       if (state.isLeaf) {
         if (matchesFilter(state.pathString, pathFilter)) {
-          return state.data
+          return state.data;
         }
-        return []
+        return [];
       }
-      return state.states.flatMap(getLeafData)
-    }
+      return state.states.flatMap(getLeafData);
+    };
 
-    return getLeafData(this._stepper.value)
+    return getLeafData(this._stepper.value);
   }
 
   /**
@@ -699,27 +700,27 @@ class ViewAPI extends SmileAPI {
    */
   queryStepData(pathFilter = null) {
     const matchesFilter = (path, filter) => {
-      if (!filter) return true
+      if (!filter) return true;
 
-      let pattern = filter.replace(/\*/g, '.*')
-      pattern = pattern.replace(/[+?^${}()|[\]\\]/g, '\\$&')
-      const regex = new RegExp(`^${pattern}`)
-      return regex.test(path)
-    }
+      let pattern = filter.replace(/\*/g, ".*");
+      pattern = pattern.replace(/[+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`^${pattern}`);
+      return regex.test(path);
+    };
 
     const getLeafData = (state) => {
       if (state.isLeaf) {
         if (matchesFilter(state.pathString, pathFilter)) {
           // Only return the node's own data, not including root properties
-          const { gvars, ...nodeData } = state.data
-          return nodeData
+          const { gvars, ...nodeData } = state.data;
+          return nodeData;
         }
-        return []
+        return [];
       }
-      return state.states.flatMap(getLeafData)
-    }
+      return state.states.flatMap(getLeafData);
+    };
 
-    return getLeafData(this._stepper.value)
+    return getLeafData(this._stepper.value);
   }
 
   /**
@@ -736,14 +737,14 @@ class ViewAPI extends SmileAPI {
    */
   clear() {
     if (this.store.browserPersisted.viewSteppers[this._page.value]) {
-      const pageData = this.store.browserPersisted.viewSteppers[this._page.value].data || {}
-      delete pageData.stepperState
-      this.store.browserPersisted.viewSteppers[this._page.value].data = pageData
+      const pageData = this.store.browserPersisted.viewSteppers[this._page.value].data || {};
+      delete pageData.stepperState;
+      this.store.browserPersisted.viewSteppers[this._page.value].data = pageData;
 
-      this._stepper.value.clearSubTree()
-      this.componentRegistry.clear()
+      this._stepper.value.clearSubTree();
+      this.componentRegistry.clear();
     }
-    this._saveStepperState()
+    this._saveStepperState();
   }
 
   /**
@@ -759,8 +760,8 @@ class ViewAPI extends SmileAPI {
    * api.clearCurrentStepData()
    */
   clearCurrentStepData() {
-    this._stepper.value.clearCurrentStepData()
-    this._saveStepperState()
+    this._stepper.value.clearCurrentStepData();
+    this._saveStepperState();
   }
 
   /**
@@ -772,7 +773,7 @@ class ViewAPI extends SmileAPI {
    * @returns {void}
    */
   recordStep() {
-    this.recordData(this.stepData)
+    this.recordData(this.stepData);
   }
 
   /**
@@ -802,7 +803,7 @@ class ViewAPI extends SmileAPI {
    */
   _saveStepperState() {
     if (this._stepper.value) {
-      this._stepper.value.save(this._page.value)
+      this._stepper.value.save(this._page.value);
     }
   }
 
@@ -821,14 +822,14 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   _updateStepperState(data, save = true) {
-    this._dataAlongPath.value = data.dataAlongPath
-    this._pathString.value = data.currentPathString
-    this._path.value = data.currentPath
-    this._index.value = data.index
-    this._gvars.value = reactive(data.data?.gvars || {})
-    this._stateMachine.value = this._visualizeStateMachine()
+    this._dataAlongPath.value = data.dataAlongPath;
+    this._pathString.value = data.currentPathString;
+    this._path.value = data.currentPath;
+    this._index.value = data.index;
+    this._gvars.value = reactive(data.data?.gvars || {});
+    this._stateMachine.value = this._visualizeStateMachine();
     if (save) {
-      this._saveStepperState()
+      this._saveStepperState();
     }
   }
 
@@ -839,7 +840,7 @@ class ViewAPI extends SmileAPI {
    * @instance
    */
   updateStepper() {
-    this._updateStepperState(this._stepper.value)
+    this._updateStepperState(this._stepper.value);
   }
 
   /**
@@ -858,18 +859,18 @@ class ViewAPI extends SmileAPI {
         isLeaf: state.isLeaf,
         isFirstLeaf: state.isFirstLeaf,
         rows: [],
-      }
+      };
 
       if (state.rows) {
         state.rows.forEach((childState) => {
-          cleanState.rows.push(processState(childState, level + 1))
-        })
+          cleanState.rows.push(processState(childState, level + 1));
+        });
       }
 
-      return cleanState
-    }
+      return cleanState;
+    };
 
-    return processState(this._stepper.value)
+    return processState(this._stepper.value);
   }
 }
 
@@ -879,39 +880,39 @@ class ViewAPI extends SmileAPI {
  */
 export default function useViewAPI() {
   if (!viewAPIInstance) {
-    const { goNextView, goPrevView, goToView, nextView, prevView } = useTimeline()
-    const route = useRoute()
-    const router = useRouter()
-    const store = useSmileStore()
-    const logStore = useLog()
-    const timeline = { goNextView, goPrevView, goToView, nextView, prevView }
-    viewAPIInstance = new ViewAPI(store, logStore, route, router, timeline)
+    const { goNextView, goPrevView, goToView, nextView, prevView } = useTimeline();
+    const route = useRoute();
+    const router = useRouter();
+    const store = useSmileStore();
+    const logStore = useLog();
+    const timeline = { goNextView, goPrevView, goToView, nextView, prevView };
+    viewAPIInstance = new ViewAPI(store, logStore, route, router, timeline);
 
     // Add shortcuts for arrow keys
-    if (config.mode == 'development') {
+    if (config.mode == "development") {
       /**
        * Handle right arrow key press to advance to next step
        * @listens keydown.ArrowRight
        * @param {KeyboardEvent} e - The keyboard event
        */
-      onKeyDown(['ArrowRight'], (e) => {
-        e.preventDefault()
-        viewAPIInstance.goNextStep()
-      })
+      onKeyDown(["ArrowRight"], (e) => {
+        e.preventDefault();
+        viewAPIInstance.goNextStep();
+      });
 
       /**
        * Handle left arrow key press to go back to previous step
        * @listens keydown.ArrowLeft
        * @param {KeyboardEvent} e - The keyboard event
        */
-      onKeyDown(['ArrowLeft'], (e) => {
-        e.preventDefault()
-        viewAPIInstance.goPrevStep()
-      })
+      onKeyDown(["ArrowLeft"], (e) => {
+        e.preventDefault();
+        viewAPIInstance.goPrevStep();
+      });
     }
   }
 
-  return viewAPIInstance
+  return viewAPIInstance;
 }
 
 /**
@@ -921,5 +922,5 @@ export default function useViewAPI() {
  * @memberof useViewAPI
  */
 useViewAPI._reset = () => {
-  viewAPIInstance = null
-}
+  viewAPIInstance = null;
+};

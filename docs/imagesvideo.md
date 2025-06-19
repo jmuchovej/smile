@@ -71,14 +71,14 @@ You could dynamically load one of these images like this:
 
 ```vue
 <script setup>
-// load the API
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+  // load the API
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
 
-// pick a random number
-let n = Math.floor(Math.random() * 10)
+  // pick a random number
+  let n = Math.floor(Math.random() * 10);
 
-const bee_public_fn = api.getPublicUrl(`bees/bees-0${n}.svg`) // load that bee
+  const bee_public_fn = api.getPublicUrl(`bees/bees-0${n}.svg`); // load that bee
 </script>
 <template>
   <img :src="bee_public_fn" width="220" />
@@ -93,14 +93,14 @@ Similarly to access a file in the static folder (`/src/user/assets`) use
 
 ```vue
 <script setup>
-// load the API
-import useAPI from '@/core/composables/useAPI'
-const api = useAPI()
+  // load the API
+  import useAPI from "@/core/composables/useAPI";
+  const api = useAPI();
 
-// pick a random number
-let n = Math.floor(Math.random() * 10)
+  // pick a random number
+  let n = Math.floor(Math.random() * 10);
 
-const bee_static_fn = api.getStaticUrl(`bees/bees-0${n}.svg`) // load that bee
+  const bee_static_fn = api.getStaticUrl(`bees/bees-0${n}.svg`); // load that bee
 </script>
 <template>
   <img :src="bee_static_fn" width="220" />
