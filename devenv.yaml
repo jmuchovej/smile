@@ -1,0 +1,24 @@
+# $schema: https://devenv.sh/devenv.schema.json
+nixpkgs:
+  allow_unfree: true
+
+inputs:
+  git-hooks:
+    url: github:cachix/git-hooks.nix
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+  nixpkgs:
+    url: github:cachix/devenv-nixpkgs/rolling
+  treefmt-nix:
+    url: github:jmuchovej/forked-treefmt-nix/cherry-picks
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+  llm-agents:
+    url: github:numtide/llm-agents.nix
+    inputs:
+      nixpkgs:
+        follows: nixpkgs
+    overlays:
+      - shared-nixpkgs
