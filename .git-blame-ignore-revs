@@ -1,0 +1,5 @@
+# Bulk, semantics-free commits that git blame should look through.
+# Use with: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: apply treefmt formatting
+4d24b2fc42ae73e5e95d10ee4782e427e1e3f7a3
