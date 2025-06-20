@@ -1,5 +1,21 @@
-# Bulk, semantics-free commits that git blame should look through.
-# Use with: git config blame.ignoreRevsFile .git-blame-ignore-revs
+# .git-blame-ignore-revs
+#
+# This file consists of a list of commits that should be ignored for
+# `git blame` purposes. This is useful for ignoring commits that only
+# changed whitespace / indentation / formatting, but did not change
+# the underlying syntax tree.
+#
+# GitHub will pick this up automatically for blame views:
+#   https://docs.github.com/en/repositories/working-with-files/using-files/viewing-a-file#ignore-commits-in-the-blame-view
+# To use this file locally, run:
+#   git blame --ignore-revs-file .git-blame-ignore-revs
+# To always use this file by default, run:
+#   git config --local blame.ignoreRevsFile .git-blame-ignore-revs
+# To disable this functionality, run:
+#   git config --local blame.ignoreRevsFile ""
+# Comments are optional, but may provide helpful context.
 
 # style: apply treefmt formatting
 4d24b2fc42ae73e5e95d10ee4782e427e1e3f7a3
+# style: apply `treefmt` treewide
+e2e5f27e801244529509596fabf3108865997dcb
