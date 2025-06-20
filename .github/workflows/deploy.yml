@@ -38,7 +38,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       ## TODO CHANGE THIS TO CHECK OUT THE BRANCH THAT WAS COMMITTED TO
       - name: Checkout code committed to branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           # This will checkout the SHA if triggered by workflow_dispatch, or the commit's branch if triggered by a push
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.github_sha || github.ref }}
@@ -46,7 +46,7 @@ jobs:
 
       # setup node.js
       - name: Setup node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 20.11.1 # this is what i'm using locally
 
@@ -56,7 +56,7 @@ jobs:
 
       # accesses some git variables and processes them to be lower case/short/escaped
       - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
+        uses: rlespinasse/github-slug-action@2daab132aa3a6e23ea9d409f9946b3bf6468cc77 # v3.9.0
 
       # Configure git-specific .env file
       - name: Expose git-specific information to the Vite environment
@@ -143,13 +143,13 @@ jobs:
       # load the environment
       - name: Load the github dotenv file
         id: dotenv_github
-        uses: falti/dotenv-action@v1.1
+        uses: falti/dotenv-action@ab858fbe32740d1f21b7329c10083ec503837d40 # v1.1
         with:
           path: "env/.env.git.local"
 
       - name: Load the general config dotenv file
         id: dotenv_config
-        uses: falti/dotenv-action@v1.1
+        uses: falti/dotenv-action@ab858fbe32740d1f21b7329c10083ec503837d40 # v1.1
         with:
           path: "./env/.env.local"
 
@@ -188,7 +188,7 @@ jobs:
 
       # make remote folder if necessary
       - name: create the remote folders if they don't exist
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
         with:
           host: ${{ secrets.EXP_DEPLOY_HOST }}
           username: ${{ secrets.EXP_DEPLOY_USER }}
@@ -198,7 +198,7 @@ jobs:
 
       # link to code name path
       - name: link to the code name path
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
         with:
           host: ${{ secrets.EXP_DEPLOY_HOST }}
           username: ${{ secrets.EXP_DEPLOY_USER }}
@@ -208,7 +208,7 @@ jobs:
 
       # Deploy files to web server
       - name: rsync to server
-        uses: burnett01/rsync-deployments@5.2
+        uses: burnett01/rsync-deployments@0dc935cdecc5f5e571865e60d2a6cdc673704823 # 5.2
         with:
           switches: -avrz --delete
           path: dist/
@@ -224,7 +224,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: ${{ env.SLACK_WEBHOOK_URL != '' }} # this should only run if SLACK_WEBHOOK exists
         id: slack
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
         with:
           # This data can be any valid JSON from a previous step in the GitHub Action
           payload: |

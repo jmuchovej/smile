@@ -10,14 +10,14 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - name: Inject slug/short variables
-        uses: rlespinasse/github-slug-action@v3.x
+        uses: rlespinasse/github-slug-action@2daab132aa3a6e23ea9d409f9946b3bf6468cc77 # v3.9.0
 
       - name: Send notification to lab slack
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_ERROR_URL }}
         if: ${{ env.SLACK_WEBHOOK_URL != '' }} # this should only run if SLACK_WEBHOOK_URL exists
         id: slack
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@6c661ce58804a1a20f6dc5fbee7f0381b469e001 # v1.25.0
         with:
           # This data can be any valid JSON from a previous step in the GitHub Action
           payload: |
