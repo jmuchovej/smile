@@ -74,7 +74,7 @@ generate any given data file.
 
 In the Firestore document, this information is stored in `smileConfig.github`
 field and includes the repo name, owner, branch, last commit message, last
-commit hash, and the URL of the commmit.
+commit hash, and the URL of the commit.
 
 By keeping this information stored with the data, you can also link directly to
 the code used to generate the data even as it evolves during development.

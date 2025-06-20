@@ -27,7 +27,7 @@ things like the database credentials, etc... In <SmileText/>, configs are set
 using `.env` files. Some of these are automatically generated, some are pass
 from the [base repo](/labconfig) to child repos, and some need to be customize
 for each experiment. [This section](/configuration) of the documentation
-explains all the configuration settings avaialble.
+explains all the configuration settings available.
 
 ## :jigsaw: Components
 
@@ -128,6 +128,6 @@ project.
 ## ::movie_camera:: Saving and Recording Data
 
 The most important function of any web experiment platform is securely saving
-data. Smile provides serveral ways to [save and record data](/datastorage). In
+data. Smile provides several ways to [save and record data](/datastorage). In
 addition the Smile API provides convenience functions for data saving, making it
 quick and easy to save and store what you need.

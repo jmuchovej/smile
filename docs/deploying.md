@@ -64,7 +64,7 @@ dealing with multiple versions of the same experiment:
 
 The idea in <SmileText/> is to use the structure of GitHub repos to help
 organize the versions of your files as well as keep the data linked to the code
-that generated it. To do this we use an adapation of
+that generated it. To do this we use an adaptation of
 [semantic versioning](https://semver.org). You've probably seen software with
 versions like 1.0.1 or 2.3.12. This is known as semantic versioning and has the
 general format `MAJOR.MINOR.PATCH`. Major versions make incompatible API
@@ -150,7 +150,7 @@ project. This is a deterministic hash of your project deployment into a string
 of readable words (e.g., `hike-shark-kite`). A symbolic link is made to your
 normal deploy path on your server automatically. As a results you get a second
 URL like `http://exps.gureckislab.org/e/hike-shark-kite`. This code name URL can
-be shared publically without exposing information. See configuration options for
+be shared publicly without exposing information. See configuration options for
 more information.
 
 ## Deploying a specific version of your experiment
@@ -164,7 +164,7 @@ of past commits you can navigate which looks like this:
 
 ![github commit history](./images/githubcommithistory.png)
 
-Find the commit you want to deploy publically and click the button with two
+Find the commit you want to deploy publicly and click the button with two
 boxes to copy the full hash value for that commit to your clickboard. Then run
 the following command:
 
@@ -260,7 +260,7 @@ adjust.
 
 ### Notifying the Slack bot
 
-If you set up the Slac connection, the final step is to send a notification
+If you set up the Slack connection, the final step is to send a notification
 about the deployment to a Slack
 [Workflow Builder](https://slack.com/help/articles/360035692513-Guide-to-Workflow-Builder)
 bot. This lets you verify the code was deployed and provides you with an
@@ -318,6 +318,6 @@ says instead
 
 You can deploy your experiment in anonymous mode. In this mode, all
 <SmileText/>-default references to the organization conducting the study are
-removed. You can then attach an anonymous link to a paper submisison, either by
+removed. You can then attach an anonymous link to a paper submission, either by
 registering another domain or by using an easy hosting solution such as
 [netlify](https://www.netlify.com/) or [vercel](https://vercel.com/).

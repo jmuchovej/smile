@@ -45,7 +45,7 @@ are useful resources for learning Javascript:
 
 - [Modern Javascript](https://javascript.info) - a great resource for learning
   Javascript
-- [Interneting is hard](https://www.internetingishard.com) - Friendly web
+- [Interesting is hard](https://www.internetingishard.com) - Friendly web
   development tutorials for complete beginners
 
 ### Vue.js

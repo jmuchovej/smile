@@ -181,12 +181,12 @@ provided a submodule of the `api` object. The following functions are available:
 
 ### `api.faker.rbinom(n, p)`
 
-### `api.faker.rexGuassian(mu, sigma, tau)`
+### `api.faker.rexGaussian(mu, sigma, tau)`
 
 ### `api.faker.rchoice(choices)`
 
 ### `api.faker.render(object)`
 
-This function takes a javascript option contining functions and trial
+This function takes a javascript option continuing functions and trial
 descriptors returns a new javascript object with the functions replaced by their
 values.

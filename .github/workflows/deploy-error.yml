@@ -1,10 +1,9 @@
 name: DEPLOY_ERROR_NOTIFY
-
 on:
   workflow_run:
     workflows: [DEPLOY, DOCS_DEPLOY]
     types: [completed]
-
+permissions: {}
 jobs:
   on-failure:
     runs-on: ubuntu-latest

@@ -91,7 +91,7 @@ and trigger an error, etc... Once you understand this difference you'll wonder
 how you ever programmed for the web without it. This feature is known as
 [Hot Module Replacement](https://vitejs.dev/guide/features.html#hot-module-replacement).
 
-## Bundling, Tree-Shaking, and Code-spliting
+## Bundling, Tree-Shaking, and Code-splitting
 
 A second key feature of Vite is that it acts as a bundler. When you use complex
 libraries in your project there may be lots of dependencies both within and

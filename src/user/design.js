@@ -13,30 +13,28 @@
  */
 
 import { markRaw } from "vue";
-import { processQuery } from "@/core/utils/utils";
 
 // 1. Import main built-in View components
 import Advertisement from "@/builtins/advertisement/AdvertisementView.vue";
-import MTurk from "@/builtins/mturk/MTurkRecruitView.vue";
-import Consent from "@/builtins/simple_consent/InformedConsentView.vue";
+import Debrief from "@/builtins/debrief/DebriefView.vue";
 import DemographicSurvey from "@/builtins/demographic_survey/DemographicSurveyView.vue";
 import DeviceSurvey from "@/builtins/device_survey/DeviceSurveyView.vue";
 import Instructions from "@/builtins/instructions/InstructionsView.vue";
 import InstructionsQuiz from "@/builtins/instructions_quiz/InstructionsQuiz.vue";
-import Debrief from "@/builtins/debrief/DebriefView.vue";
+import MTurk from "@/builtins/mturk/MTurkRecruitView.vue";
+import Consent from "@/builtins/simple_consent/InformedConsentView.vue";
 import TaskFeedbackSurvey from "@/builtins/task_survey/TaskFeedbackSurveyView.vue";
-import Thanks from "@/builtins/thanks/ThanksView.vue";
-import Withdraw from "@/builtins/withdraw/WithdrawView.vue";
-import WindowSizer from "@/builtins/window_sizer/WindowSizerView.vue";
-
 // 2. Import user View components
 import Exp from "@/builtins/tasks/ExpView.vue";
 import Task1 from "@/builtins/tasks/Task1View.vue";
 import Task2 from "@/builtins/tasks/Task2View.vue";
-import StroopExp from "@/user/components/stroop_exp/StroopView.vue";
-
+import Thanks from "@/builtins/thanks/ThanksView.vue";
+import WindowSizer from "@/builtins/window_sizer/WindowSizerView.vue";
+import Withdraw from "@/builtins/withdraw/WithdrawView.vue";
 // #3. Import smile API and timeline
 import useAPI from "@/core/composables/useAPI";
+import { processQuery } from "@/core/utils/utils";
+import StroopExp from "@/user/components/stroop_exp/StroopView.vue";
 const api = useAPI();
 
 import Timeline from "@/core/timeline/Timeline";
@@ -59,14 +57,14 @@ api.setRuntimeConfig("autoSave", true);
 
 api.setRuntimeConfig(
   "payrate",
-  "$15USD/hour prorated for estimated completition time + performance related bonus",
+  "$15USD/hour prorated for estimated completiion time + performance related bonus",
 );
 
 // get rid of these two?
 api.setRuntimeConfig("estimated_time", "30-40 minutes");
 api.setRuntimeConfig(
   "payrate",
-  "$15USD/hour prorated for estimated completition time + performance related bonus",
+  "$15USD/hour prorated for estimated completiion time + performance related bonus",
 );
 
 // set the informed consent text on the menu bar
@@ -99,7 +97,7 @@ api.randomAssignCondition({
 // #6. Define and add some routes to the timeline
 // Each route should map to a View component.
 // Each needs a name
-// but for most experiments they go in sequence from the begining
+// but for most experiments they go in sequence from the beginning
 // to the end of this list
 
 // by default routes have meta.requiresConsent = true (unless you manually override it)
@@ -137,7 +135,7 @@ timeline.pushSeqView({
   },
   beforeEnter: (to) => {
     // processes info to get the service-specific
-    // participant info (e.g., Profilic ID)
+    // participant info (e.g., Prolific ID)
     processQuery(to.query, to.params.service);
     api.getBrowserFingerprint();
   },

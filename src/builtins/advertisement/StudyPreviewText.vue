@@ -1,17 +1,17 @@
 <script setup>
-import useAPI from "@/core/composables/useAPI";
-import appconfig from "@/core/config";
-const api = useAPI();
-const props = defineProps({
-  estimated_time: {
-    type: String,
-    required: true,
-  },
-  payrate: {
-    type: String,
-    required: true,
-  },
-});
+  import useAPI from "@/core/composables/useAPI";
+  import appconfig from "@/core/config";
+  const api = useAPI();
+  const props = defineProps({
+    estimated_time: {
+      type: String,
+      required: true,
+    },
+    payrate: {
+      type: String,
+      required: true,
+    },
+  });
 </script>
 
 <template>
@@ -28,7 +28,7 @@ const props = defineProps({
           that will convert to money
           <FAIcon icon="sack-dollar" />
           that we will pay you at the end of the study ({{ payrate }}). The study should take about
-          {{ estimated_time }} of your time. You'll be asked to digitally sign a constent form and
+          {{ estimated_time }} of your time. You'll be asked to digitally sign a consent form and
           (optionally) provide some non-identifiable demographic information during the study. Your
           data will be kept anonymous.
         </p>
@@ -70,18 +70,18 @@ const props = defineProps({
 </template>
 
 <style scoped>
-a {
-  color: #42b983;
-}
+  a {
+    color: #42b983;
+  }
 
-.welcome {
-  margin: auto;
-  margin-left: 80px;
-  margin-right: 80px;
-}
+  .welcome {
+    margin: auto;
+    margin-left: 80px;
+    margin-right: 80px;
+  }
 
-.note {
-  padding: 15px;
-  padding-bottom: 0px;
-}
+  .note {
+    padding: 15px;
+    padding-bottom: 0px;
+  }
 </style>

@@ -46,7 +46,7 @@ Here's how you enter that in Prolific:
 Next, you need to tell Prolific how to end the study. Smile automatically
 redirects participants to Prolific when the study has completed (as long as you
 include `#/welcome/prolific/` in the URL, which directs participants through the
-Prolific version of your study). So you shoud select "I'll redirect them using a
+Prolific version of your study). So you should select "I'll redirect them using a
 URL":
 
 ![Prolific end study](/images/prolific-step3.png)
@@ -217,7 +217,7 @@ where `note-useless-uncle` would be replaced with the unique URL for your
 project.
 
 To test your "raw" Mturk hit you can look at two different landuing urls. When
-the subjet is browsing for tasks on the Mturk website they see your page in
+the subject is browsing for tasks on the Mturk website they see your page in
 "preview mode" which corresponds to this URL:
 
 ```
