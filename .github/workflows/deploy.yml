@@ -189,22 +189,31 @@ jobs:
       # make remote folder if necessary
       - name: create the remote folders if they don't exist
         uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
+        env:
+          EXP_DEPLOY_PATH: ${{ secrets.EXP_DEPLOY_PATH }}
+          VITE_DEPLOY_BASE_PATH: ${{ steps.dotenv_github.outputs.VITE_DEPLOY_BASE_PATH }}
         with:
           host: ${{ secrets.EXP_DEPLOY_HOST }}
           username: ${{ secrets.EXP_DEPLOY_USER }}
           key: ${{ secrets.EXP_DEPLOY_KEY  }}
           port: ${{ secrets.EXP_DEPLOY_PORT }}
-          script: mkdir -p ${{ secrets.EXP_DEPLOY_PATH }}/${{ steps.dotenv_github.outputs.VITE_DEPLOY_BASE_PATH }}; mkdir -p ${{ secrets.EXP_DEPLOY_PATH }}/e; mkdir -p ${{ secrets.EXP_DEPLOY_PATH }}/hashes
+          envs: EXP_DEPLOY_PATH,VITE_DEPLOY_BASE_PATH
+          script: mkdir -p "$EXP_DEPLOY_PATH/$VITE_DEPLOY_BASE_PATH"; mkdir -p "$EXP_DEPLOY_PATH/e"; mkdir -p "$EXP_DEPLOY_PATH/hashes"
 
       # link to code name path
       - name: link to the code name path
         uses: appleboy/ssh-action@7eaf76671a0d7eec5d98ee897acda4f968735a17 # v1.2.0
+        env:
+          EXP_DEPLOY_PATH: ${{ secrets.EXP_DEPLOY_PATH }}
+          VITE_DEPLOY_BASE_PATH: ${{ steps.dotenv_github.outputs.VITE_DEPLOY_BASE_PATH }}
+          VITE_CODE_NAME: ${{ steps.dotenv_github.outputs.VITE_CODE_NAME }}
         with:
           host: ${{ secrets.EXP_DEPLOY_HOST }}
           username: ${{ secrets.EXP_DEPLOY_USER }}
           key: ${{ secrets.EXP_DEPLOY_KEY  }}
           port: ${{ secrets.EXP_DEPLOY_PORT }}
-          script: rm ${{ secrets.EXP_DEPLOY_PATH }}/e/${{ steps.dotenv_github.outputs.VITE_CODE_NAME }}; ln -sf ${{ secrets.EXP_DEPLOY_PATH }}/${{ steps.dotenv_github.outputs.VITE_DEPLOY_BASE_PATH }} ${{ secrets.EXP_DEPLOY_PATH }}/e/${{ steps.dotenv_github.outputs.VITE_CODE_NAME }}
+          envs: EXP_DEPLOY_PATH,VITE_DEPLOY_BASE_PATH,VITE_CODE_NAME
+          script: rm "$EXP_DEPLOY_PATH/e/$VITE_CODE_NAME"; ln -sf "$EXP_DEPLOY_PATH/$VITE_DEPLOY_BASE_PATH" "$EXP_DEPLOY_PATH/e/$VITE_CODE_NAME"
 
       # Deploy files to web server
       - name: rsync to server
