@@ -1,5 +1,8 @@
 name: DEPLOY_ERROR_NOTIFY
-on:
+# workflow_run is safe here: this job never checks out code, has no
+# permissions, and only posts a fixed message to Slack. The workflows it
+# watches run on push, so forks cannot reach it.
+on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows: [DEPLOY, DOCS_DEPLOY]
     types: [completed]
