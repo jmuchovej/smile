@@ -26,5 +26,10 @@
     "Big Sur",
   ]
 
+  [default.extend-identifiers]
+    # `AB` / `BA` are task-order condition labels; identifiers are case-sensitive,
+    # so this accepts the uppercase label without allowing a lowercase `ba`.
+    BA = "BA"
+
   [default.extend-words]
     writeable = "writeable"
