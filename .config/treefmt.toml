@@ -1,0 +1,89 @@
+#:tombi toml-version = "v1.1.0"
+#:schema https://www.schemastore.org/treefmt.json
+
+allow-missing-formatter = true
+on-unmatched            = "info"
+verbose                 = 1
+excludes                = [
+  "*.lock",
+  "*.patch",
+  "go.mod",
+  "go.sum",
+  "*.jsonl",
+  "*.{pdf,gif,ico,png}",
+  ".gitattributes",
+  ".gitignore",
+  ".gitmodules",
+  ".hgignore",
+  ".svnignore",
+  "LICENSE",
+]
+
+[formatter.nixfmt]
+  command  = "nixfmt"
+  includes = [ "*.nix" ]
+
+[formatter.keep-sorted]
+  command  = "keep-sorted"
+  includes = [ "*" ]
+
+[formatter.deadnix]
+  command  = "deadnix"
+  options  = [ "--edit" ]
+  includes = [ "*.nix" ]
+
+[formatter.just]
+  command  = "treefmt-just"
+  includes = [
+    "[Jj][Uu][Ss][Tt][Ff][Ii][Ll][Ee]",
+    "*/[Jj][Uu][Ss][Tt][Ff][Ii][Ll][Ee]",
+    ".[Jj][Uu][Ss][Tt][Ff][Ii][Ll][Ee]",
+    "*/.[Jj][Uu][Ss][Tt][Ff][Ii][Ll][Ee]",
+    "*.[Jj][Uu][Ss][Tt]",
+    "*.[Jj][Uu][Ss][Tt][Ff][Ii][Ll][Ee]"
+  ]
+
+[formatter.oxfmt]
+  command  = "oxfmt"
+  options  = [ "-c", ".config/oxfmtrc.jsonc" ]
+  excludes = [ "*.mdc" ]
+  includes = [
+    "*.{css,scss}",
+    "*.graphql",
+    "*.html",
+    "*.{js,jsx,mjs,cjs}",
+    "*.{json,json5,jsonc}",
+    "*.{hbs,mustache}",
+    "*.{ts,tsx,mts}",
+    "*.vue",
+    "*.{yml,yaml}",
+    "*.{md,mdx}",
+  ]
+
+[formatter.oxipng]
+  command  = "oxipng"
+  options  = [ "--opt", "2" ]
+  includes = [ "*.png" ]
+
+[formatter.statix]
+  command  = "treefmt-statix"
+  includes = [ "*.nix" ]
+
+[formatter.tombi]
+  command  = "tombi"
+  options  = [ "format" ]
+  includes = [ "*.toml" ]
+
+[formatter.typos]
+  command  = "typos"
+  options  = [ "--write-changes", "--force-exclude", "-c", ".config/typos.toml" ]
+  includes = [ "*" ]
+
+[formatter.zizmor]
+  command  = "zizmor"
+  includes = [
+    ".github/workflows/*.yml",
+    ".github/workflows/*.yaml",
+    ".github/actions/**/*.yml",
+    ".github/actions/**/*.yaml"
+  ]
