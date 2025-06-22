@@ -1,3 +1,17 @@
+# Pin transitive Nuxt tooling to the releases that were current alongside
+# Nuxt 3.17.5 (2025-06-16). Left to caret ranges, these drift to releases
+# built for Nuxt 4: newer CLI releases expect the Nuxt 4 schema, newer c12
+# releases pull chokidar 5 (whose watcher walks node_modules and exhausts
+# file handles), and newer Nitro releases need that newer c12.
+overrides:
+  "@nuxt/cli": "3.25.1"
+  "@nuxt/devtools": "2.5.0"
+  "@nuxt/telemetry": "2.6.6"
+  c12: "3.0.4"
+  h3: "1.15.3"
+  nitropack: "2.11.12"
+  unstorage: "1.16.0"
+
 allowBuilds:
   "@firebase/util": true
   cypress: true
