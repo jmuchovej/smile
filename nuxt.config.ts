@@ -17,6 +17,9 @@ export default defineNuxtConfig({
   pages: true,
   modules: ["@nuxt/ui-pro"],
   css: ["~/assets/css/main.css"],
+  alias: {
+    "#smile": fileURLToPath(new URL("./modules/smile", import.meta.url)),
+  },
   ignore: [".devenv/**", ".*/**", "src/**", "docs/**", "tests/**", "plugins/**", "scripts/**"],
   vite: {
     server: {
