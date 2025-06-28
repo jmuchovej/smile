@@ -6,7 +6,12 @@
  * under `runtime/` is shipped to the browser; everything else runs at build
  * time inside Nuxt.
  */
-import { addLayout, createResolver, defineNuxtModule, useLogger } from "@nuxt/kit";
+import { addImportsDir, addLayout, createResolver, defineNuxtModule, useLogger } from "@nuxt/kit";
+import { relative } from "pathe";
+
+import { expectedConfigFiles, loadSmileConfig, watchSmileConfig } from "./build/config";
+import { serializeExperiment } from "./build/serialize";
+import type { SmileAppConfig, SmilePublicRuntimeConfig } from "./runtime/types";
 
 export interface SmileModuleOptions {
   /**
@@ -45,22 +50,74 @@ export default defineNuxtModule<SmileModuleOptions>({
     stimuliDir: "stimuli",
     configPath: "smile.config",
   },
-  setup(options, nuxt) {
+  async setup(options, nuxt) {
     const logger = useLogger("smile");
     const { resolve } = createResolver(import.meta.url);
+    const moduleDir = resolve(".");
+    const rootDir = nuxt.options.rootDir;
 
     // `#smile` points at this directory for application code and for the
     // configuration file. It becomes the package name once published.
-    nuxt.options.alias["#smile"] = resolve(".");
+    nuxt.options.alias["#smile"] = moduleDir;
 
     // Runtime code is authored in TypeScript and Vue SFCs; let Nuxt transpile it.
     nuxt.options.build.transpile.push(resolve("./runtime"));
 
+    // ─── Configuration ───────────────────────────────────────────────────
+
+    const loaded = await loadSmileConfig({
+      rootDir,
+      moduleDir,
+      configPath: options.configPath,
+      experimentOverride: options.experiment,
+    });
+
+    if (!loaded.configFile) {
+      logger.warn(
+        `No configuration file found in ${rootDir}. Expected one of: ${expectedConfigFiles(options.configPath).join(", ")}. No experiments will be available.`,
+      );
+    } else {
+      logger.info(
+        `Active experiment: ${loaded.activeExperiment} (from ${loaded.activeSource}); config: ${relative(rootDir, loaded.configFile)}`,
+      );
+    }
+
+    const publicConfig: SmilePublicRuntimeConfig = {
+      activeExperiment: loaded.activeExperiment,
+      experiment: loaded.experiment ? serializeExperiment(loaded.experiment) : null,
+      availableExperiments: loaded.config?.getExperimentIds() ?? [],
+    };
+    const appConfig: SmileAppConfig = {
+      activeExperiment: publicConfig.activeExperiment,
+      availableExperiments: publicConfig.availableExperiments,
+    };
+
+    // Nuxt infers these keys' types from their values, which would pin the
+    // nullable fields to whatever the demo config happens to contain.
+    (nuxt.options.runtimeConfig.public as Record<string, unknown>).smile = publicConfig;
+    (nuxt.options.appConfig as Record<string, unknown>).smile = appConfig;
+
+    // Reload when the configuration changes during development. A full
+    // restart is the only reliable way to re-run this setup on Nuxt 3.
+    if (nuxt.options.dev) {
+      const unwatch = await watchSmileConfig({
+        rootDir,
+        moduleDir,
+        configPath: options.configPath,
+        experimentOverride: options.experiment,
+        onChange: (event) => {
+          logger.info(`${relative(rootDir, event.path)} ${event.type}; restarting`);
+          void nuxt.callHook("restart", { hard: true });
+        },
+      });
+      if (unwatch) nuxt.hook("close", () => unwatch());
+    }
+
+    // ─── Runtime ─────────────────────────────────────────────────────────
+
+    addImportsDir(resolve("./runtime/composables"));
+
     // The shell every experiment page renders inside.
     addLayout(resolve("./runtime/layouts/smile.vue"), "smile");
-
-    logger.info(
-      `Loaded (experiments: ${options.experimentsDir}/, stimuli: ${options.stimuliDir}/, config: ${options.configPath})`,
-    );
   },
 });
