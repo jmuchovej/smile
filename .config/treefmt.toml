@@ -6,6 +6,7 @@ on-unmatched            = "info"
 verbose                 = 1
 excludes                = [
   "*.lock",
+  "pnpm-lock.yaml",
   "*.patch",
   "go.mod",
   "go.sum",
