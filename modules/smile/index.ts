@@ -6,11 +6,23 @@
  * under `runtime/` is shipped to the browser; everything else runs at build
  * time inside Nuxt.
  */
-import { addImportsDir, addLayout, createResolver, defineNuxtModule, useLogger } from "@nuxt/kit";
-import { relative } from "pathe";
+import { existsSync } from "node:fs";
+
+import {
+  addImportsDir,
+  addLayout,
+  addTemplate,
+  addTypeTemplate,
+  createResolver,
+  defineNuxtModule,
+  useLogger,
+} from "@nuxt/kit";
+import { isAbsolute, relative, resolve as resolvePath } from "pathe";
 
 import { expectedConfigFiles, loadSmileConfig, watchSmileConfig } from "./build/config";
 import { serializeExperiment } from "./build/serialize";
+import { loadAllStimuli, type LoadedStimuli } from "./build/stimuli";
+import { stimuliModuleContents, stimuliTypesContents } from "./build/templates";
 import type { SmileAppConfig, SmilePublicRuntimeConfig } from "./runtime/types";
 
 export interface SmileModuleOptions {
@@ -97,9 +109,47 @@ export default defineNuxtModule<SmileModuleOptions>({
     (nuxt.options.runtimeConfig.public as Record<string, unknown>).smile = publicConfig;
     (nuxt.options.appConfig as Record<string, unknown>).smile = appConfig;
 
-    // Reload when the configuration changes during development. A full
-    // restart is the only reliable way to re-run this setup on Nuxt 3.
+    // ─── Stimuli ─────────────────────────────────────────────────────────
+
+    const stimuliDir = resolvePath(rootDir, options.stimuliDir ?? "stimuli");
+    const experimentsDir = resolvePath(rootDir, options.experimentsDir ?? "experiments");
+
+    let datasets: Record<string, LoadedStimuli> = {};
+    if (loaded.config) {
+      // Errors carry file, row and column; let them fail the build as-is.
+      datasets = await loadAllStimuli(loaded.config, stimuliDir);
+      for (const dataset of Object.values(datasets)) {
+        logger.info(
+          `Stimuli "${dataset.name}": ${dataset.rows.length} rows from ${dataset.files.join(", ")}`,
+        );
+      }
+    }
+    const activeDataset = loaded.experiment?.stimuli.name ?? null;
+
+    addTemplate({
+      filename: "smile/stimuli.mjs",
+      write: true,
+      getContents: () => stimuliModuleContents({ active: activeDataset, datasets }),
+    });
+    addTypeTemplate({
+      filename: "smile/stimuli.d.ts",
+      getContents: () => stimuliTypesContents(loaded.config, activeDataset),
+    });
+
+    // Reload when the configuration, stimuli or experiment files change
+    // during development. A full restart is the only reliable way to re-run
+    // this setup on Nuxt 3.
     if (nuxt.options.dev) {
+      const watchedDirs = [stimuliDir, experimentsDir].filter((dir) => existsSync(dir));
+      nuxt.options.watch.push(...watchedDirs);
+      nuxt.hook("builder:watch", (event, path) => {
+        const absolute = isAbsolute(path) ? path : resolvePath(nuxt.options.srcDir, path);
+        if (watchedDirs.some((dir) => absolute.startsWith(`${dir}/`))) {
+          logger.info(`${relative(rootDir, absolute)} ${event}; restarting`);
+          void nuxt.callHook("restart", { hard: true });
+        }
+      });
+
       const unwatch = await watchSmileConfig({
         rootDir,
         moduleDir,
