@@ -15,14 +15,21 @@ import {
   addTypeTemplate,
   createResolver,
   defineNuxtModule,
+  extendPages,
   useLogger,
 } from "@nuxt/kit";
 import { isAbsolute, relative, resolve as resolvePath } from "pathe";
 
 import { expectedConfigFiles, loadSmileConfig, watchSmileConfig } from "./build/config";
+import { type ScanResult, scanExperiment } from "./build/scanner";
 import { serializeExperiment } from "./build/serialize";
 import { loadAllStimuli, type LoadedStimuli } from "./build/stimuli";
-import { stimuliModuleContents, stimuliTypesContents } from "./build/templates";
+import {
+  stimuliModuleContents,
+  stimuliTypesContents,
+  timelineModuleContents,
+  timelineTypesContents,
+} from "./build/templates";
 import type { SmileAppConfig, SmilePublicRuntimeConfig } from "./runtime/types";
 
 export interface SmileModuleOptions {
@@ -134,6 +141,40 @@ export default defineNuxtModule<SmileModuleOptions>({
     addTypeTemplate({
       filename: "smile/stimuli.d.ts",
       getContents: () => stimuliTypesContents(loaded.config, activeDataset),
+    });
+
+    // ─── Experiment timeline ─────────────────────────────────────────────
+
+    let scan: ScanResult | null = null;
+    if (loaded.experiment) {
+      const { experiment } = loaded;
+      // Scan errors name the directory and entries; let them fail the build.
+      scan = scanExperiment({
+        experimentsDir,
+        name: experiment.name,
+        version: experiment.version,
+        trialIds: datasets[experiment.stimuli.name]?.trialIds ?? [],
+      });
+      logger.info(
+        `Experiment "${experiment.id}": ${scan.pages.length} pages, ${scan.entries.length} timeline entries from ${relative(rootDir, scan.experimentDir)}/`,
+      );
+    }
+
+    if (scan) {
+      const routes = scan.routes.map((r) => r.route);
+      extendPages((pages) => {
+        pages.push(...routes);
+      });
+    }
+
+    addTemplate({
+      filename: "smile/timeline.mjs",
+      write: true,
+      getContents: () => timelineModuleContents(scan),
+    });
+    addTypeTemplate({
+      filename: "smile/timeline.d.ts",
+      getContents: () => timelineTypesContents(),
     });
 
     // Reload when the configuration, stimuli or experiment files change

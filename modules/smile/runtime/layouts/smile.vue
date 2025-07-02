@@ -9,33 +9,31 @@
    */
   import { computed } from "vue";
 
-  import { useRoute, useRuntimeConfig } from "#app";
+  import { useRoute } from "#app";
+  // Nuxt copies layouts into a virtual template, so relative imports would
+  // not resolve from there; go through the module alias instead.
+  import { useSmileConfig } from "#smile/runtime/composables/useSmileConfig";
+  import { useTimeline } from "#smile/runtime/composables/useTimeline";
 
   const route = useRoute();
-  const runtimeConfig = useRuntimeConfig();
-
-  interface SmilePublicConfig {
-    activeExperiment?: string | null;
-  }
-
-  const smileConfig = computed(() => (runtimeConfig.public.smile ?? {}) as SmilePublicConfig);
+  const config = useSmileConfig();
+  const timeline = useTimeline();
 
   const experimentName = computed(() => {
     const fromRoute = route.meta.smileExperiment;
     if (typeof fromRoute === "string" && fromRoute.length > 0) return fromRoute;
-    return smileConfig.value.activeExperiment ?? "smile";
+    return config.experiment?.name ?? config.activeExperiment ?? "smile";
   });
 
-  // Timeline position is provided by the timeline capability; until a page
-  // carries that metadata the shell shows the route name.
+  // Position in the timeline when the route is part of it; otherwise the
+  // route name, so framework pages still show where they are.
   const position = computed(() => {
-    const index = route.meta.smileIndex;
-    const length = route.meta.smileLength;
-    if (typeof index === "number" && typeof length === "number") {
-      return `${index + 1} / ${length}`;
-    }
+    const index = timeline.index.value;
+    if (index >= 0) return `${index + 1} / ${timeline.length}`;
     return String(route.name ?? "");
   });
+
+  const smileId = computed(() => timeline.current.value?.smileId ?? null);
 </script>
 
 <template>
@@ -45,6 +43,9 @@
         <UDashboardNavbar :title="experimentName" :toggle="false" data-smile="navbar">
           <template #right>
             <div class="flex items-center gap-2" data-smile="status">
+              <UBadge v-if="smileId" color="neutral" variant="outline" data-smile="smile-id">
+                {{ smileId }}
+              </UBadge>
               <UBadge color="neutral" variant="subtle" data-smile="position">
                 {{ position }}
               </UBadge>

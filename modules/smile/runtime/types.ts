@@ -7,6 +7,10 @@
 import type { ColumnSummary } from "../builder/column";
 import type { RandomizerType } from "../builder/experiment";
 
+// Type-only re-exports; nothing from the build step reaches the bundle.
+export type { TimelineEntry } from "../build/scanner";
+export type { TimelineNode } from "../build/timeline";
+
 /** A stimuli definition, reduced to what the client needs to know. */
 export interface SerializedStimuli {
   name: string;
