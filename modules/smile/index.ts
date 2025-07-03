@@ -160,12 +160,34 @@ export default defineNuxtModule<SmileModuleOptions>({
       );
     }
 
-    if (scan) {
-      const routes = scan.routes.map((r) => r.route);
-      extendPages((pages) => {
-        pages.push(...routes);
-      });
-    }
+    // Experiment pages, plus the framework pages: in development a launcher
+    // at `/` and an index per experiment; in production those paths redirect
+    // to the first timeline entry.
+    const firstEntry = scan?.entries[0] ?? null;
+    const experimentRoutes = scan?.routes.map((r) => r.route) ?? [];
+    const launcherPage = resolve("./runtime/pages/launcher.vue");
+    const indexPage = resolve("./runtime/pages/experiment-index.vue");
+    const isDev = nuxt.options.dev;
+
+    extendPages((pages) => {
+      pages.push(...experimentRoutes);
+
+      if (isDev || !firstEntry) {
+        pages.push({ name: "smile-launcher", path: "/", file: launcherPage });
+      } else {
+        pages.push({ name: "smile-launcher", path: "/", redirect: firstEntry.path });
+      }
+
+      if (isDev) {
+        pages.push({ name: "smile-experiment-index", path: "/experiment/:name", file: indexPage });
+      } else if (firstEntry && scan) {
+        pages.push({
+          name: "smile-experiment-index",
+          path: `/experiment/${scan.experimentName}`,
+          redirect: firstEntry.path,
+        });
+      }
+    });
 
     addTemplate({
       filename: "smile/timeline.mjs",
