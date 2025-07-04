@@ -1,0 +1,10 @@
+index,word,color,type,correct
+1,SHIP,red,unrelated,R
+2,MONKEY,green,unrelated,G
+3,ZAMBONI,blue,unrelated,B
+4,RED,red,congruent,R
+5,GREEN,green,congruent,G
+6,BLUE,blue,congruent,B
+7,GREEN,red,incongruent,R
+8,BLUE,green,incongruent,G
+9,RED,blue,incongruent,B

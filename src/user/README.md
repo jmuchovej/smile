@@ -1,5 +1,9 @@
 # User config
 
+> This directory drives the legacy Vite app. The Nuxt app reads its
+> experiment definition from `smile.config.ts`, `experiments/` and
+> `stimuli/` at the repository root instead; see `experiments/README.md`.
+
 - design.js
   Defines the overall logic and flow of the experiment through main "phases" (which are called Views). These can include randomized and counter-balanced elements. This is also were we configure preloading of images and other assets.
 
