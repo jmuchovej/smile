@@ -27,7 +27,7 @@ build:
 generate:
     @just via-nuxt generate
 
-# Run the unit test suite once
+# Run the unit test suite and the Nuxt end-to-end smoke test once
 test:
     pnpm vitest run
     pnpm vitest run --config tests/nuxt/vitest.config.ts
