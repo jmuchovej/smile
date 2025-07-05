@@ -9,7 +9,9 @@ export default defineConfig({
   test: {
     name: "nuxt-e2e",
     root: fileURLToPath(new URL("./", import.meta.url)),
-    include: ["**/*.e2e.test.ts"],
+    // `.e2e.ts` rather than `.test.ts` keeps the root Vitest run, which
+    // globs every `*.test.*` file, from picking these up without Nuxt.
+    include: ["**/*.e2e.ts"],
     testTimeout: 180_000,
     hookTimeout: 240_000,
   },
