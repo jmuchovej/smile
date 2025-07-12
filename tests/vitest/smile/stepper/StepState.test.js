@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 
-import { StepState } from "@/core/stepper/StepState";
+import { StepState } from "../../../../modules/smile/runtime/stepper/StepState";
 
 describe("StepState", () => {
   let stepper;

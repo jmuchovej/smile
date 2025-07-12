@@ -1,19 +1,13 @@
-import { createTestingPinia } from "@pinia/testing";
-import { setActivePinia } from "pinia";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
 import config from "@/core/config";
-import { Stepper } from "@/core/stepper/Stepper";
+
+import { Stepper } from "../../../../modules/smile/runtime/stepper/Stepper";
 
 describe("Stepper test", () => {
   let stepper;
-  let pinia;
 
   beforeEach(() => {
-    // Create pinia instance and set it as active
-    pinia = createTestingPinia({ stubActions: true });
-    setActivePinia(pinia);
-
     stepper = new Stepper({ id: "/" });
   });
 

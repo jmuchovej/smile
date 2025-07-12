@@ -1,31 +1,21 @@
-import { createTestingPinia } from "@pinia/testing";
-import { setActivePinia } from "pinia";
 import { describe, it, expect, beforeEach } from "vitest";
 
-import Stepper from "@/core/stepper/Stepper";
+import Stepper from "../../../../modules/smile/runtime/stepper/Stepper";
 
 describe("StepperProxy", () => {
   let proxy;
-  let pinia;
 
   beforeEach(() => {
-    // Create pinia instance and set it as active
-    pinia = createTestingPinia({ stubActions: true });
-    setActivePinia(pinia);
-
     // Create a new Stepper instance which will be wrapped by StepperProxy
-
     // // Add some test states
     // stepper.append([
     //   { id: 'state1', data: 'state1' },
     //   { id: 'state2', data: 'state2' },
     //   { id: 'state3', data: 'state3' },
     // ])
-
     // // Add some test nodes
     // stepper.push('node1', { id: 'node1' })
     // stepper.push('node2', { id: 'node2' })
-
     // // Add some test properties and methods
     // stepper.someProperty = 'value'
     // stepper.someMethod = () => 'method result'
