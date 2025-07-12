@@ -44,14 +44,20 @@ export function useStepper(view) {
     if (savedState) {
       try {
         log.debug("STEPPER: Loading saved stepper state from smilestore for view", view);
-        stepper = new Stepper({ serializedState: savedState.stepperState, store: smilestore });
+        stepper = new Stepper({ serializedState: savedState.stepperState, store: smilestore, log });
       } catch (error) {
         log.error("STEPPER: Failed to load saved state, creating new stepper:", error.message);
-        stepper = new Stepper({ id: "/", parent: null, data: { gvars: {} }, store: smilestore });
+        stepper = new Stepper({
+          id: "/",
+          parent: null,
+          data: { gvars: {} },
+          store: smilestore,
+          log,
+        });
       }
     } else {
       log.debug("STEPPER: Initializing stepper for view", view);
-      stepper = new Stepper({ id: "/", parent: null, data: { gvars: {} }, store: smilestore });
+      stepper = new Stepper({ id: "/", parent: null, data: { gvars: {} }, store: smilestore, log });
     }
     stepper.name = view;
     // Register stepper if not already registered

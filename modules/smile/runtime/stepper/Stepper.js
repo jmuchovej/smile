@@ -1,11 +1,20 @@
 import seedrandom from "seedrandom";
 
 import config from "@/core/config";
-import useLog from "@/core/stores/log";
 
 import StepperProxy from "./StepperProxy";
 import { StepperSerializer } from "./StepperSerializer";
 import { StepState } from "./StepState";
+
+/**
+ * Logger used when none is passed in: debug messages are silent,
+ * warnings and errors go to the console.
+ */
+const defaultLog = {
+  debug: () => {},
+  warn: (...args) => console.warn(...args),
+  error: (...args) => console.error(...args),
+};
 
 // to be implemented functions
 
@@ -40,10 +49,17 @@ export class Stepper extends StepState {
    * @param {StepState|null} [options.parent] - The parent node. If null, this is a root node
    * @param {string} [options.serializedState] - Optional serialized JSON state to load
    * @param {Object} [options.store] - Optional reference to the store where this stepper is saved
+   * @param {Object} [options.log] - Logger with debug, warn and error methods. Defaults to the console
    */
   constructor(options = {}) {
-    const { id = null, parent = null, data = null, serializedState = null, store = null } = options;
-    const log = useLog();
+    const {
+      id = null,
+      parent = null,
+      data = null,
+      serializedState = null,
+      store = null,
+      log = defaultLog,
+    } = options;
     super(id, parent, data);
 
     // Store the store reference
@@ -88,7 +104,7 @@ export class Stepper extends StepState {
    * @returns {Stepper} A new Stepper instance
    */
   _createNew(id, parent) {
-    return new Stepper({ id, parent });
+    return new Stepper({ id, parent, log: this._log });
   }
 
   /**
@@ -136,9 +152,9 @@ export class Stepper extends StepState {
       // Create a temporary state to get its path
       let state;
       if (item.id !== undefined) {
-        state = new Stepper({ id: item.id, parent: this });
+        state = new Stepper({ id: item.id, parent: this, log: this._log });
       } else {
-        state = new Stepper({ parent: this });
+        state = new Stepper({ parent: this, log: this._log });
       }
       state.data = item;
       const newPath = state.pathString;
