@@ -1,8 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
-import config from "@/core/config";
-
-import { Stepper } from "../../../../modules/smile/runtime/stepper/Stepper";
+import { DEFAULT_MAX_ROWS, Stepper } from "../../../../modules/smile/runtime/stepper/Stepper";
 
 describe("Stepper test", () => {
   let stepper;
@@ -281,7 +279,7 @@ describe("Stepper test", () => {
     });
 
     it("should throw error when appending would exceed safety limit", () => {
-      const maxRows = Number(config.maxStepperRows);
+      const maxRows = DEFAULT_MAX_ROWS;
       const items = Array(maxRows + 1).fill({ color: "red", shape: "circle" });
       expect(() => {
         stepper.append(items);
@@ -333,7 +331,7 @@ describe("Stepper test", () => {
     });
 
     it("should throw error when outer would exceed safety limit", () => {
-      const maxRows = Number(config.maxStepperRows);
+      const maxRows = DEFAULT_MAX_ROWS;
       // Create arrays that would generate more combinations than maxStepperRows
       const trials = {
         x: Array(100).fill("x"),
@@ -891,7 +889,7 @@ describe("Stepper test", () => {
     });
 
     it("should throw error when zip would exceed safety limit", () => {
-      const maxRows = Number(config.maxStepperRows);
+      const maxRows = DEFAULT_MAX_ROWS;
 
       // Create arrays that would exceed the limit when zipped
       const trials = {

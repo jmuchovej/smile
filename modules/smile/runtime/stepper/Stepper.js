@@ -1,7 +1,5 @@
 import seedrandom from "seedrandom";
 
-import config from "@/core/config";
-
 import StepperProxy from "./StepperProxy";
 import { StepperSerializer } from "./StepperSerializer";
 import { StepState } from "./StepState";
@@ -15,6 +13,11 @@ const defaultLog = {
   warn: (...args) => console.warn(...args),
   error: (...args) => console.error(...args),
 };
+
+/**
+ * Safety limit on the number of rows a node may hold when none is passed in.
+ */
+export const DEFAULT_MAX_ROWS = 5000;
 
 // to be implemented functions
 
@@ -50,6 +53,7 @@ export class Stepper extends StepState {
    * @param {string} [options.serializedState] - Optional serialized JSON state to load
    * @param {Object} [options.store] - Optional reference to the store where this stepper is saved
    * @param {Object} [options.log] - Logger with debug, warn and error methods. Defaults to the console
+   * @param {number} [options.maxRows] - Safety limit on the number of rows a node may hold. Defaults to 5000
    */
   constructor(options = {}) {
     const {
@@ -59,12 +63,14 @@ export class Stepper extends StepState {
       serializedState = null,
       store = null,
       log = defaultLog,
+      maxRows = DEFAULT_MAX_ROWS,
     } = options;
     super(id, parent, data);
 
     // Store the store reference
     this._store = store;
     this._log = log;
+    this._maxRows = maxRows;
     this._shuffled = false; // Add shuffled property
     this._onModify = null; // Add callback property
     this._needsWrite = false; // Track if we need to write
@@ -104,7 +110,7 @@ export class Stepper extends StepState {
    * @returns {Stepper} A new Stepper instance
    */
   _createNew(id, parent) {
-    return new Stepper({ id, parent, log: this._log });
+    return new Stepper({ id, parent, log: this._log, maxRows: this._maxRows });
   }
 
   /**
@@ -152,9 +158,9 @@ export class Stepper extends StepState {
       // Create a temporary state to get its path
       let state;
       if (item.id !== undefined) {
-        state = new Stepper({ id: item.id, parent: this, log: this._log });
+        state = new Stepper({ id: item.id, parent: this, log: this._log, maxRows: this._maxRows });
       } else {
-        state = new Stepper({ parent: this, log: this._log });
+        state = new Stepper({ parent: this, log: this._log, maxRows: this._maxRows });
       }
       state.data = item;
       const newPath = state.pathString;
@@ -199,12 +205,12 @@ export class Stepper extends StepState {
     const itemsToAdd = Array.isArray(items) ? items : [items];
 
     // Check if adding these items would exceed maxStepperRows
-    if (this._states.length + itemsToAdd.length > config.maxStepperRows) {
+    if (this._states.length + itemsToAdd.length > this._maxRows) {
       this._log.error(
-        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${config.maxStepperRows}`,
+        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${this._maxRows}`,
       );
       throw new Error(
-        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${config.maxStepperRows}`,
+        `Cannot append ${itemsToAdd.length} rows as it exceeds the safety limit of ${this._maxRows}`,
       );
     }
 
@@ -251,9 +257,9 @@ export class Stepper extends StepState {
     const totalCombinations = processedColumns.reduce((total, [_, arr]) => total * arr.length, 1);
 
     // Check if adding these combinations would exceed maxStepperRows
-    if (this._states.length + totalCombinations > config.maxStepperRows) {
+    if (this._states.length + totalCombinations > this._maxRows) {
       throw new Error(
-        `Cannot create ${totalCombinations} combinations: would exceed maximum of ${config.maxStepperRows} rows`,
+        `Cannot create ${totalCombinations} combinations: would exceed maximum of ${this._maxRows} rows`,
       );
     }
 
@@ -333,9 +339,9 @@ export class Stepper extends StepState {
     const maxLength = Math.max(...processedColumns.map(([_, arr]) => arr.length));
 
     // Check if adding these combinations would exceed maxStepperRows
-    if (this._states.length + maxLength > config.maxStepperRows) {
+    if (this._states.length + maxLength > this._maxRows) {
       throw new Error(
-        `Cannot create ${maxLength} combinations: would exceed maximum of ${config.maxStepperRows} rows`,
+        `Cannot create ${maxLength} combinations: would exceed maximum of ${this._maxRows} rows`,
       );
     }
 
