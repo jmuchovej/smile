@@ -1,10 +1,11 @@
 import seedrandom from "seedrandom";
 
 import config from "@/core/config";
-import StepperProxy from "@/core/stepper/StepperProxy";
-import { StepperSerializer } from "@/core/stepper/StepperSerializer";
-import { StepState } from "@/core/stepper/StepState";
 import useLog from "@/core/stores/log";
+
+import StepperProxy from "./StepperProxy";
+import { StepperSerializer } from "./StepperSerializer";
+import { StepState } from "./StepState";
 
 // to be implemented functions
 

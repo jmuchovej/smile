@@ -6,9 +6,10 @@
  * - Setting the viewProvidesStepper flag  in the dev store
  * - Storing the stepper instance in the global smilestore
  */
-import Stepper from "@/core/stepper/Stepper";
 import useLog from "@/core/stores/log";
 import useSmileStore from "@/core/stores/smilestore";
+
+import Stepper from "../../../modules/smile/runtime/stepper/Stepper";
 /**
  * @class StepperAPI
  * @description Wraps a Stepper instance to provide a consistent API for managing multi-step processes
