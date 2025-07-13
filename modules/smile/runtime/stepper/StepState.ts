@@ -18,7 +18,26 @@
  * @property {StepState} _root - Reference to root node
  * @property {Object} _data - Associated data for this node
  */
+
+/**
+ * Identifier of a step: a string for named steps, a number for automatically numbered ones
+ */
+export type StepId = string | number;
+
+/**
+ * Arbitrary data carried by a step
+ */
+export type StepData = Record<string, unknown>;
+
 export class StepState {
+  declare _id: StepId;
+  declare _states: StepState[];
+  declare _currentIndex: number;
+  declare _depth: number;
+  declare _parent: StepState | null;
+  declare _root: StepState;
+  declare _data: StepData;
+
   /**
    * Creates a new StepState node in a tree structure.
    * @param {*} id - The id for this node. If null, defaults to '/'
@@ -33,7 +52,7 @@ export class StepState {
    * - data: Object to store arbitrary data
    * - root: Reference to root node of the tree
    */
-  constructor(id = null, parent = null) {
+  constructor(id: StepId | null = null, parent: StepState | null = null) {
     this._id = id === null ? "/" : id;
     this._states = [];
     this._currentIndex = 0;
@@ -50,7 +69,7 @@ export class StepState {
    * Gets the number of child states in this node
    * @returns {number} The number of child states
    */
-  get length() {
+  get length(): number {
     return this._states.length;
   }
 
@@ -58,7 +77,7 @@ export class StepState {
    * Gets the parent node of this state node
    * @returns {StepState|null} The parent StepState node, or null if this is the root
    */
-  get parent() {
+  get parent(): StepState | null {
     return this._parent;
   }
 
@@ -66,7 +85,7 @@ export class StepState {
    * Sets the id of this node and updates the data field to include the id
    * @param {*} id - The new id to set
    */
-  set id(id) {
+  set id(id: StepId) {
     this._id = id;
     // Update or add id in the data field
     this._data = { ...this._data, id };
@@ -76,7 +95,7 @@ export class StepState {
    * Gets the id of this node
    * @returns {*} The node's id
    */
-  get id() {
+  get id(): StepId {
     return this._id;
   }
 
@@ -84,7 +103,7 @@ export class StepState {
    * Sets the array of child states for this node
    * @param {StepState[]} states - Array of child StepState nodes to set
    */
-  set states(states) {
+  set states(states: StepState[]) {
     this._states = states;
   }
 
@@ -92,7 +111,7 @@ export class StepState {
    * Gets the array of child states for this node
    * @returns {StepState[]} Array of child StepState nodes
    */
-  get states() {
+  get states(): StepState[] {
     return this._states;
   }
 
@@ -100,7 +119,7 @@ export class StepState {
    * Sets the current index position in the state sequence
    * @param {number} index - The index position to set
    */
-  set index(index) {
+  set index(index: number) {
     if (Number.isInteger(index) && index >= 0 && index <= Math.max(0, this._states.length - 1)) {
       this._currentIndex = index;
     } else {
@@ -114,7 +133,7 @@ export class StepState {
    * Gets the current index position in the state sequence
    * @returns {number} The current index
    */
-  get index() {
+  get index(): number {
     return this._currentIndex;
   }
 
@@ -122,7 +141,7 @@ export class StepState {
    * Gets the index of the parent node of the current leaf.
    * @returns {number|null} The index of the parent node, or null if there is no parent
    */
-  get parentIndex() {
+  get parentIndex(): number | null {
     // If this is the root node, return null
     if (!this._parent) {
       return null;
@@ -137,11 +156,11 @@ export class StepState {
    * Traverses down from root to find the current leaf node, then returns its parent's index.
    * @returns {number|null} The index of the parent node of the current leaf, or null if there is no parent
    */
-  get blockIndex() {
+  get blockIndex(): number | null {
     // Get the current leaf node
     let current = this._root;
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex];
+      current = current._states[current._currentIndex]!;
     }
 
     // Return the parent's index
@@ -153,11 +172,11 @@ export class StepState {
    * Traverses down from root to find the current leaf node, then returns its parent's state count.
    * @returns {number} The number of states in the parent node, or 0 if there is no parent
    */
-  get blockLength() {
+  get blockLength(): number {
     // Get the current leaf node
     let current = this._root;
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex];
+      current = current._states[current._currentIndex]!;
     }
 
     // Return the number of states in the parent node, or 0 if no parent
@@ -168,7 +187,7 @@ export class StepState {
    * Setter for data property
    * @param {*} data - The data to store in this node
    */
-  set data(data) {
+  set data(data: StepData) {
     this._data = data;
   }
 
@@ -176,7 +195,7 @@ export class StepState {
    * Getter for data property
    * @returns {*} The data stored in this node
    */
-  get data() {
+  get data(): StepData {
     return this._data;
   }
 
@@ -184,7 +203,7 @@ export class StepState {
    * Gets the root node of the state tree
    * @returns {StepState} The root StepState node
    */
-  get root() {
+  get root(): StepState {
     return this._root;
   }
 
@@ -195,7 +214,7 @@ export class StepState {
    *
    * @returns {Array<StepState>} Array of child StepState nodes
    */
-  get rows() {
+  get rows(): StepState[] {
     return this._states;
   }
 
@@ -206,7 +225,7 @@ export class StepState {
    *
    * @returns {Array} Array of data values from all child states
    */
-  get rowsData() {
+  get rowsData(): StepData[] {
     return this._states.map((item) => item.data);
   }
 
@@ -215,7 +234,7 @@ export class StepState {
    *
    * @returns {Array} Array of data values from all child states
    */
-  get statesData() {
+  get statesData(): StepData[] {
     return this._states.map((item) => item.data);
   }
 
@@ -223,7 +242,7 @@ export class StepState {
    * Gets the depth of this node in the tree.
    * @returns {number} The depth of this node
    */
-  get depth() {
+  get depth(): number {
     return this._depth;
   }
 
@@ -231,7 +250,7 @@ export class StepState {
    * Gets the maximum depth of the tree beneath this node.
    * @returns {number} The maximum depth of the tree beneath this node
    */
-  get treeDepth() {
+  get treeDepth(): number {
     if (this._states.length === 0) {
       return 0; // this is a leaf node
     }
@@ -242,7 +261,7 @@ export class StepState {
    * Checks if this node is a leaf node (has no child states).
    * @returns {boolean} True if this node has no child states, false otherwise
    */
-  get isLeaf() {
+  get isLeaf(): boolean {
     return this._states.length === 0;
   }
 
@@ -255,23 +274,23 @@ export class StepState {
    *
    * @returns {boolean} True if this is the first non-special leaf node, false otherwise
    */
-  get isFirstLeaf() {
+  get isFirstLeaf(): boolean {
     // If this is not a leaf node, return false
     if (!this.isLeaf) {
       return false;
     }
 
     // Helper function to find leftmost leaf
-    const findLeftmostLeaf = (state) => {
+    const findLeftmostLeaf = (state: StepState): StepState => {
       if (state.isLeaf) {
         return state;
       }
-      return findLeftmostLeaf(state._states[0]);
+      return findLeftmostLeaf(state._states[0]!);
     };
 
     // Find first  leaf by checking each branch from left
     for (let i = 0; i < this._root._states.length; i++) {
-      const leftmostLeaf = findLeftmostLeaf(this._root._states[i]);
+      const leftmostLeaf = findLeftmostLeaf(this._root._states[i]!);
       // Return true if this is that first  leaf
       return leftmostLeaf.pathString === this.pathString;
     }
