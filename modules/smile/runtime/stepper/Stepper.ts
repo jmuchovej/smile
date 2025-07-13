@@ -81,7 +81,7 @@ export class Stepper extends StepState {
       this.loadFromJSON(serializedState);
     }
 
-    return new StepperProxy(this);
+    return StepperProxy.wrap(this);
   }
 
   /**

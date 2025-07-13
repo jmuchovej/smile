@@ -1,16 +1,27 @@
+import type { StepState } from "./StepState";
+
 /**
  * @class StepperProxy
  * @description Proxy handler for TableAPI objects that handles array-like access
  */
-class StepperProxy {
+class StepperProxy<T extends StepState = StepState> implements ProxyHandler<T> {
+  target: T;
+
   /**
-   * Creates a new StepperProxy instance and returns a proxy
+   * Creates a new StepperProxy handler for the target
+   * @param {TableAPI} target - The target TableAPI object
+   */
+  constructor(target: T) {
+    this.target = target;
+  }
+
+  /**
+   * Wraps the target in a proxy that routes property access through this handler
    * @param {TableAPI} target - The target TableAPI object
    * @returns {Proxy} A proxy for the target object
    */
-  constructor(target) {
-    this.target = target;
-    return new Proxy(target, this);
+  static wrap<T extends StepState>(target: T): T {
+    return new Proxy(target, new StepperProxy(target));
   }
 
   /**
@@ -19,38 +30,39 @@ class StepperProxy {
    * @param {string|number} prop - The property being accessed
    * @returns {*} The value of the property
    */
-  get(target, prop) {
+  get(target: T, prop: string | symbol): unknown {
     //console.log('get', prop)
     // Handle array/object access
-    if (typeof prop === "string" || typeof prop === "number") {
+    if (typeof prop === "string") {
+      let key: string | number = prop;
       // Convert string numbers to actual numbers
-      if (typeof prop === "string" && /^-?\d+$/.test(prop)) {
-        prop = parseInt(prop);
+      if (/^-?\d+$/.test(key)) {
+        key = parseInt(key);
       }
 
       // Handle negative indices first
-      if (typeof prop === "number") {
-        if (prop < 0) {
-          prop = target._states.length + prop;
+      if (typeof key === "number") {
+        if (key < 0) {
+          key = target._states.length + key;
           // If still negative after adjustment, return undefined
-          if (prop < 0) return undefined;
+          if (key < 0) return undefined;
         }
       }
 
       // IMPORTANT: We first try to get a child node by id before checking properties/methods
       // This ensures that child nodes with ids matching getter names (like 'parent')
       // take precedence over the getter methods
-      const node = target.getNode(prop);
+      const node = target.getNode(key);
       if (node) {
         return node;
       }
       // If no child node found, then check for properties/methods
-      if (prop in target) {
-        return target[prop];
+      if (key in target) {
+        return target[key as keyof T];
       }
       return undefined;
     }
-    return target[prop];
+    return target[prop as keyof T];
   }
 }
 
