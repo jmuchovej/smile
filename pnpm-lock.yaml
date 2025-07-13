@@ -173,7 +173,10 @@ importers:
       "@pinia/testing":
         specifier: ^0.1.7
         version: 0.1.7(pinia@2.3.1(typescript@5.8.3)(vue@3.5.43(typescript@5.8.3)))(vue@3.5.43(typescript@5.8.3))
-      "@vitest/coverage-v8":
+      '@types/seedrandom':
+        specifier: 3.0.8
+        version: 3.0.8
+      '@vitest/coverage-v8':
         specifier: ^3.0.6
         version: 3.2.7(supports-color@8.1.1)(vitest@3.2.7)
       "@vitest/ui":
@@ -3841,11 +3844,11 @@ packages:
         integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==,
       }
 
-  "@types/sinonjs__fake-timers@8.1.1":
-    resolution:
-      {
-        integrity: sha512-0kSuKjAS0TrGLJ0M/+8MaFkGsQhZpB6pxOmvS3K8FYI72K//YmdfoW9X2qPsAKh1mkwxGD5zib9s1FIFed6E8g==,
-      }
+  '@types/seedrandom@3.0.8':
+    resolution: {integrity: sha512-TY1eezMU2zH2ozQoAFAQFOPpvP15g+ZgSfTZt31AUUH/Rxtnz3H+A/Sv1Snw2/amp//omibc+AEkTaA8KUeOLQ==}
+
+  '@types/sinonjs__fake-timers@8.1.1':
+    resolution: {integrity: sha512-0kSuKjAS0TrGLJ0M/+8MaFkGsQhZpB6pxOmvS3K8FYI72K//YmdfoW9X2qPsAKh1mkwxGD5zib9s1FIFed6E8g==}
 
   "@types/sizzle@2.3.10":
     resolution:
@@ -17262,7 +17265,9 @@ snapshots:
 
   "@types/resolve@1.20.2": {}
 
-  "@types/sinonjs__fake-timers@8.1.1": {}
+  '@types/seedrandom@3.0.8': {}
+
+  '@types/sinonjs__fake-timers@8.1.1': {}
 
   "@types/sizzle@2.3.10": {}
 
