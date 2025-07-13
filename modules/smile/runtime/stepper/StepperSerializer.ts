@@ -1,3 +1,40 @@
+import type { Stepper } from "./Stepper";
+import type { StepData, StepId } from "./StepState";
+
+/**
+ * A faker call recorded in serialized data in place of the function that made it
+ */
+export interface SerializedFakerFunction {
+  __fakerFunction: true;
+  name: string;
+  params: string[];
+}
+
+/**
+ * A Vue component recorded in serialized data by name
+ */
+export interface SerializedVueComponent {
+  __vueComponent: true;
+  componentName: string;
+}
+
+/**
+ * The JSON-compatible form of a Stepper node and its subtree
+ */
+export interface SerializedStepper {
+  id: StepId;
+  currentIndex: number;
+  depth: number;
+  shuffled: boolean;
+  states: SerializedStepper[];
+  data: StepData;
+}
+
+/**
+ * The shape the serializer looks for when deciding whether a value is a Vue component
+ */
+type ComponentLike = { name?: unknown; template?: unknown; render?: unknown };
+
 /**
  * @class StepperSerializer
  * @description Handles serialization and deserialization of Stepper objects
@@ -8,7 +45,7 @@ export class StepperSerializer {
    * @param {Stepper} Stepper - The Stepper instance to serialize
    * @returns {Object} A JSON-compatible representation of the Stepper object
    */
-  static serialize(Stepper) {
+  static serialize(Stepper: Stepper): SerializedStepper {
     /**
      * Helper function to clean non-serializable data from a Stepper object
      * @private
@@ -23,9 +60,9 @@ export class StepperSerializer {
      * - RegExp objects (removed)
      * - Undefined values (removed)
      */
-    const cleanData = (data) => {
+    const cleanData = (data: StepData): StepData => {
       if (!data) return data;
-      const cleaned = {};
+      const cleaned: StepData = {};
       for (const [key, value] of Object.entries(data)) {
         // Skip functions unless they are faker functions
         if (typeof value === "function") {
@@ -36,7 +73,7 @@ export class StepperSerializer {
             // Extract the faker function name and parameters
             const match = funcStr.match(/api\.faker\.(\w+)\((.*)\)/);
             if (match) {
-              const [_, fakerName, params] = match;
+              const [_, fakerName = "", params = ""] = match;
               cleaned[key] = {
                 __fakerFunction: true,
                 name: fakerName,
@@ -49,19 +86,25 @@ export class StepperSerializer {
         }
 
         // Check if it's a Vue component
-        if (value && typeof value === "object" && value.name && (value.template || value.render)) {
+        const component = value as ComponentLike | null | undefined;
+        if (
+          component &&
+          typeof component === "object" &&
+          component.name &&
+          (component.template || component.render)
+        ) {
           cleaned[key] = {
             __vueComponent: true,
-            componentName: value.name,
+            componentName: component.name,
           };
           continue;
         }
 
         // Handle data objects that might contain component references
-        if (key === "type" && value?.name && (value.template || value.render)) {
+        if (key === "type" && component?.name && (component.template || component.render)) {
           cleaned[key] = {
             __vueComponent: true,
-            componentName: value.name,
+            componentName: component.name,
           };
           continue;
         }
@@ -85,7 +128,7 @@ export class StepperSerializer {
       currentIndex: Stepper._currentIndex,
       depth: Stepper._depth,
       shuffled: Stepper._shuffled,
-      states: Stepper._states.map((state) => StepperSerializer.serialize(state)),
+      states: Stepper._states.map((state) => StepperSerializer.serialize(state as Stepper)),
       data: cleanData(Stepper.data),
       // Note: We don't serialize _parent or _root as they are circular references
       // and will be re-established during deserialization
@@ -94,16 +137,17 @@ export class StepperSerializer {
 
   /**
    * Deserializes a JSON object into a Stepper instance
-   * @param {Object} data - The JSON data to deserialize
+   * @param {Object} input - The JSON data to deserialize
    * @param {Stepper} target - The target Stepper instance to populate
    * @param {Stepper} root - The root Stepper instance (for faker function reconstruction)
    * @throws {Error} If required data fields are missing or invalid
    */
-  static deserialize(data, target, root) {
+  static deserialize(input: unknown, target: Stepper, root: Stepper): void {
     // Validate input data
-    if (!data || typeof data !== "object") {
-      throw new Error("Invalid data: Expected an object but received " + typeof data);
+    if (!input || typeof input !== "object") {
+      throw new Error("Invalid data: Expected an object but received " + typeof input);
     }
+    const data = input as Partial<SerializedStepper>;
 
     // Validate required fields
     const requiredFields = ["id", "currentIndex", "depth", "states", "shuffled"];
@@ -137,7 +181,7 @@ export class StepperSerializer {
       target._currentIndex = data.currentIndex;
       target._depth = data.depth;
       target._shuffled = data.shuffled;
-      target._data = StepperSerializer._reconstructData(data.data, root);
+      target._data = StepperSerializer._reconstructData(data.data, root) as StepData;
 
       // Only set root-specific properties if this is the root node
       if (target._parent === null) {
@@ -155,11 +199,11 @@ export class StepperSerializer {
           state._parent = target;
           return state;
         } catch (error) {
-          throw new Error(`Error deserializing child state: ${error.message}`);
+          throw new Error(`Error deserializing child state: ${(error as Error).message}`);
         }
       });
     } catch (error) {
-      throw new Error(`Failed to deserialize stepper: ${error.message}`);
+      throw new Error(`Failed to deserialize stepper: ${(error as Error).message}`);
     }
   }
 
@@ -170,7 +214,7 @@ export class StepperSerializer {
    * @param {Stepper} root - The root Stepper instance (for faker function reconstruction)
    * @returns {Object} The reconstructed data object
    */
-  static _reconstructData(data, root) {
+  static _reconstructData(data: unknown, root: Stepper): unknown {
     if (!data) return data;
 
     // Handle arrays
@@ -180,19 +224,21 @@ export class StepperSerializer {
 
     // Handle objects
     if (typeof data === "object") {
-      const reconstructed = {};
+      const reconstructed: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(data)) {
         if (value && typeof value === "object") {
+          const marker = value as Partial<SerializedFakerFunction & SerializedVueComponent>;
           // Handle faker functions
-          if (value.__fakerFunction) {
+          if (marker.__fakerFunction) {
+            const { name = "", params = [] } = marker;
             reconstructed[key] = () => {
-              const fakerFunc = root.api?.faker?.[value.name];
+              const fakerFunc = root.api?.faker?.[name];
               if (!fakerFunc) {
-                console.warn(`Faker function ${value.name} not found during reconstruction`);
+                console.warn(`Faker function ${name} not found during reconstruction`);
                 return null;
               }
               // Convert string parameters to appropriate types
-              const convertedParams = value.params.map((param) => {
+              const convertedParams = params.map((param) => {
                 // Convert empty string to undefined
                 if (param === "") return undefined;
                 // Try to convert to number if it looks like a number
@@ -205,9 +251,9 @@ export class StepperSerializer {
           }
 
           // Handle Vue components
-          if (value.__vueComponent) {
+          if (marker.__vueComponent) {
             reconstructed[key] = {
-              name: value.componentName,
+              name: marker.componentName,
               __vueComponent: true,
             };
             continue;
