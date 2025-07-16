@@ -2,13 +2,66 @@ import seedrandom from "seedrandom";
 
 import StepperProxy from "./StepperProxy";
 import { StepperSerializer } from "./StepperSerializer";
+import type { SerializedStepper } from "./StepperSerializer";
 import { StepState } from "./StepState";
+import type { StepData, StepId } from "./StepState";
+
+/**
+ * Logger the stepper reports through
+ */
+export interface StepperLog {
+  debug: (...args: unknown[]) => void;
+  warn: (...args: unknown[]) => void;
+  error: (...args: unknown[]) => void;
+}
+
+/**
+ * The parts of a store the stepper touches when saving its state
+ */
+export interface StepperStore {
+  config: { localStorageKey: string };
+  browserPersisted: {
+    viewSteppers: Record<string, { data: { stepperState: SerializedStepper } }>;
+  };
+}
+
+/**
+ * Functions the serializer calls back into when restoring faker-generated values
+ */
+export interface StepperFakerHost {
+  faker: Record<string, (...args: unknown[]) => unknown>;
+}
+
+/**
+ * Options accepted by the Stepper constructor
+ */
+export interface StepperOptions {
+  id?: StepId | null;
+  parent?: StepState | null;
+  data?: StepData | null;
+  serializedState?: SerializedStepper | null;
+  store?: StepperStore | null;
+  log?: StepperLog;
+  maxRows?: number;
+}
+
+/**
+ * A plain, display-friendly view of a step and its rows
+ */
+export interface VisualizedStep {
+  data: StepData;
+  path: string;
+  index: number;
+  isLeaf: boolean;
+  isFirstLeaf: boolean;
+  rows: VisualizedStep[];
+}
 
 /**
  * Logger used when none is passed in: debug messages are silent,
  * warnings and errors go to the console.
  */
-const defaultLog = {
+const defaultLog: StepperLog = {
   debug: () => {},
   warn: (...args) => console.warn(...args),
   error: (...args) => console.error(...args),
@@ -45,6 +98,15 @@ export const DEFAULT_MAX_ROWS = 5000;
  * This class extends the base StepState to add stepper-specific operations and data handling.
  */
 export class Stepper extends StepState {
+  declare _store: StepperStore | null;
+  declare _log: StepperLog;
+  declare _maxRows: number;
+  declare _shuffled: boolean;
+  declare _onModify: (() => void) | null;
+  declare _needsWrite: boolean;
+  declare name?: string;
+  declare api?: StepperFakerHost;
+
   /**
    * Creates a new Stepper instance
    * @param {Object} [options] - Configuration options for the stepper
@@ -55,17 +117,16 @@ export class Stepper extends StepState {
    * @param {Object} [options.log] - Logger with debug, warn and error methods. Defaults to the console
    * @param {number} [options.maxRows] - Safety limit on the number of rows a node may hold. Defaults to 5000
    */
-  constructor(options = {}) {
+  constructor(options: StepperOptions = {}) {
     const {
       id = null,
       parent = null,
-      data = null,
       serializedState = null,
       store = null,
       log = defaultLog,
       maxRows = DEFAULT_MAX_ROWS,
     } = options;
-    super(id, parent, data);
+    super(id, parent);
 
     // Store the store reference
     this._store = store;
@@ -88,7 +149,7 @@ export class Stepper extends StepState {
    * Sets a callback to be called when the stepper is modified
    * @param {Function} callback - The callback function to call on modification
    */
-  setOnModify(callback) {
+  setOnModify(callback: () => void): void {
     this._onModify = callback;
   }
 
@@ -96,7 +157,7 @@ export class Stepper extends StepState {
    * Marks the stepper as needing a write and triggers the modify callback
    * @private
    */
-  _markForWrite() {
+  _markForWrite(): void {
     this._needsWrite = true;
     if (this._onModify) {
       this._onModify();
@@ -109,7 +170,7 @@ export class Stepper extends StepState {
    * @param {StepState} parent - The parent state
    * @returns {Stepper} A new Stepper instance
    */
-  _createNew(id, parent) {
+  override _createNew(id: StepId, parent: StepState): Stepper {
     return new Stepper({ id, parent, log: this._log, maxRows: this._maxRows });
   }
 
@@ -527,7 +588,7 @@ export class Stepper extends StepState {
    * Serializes the StepState object to a JSON string.
    * @returns {string} A JSON representation of the StepState object
    */
-  get json() {
+  get json(): SerializedStepper {
     return StepperSerializer.serialize(this);
   }
 
@@ -535,7 +596,7 @@ export class Stepper extends StepState {
    * Deserializes a JSON string to a StepState object.
    * @param {string} data - The JSON string to deserialize
    */
-  loadFromJSON(data) {
+  loadFromJSON(data: SerializedStepper): void {
     StepperSerializer.deserialize(data, this, this);
   }
 
@@ -544,11 +605,11 @@ export class Stepper extends StepState {
    * Used by the dev bar to display the stepper tree.
    * @returns {Object} A clean object representation of the Stepper tree
    */
-  visualize() {
+  visualize(): VisualizedStep {
     // Helper function to recursively process each state
-    const processState = (state, level = 0) => {
+    const processState = (state: StepState, level = 0): VisualizedStep => {
       // Create a clean object without currentIndex, depth, and parent
-      const cleanState = {
+      const cleanState: VisualizedStep = {
         data: state.data,
         path: state.pathString,
         index: state.index,
@@ -574,7 +635,7 @@ export class Stepper extends StepState {
    * @param {string} [page] - Optional page name to save under. If not provided, uses the stepper's name
    * @returns {boolean} True if save was successful, false otherwise
    */
-  save(page = null) {
+  save(page: string | null = null): boolean {
     if (!this._store) {
       this._log.warn("Stepper: Cannot save state - no store reference available");
       return false;
@@ -619,7 +680,7 @@ export class Stepper extends StepState {
    * Removes all child states and resets all internal properties
    * does _not_ clear the data from the current node
    */
-  clearSubTree() {
+  override clearSubTree(): void {
     super.clearSubTree();
 
     this._shuffled = false;
@@ -630,11 +691,11 @@ export class Stepper extends StepState {
    * Does not affect child nodes or the structure of the state tree
    * @returns {void}
    */
-  clearCurrentStepData() {
+  clearCurrentStepData(): void {
     // Get the current leaf node
     let current = this._root;
     while (current._states.length > 0) {
-      current = current._states[current._currentIndex];
+      current = current._states[current._currentIndex]!;
     }
     // Clear data on the current leaf node
     current.clearData();
