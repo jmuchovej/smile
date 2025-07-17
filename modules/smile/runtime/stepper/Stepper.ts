@@ -46,6 +46,27 @@ export interface StepperOptions {
 }
 
 /**
+ * Produces the id for a generated row from the row's data
+ */
+export type RowIdGenerator = (row: StepData) => StepId;
+
+/**
+ * Options for combining columns of different lengths in zip()
+ */
+export interface ZipOptions {
+  method?: string;
+  padValue?: unknown;
+}
+
+/**
+ * Options for shuffle()
+ */
+export interface ShuffleOptions {
+  seed?: string | null;
+  always?: boolean;
+}
+
+/**
  * A plain, display-friendly view of a step and its rows
  */
 export interface VisualizedStep {
@@ -186,13 +207,13 @@ export class Stepper extends StepState {
    * 2. Checks if any new items would create paths that already exist in the tree
    * 3. Checks if any new items have the same data content as existing items
    */
-  _hasDuplicatePaths(items) {
+  _hasDuplicatePaths(items: StepData | StepData[]): boolean {
     // Convert single item to array if needed
     const itemsToCheck = Array.isArray(items) ? items : [items];
 
     // First check for duplicates among the input items
-    const seenPaths = new Set();
-    const seenData = new Set();
+    const seenPaths = new Set<unknown>();
+    const seenData = new Set<string>();
     for (const item of itemsToCheck) {
       // Check for explicit path duplicates
       if (item.id !== undefined) {
@@ -217,9 +238,14 @@ export class Stepper extends StepState {
     // Check if any new items would create duplicate paths with existing ones
     return itemsToCheck.some((item) => {
       // Create a temporary state to get its path
-      let state;
+      let state: Stepper;
       if (item.id !== undefined) {
-        state = new Stepper({ id: item.id, parent: this, log: this._log, maxRows: this._maxRows });
+        state = new Stepper({
+          id: item.id as StepId,
+          parent: this,
+          log: this._log,
+          maxRows: this._maxRows,
+        });
       } else {
         state = new Stepper({ parent: this, log: this._log, maxRows: this._maxRows });
       }
@@ -239,17 +265,17 @@ export class Stepper extends StepState {
    * @description
    * If the item contains an 'id' field, it will be used as the state's id.
    */
-  _addState(item) {
-    let state;
+  _addState(item: StepData): StepState | undefined {
+    let state: StepState | undefined;
     try {
       // Create a new state with auto-incremented id
       if (item.id !== undefined) {
-        state = this.push(item.id, item);
+        state = this.push(item.id as StepId, item);
       } else {
         state = this.push(null, item);
       }
     } catch (error) {
-      this._log.error(error.message);
+      this._log.error((error as Error).message);
     }
     return state;
   }
@@ -260,7 +286,7 @@ export class Stepper extends StepState {
    * @returns {Stepper} Returns this instance for method chaining
    * @throws {Error} If items is not an object or array, or if adding items would exceed maxStepperRows
    */
-  append(items) {
+  append(items: StepData | StepData[]): Stepper {
     this._log.debug("\tappend", items);
     // Convert single item to array if needed
     const itemsToAdd = Array.isArray(items) ? items : [items];
@@ -298,7 +324,7 @@ export class Stepper extends StepState {
    * @returns {Stepper} Returns this instance for method chaining
    * @throws {Error} If trials is not an object or if operation would exceed maxStepperRows
    */
-  outer(trials, idGenerator = null) {
+  outer(trials: Record<string, unknown>, idGenerator: RowIdGenerator | null = null): Stepper {
     if (typeof trials !== "object" || trials === null) {
       throw new Error("outer() requires an object with arrays as values");
     }
@@ -309,7 +335,7 @@ export class Stepper extends StepState {
     }
 
     // Convert non-array values to single-element arrays
-    const processedColumns = columns.map(([key, value]) => {
+    const processedColumns = columns.map(([key, value]): [string, unknown[]] => {
       if (Array.isArray(value)) return [key, value];
       return [key, [value]];
     });
@@ -325,10 +351,10 @@ export class Stepper extends StepState {
     }
 
     // Helper function to generate combinations
-    function generateCombinations(arrays) {
+    function generateCombinations(arrays: [string, unknown[]][]): StepData[] {
       if (arrays.length === 0) return [{}];
 
-      const [key, values] = arrays[0];
+      const [key, values] = arrays[0]!;
       const rest = arrays.slice(1);
       const restCombinations = generateCombinations(rest);
 
@@ -373,7 +399,11 @@ export class Stepper extends StepState {
    * @returns {Stepper} Returns this instance for method chaining
    * @throws {Error} If trials is not an object or if operation would exceed maxStepperRows
    */
-  zip(trials, idGeneratorOrOptions = {}, options = {}) {
+  zip(
+    trials: Record<string, unknown>,
+    idGeneratorOrOptions: RowIdGenerator | ZipOptions = {},
+    options: ZipOptions = {},
+  ): Stepper {
     if (typeof trials !== "object" || trials === null) {
       throw new Error("zip() requires an object with arrays as values");
     }
@@ -391,7 +421,7 @@ export class Stepper extends StepState {
     }
 
     // Convert non-array values to single-element arrays
-    const processedColumns = columns.map(([key, value]) => {
+    const processedColumns = columns.map(([key, value]): [string, unknown[]] => {
       if (Array.isArray(value)) return [key, value];
       return [key, [value]];
     });
@@ -417,11 +447,16 @@ export class Stepper extends StepState {
     }
 
     // Helper function to adjust array length
-    const adjustArrayLength = (arr, targetLength, method, padValue) => {
+    const adjustArrayLength = (
+      arr: unknown[],
+      targetLength: number,
+      method: string,
+      padValue?: unknown,
+    ): unknown[] => {
       if (arr.length === targetLength) return arr;
 
       if (method === "loop") {
-        const result = [];
+        const result: unknown[] = [];
         for (let i = 0; i < targetLength; i++) {
           result.push(arr[i % arr.length]);
         }
@@ -458,9 +493,9 @@ export class Stepper extends StepState {
     const zippedRows = Array(maxLength)
       .fill(null)
       .map((_, i) => {
-        const row = {};
+        const row: StepData = {};
         processedColumns.forEach(([key], colIndex) => {
-          row[key] = processedArrays[colIndex][i];
+          row[key] = processedArrays[colIndex]![i];
         });
         return row;
       });
@@ -493,9 +528,9 @@ export class Stepper extends StepState {
    * @param {boolean} [options.always=false] - If true, allows shuffling even if already shuffled
    * @returns {Stepper} Returns this instance for method chaining
    */
-  shuffle(options = {}) {
+  shuffle(options: string | ShuffleOptions = {}): Stepper {
     const { seed = null, always = false } =
-      typeof options === "string" ? { seed: options } : options;
+      typeof options === "string" ? ({ seed: options } as ShuffleOptions) : options;
 
     // Skip if already shuffled and always is false
     if (this._shuffled && !always) {
@@ -506,7 +541,7 @@ export class Stepper extends StepState {
     if (this._states.length <= 1) return this;
 
     // Create RNG function - either seeded or Math.random
-    let rng;
+    let rng: () => number;
     if (seed) {
       // Create a new seeded RNG instance
       const seededRng = seedrandom(seed);
@@ -518,11 +553,11 @@ export class Stepper extends StepState {
     // For other depths, shuffle all elements
     for (let i = this._states.length - 1; i > 0; i--) {
       const j = Math.floor(rng() * (i + 1));
-      [this._states[i], this._states[j]] = [this._states[j], this._states[i]];
+      [this._states[i], this._states[j]] = [this._states[j]!, this._states[i]!];
 
       // Update indices for the swapped elements
-      this._states[i]._currentIndex = i;
-      this._states[j]._currentIndex = j;
+      this._states[i]!._currentIndex = i;
+      this._states[j]!._currentIndex = j;
     }
 
     // Mark as shuffled
@@ -545,19 +580,20 @@ export class Stepper extends StepState {
    * @param {number} callback.index - The index of the current item
    * @returns {Stepper} The current instance for chaining
    */
-  forEach(callback) {
+  forEach(callback: (item: Stepper, index: number) => unknown): Stepper {
     this._states.forEach((item, index) => {
       // Call the callback and check if it returns a new value
-      const result = callback(item, index);
+      const result = callback(item as Stepper, index);
       if (result !== undefined) {
         // If result is an object with properties from the proxy, extract just the data properties
         if (typeof result === "object" && result !== null) {
+          const source = result as Record<string, unknown>;
           // Create a new data object by starting with the original data
-          const newData = { ...item.data };
+          const newData: StepData = { ...item.data };
 
           // Add or update properties from the result object
           // This allows new properties to be added that weren't in the original data
-          Object.keys(result).forEach((key) => {
+          Object.keys(source).forEach((key) => {
             // Only copy properties that are not internal properties of the Stepper
             if (
               key !== "_id" &&
@@ -565,9 +601,9 @@ export class Stepper extends StepState {
               key !== "_parent" &&
               key !== "_path" &&
               key !== "data" &&
-              typeof result[key] !== "function"
+              typeof source[key] !== "function"
             ) {
-              newData[key] = result[key];
+              newData[key] = source[key];
             }
           });
 
