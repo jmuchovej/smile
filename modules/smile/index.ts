@@ -18,6 +18,7 @@ import {
   extendPages,
   useLogger,
 } from "@nuxt/kit";
+import type { WatchEvent } from "@nuxt/schema";
 import { isAbsolute, relative, resolve as resolvePath } from "pathe";
 
 import { expectedConfigFiles, loadSmileConfig, watchSmileConfig } from "./build/config";
@@ -205,7 +206,7 @@ export default defineNuxtModule<SmileModuleOptions>({
     if (nuxt.options.dev) {
       const watchedDirs = [stimuliDir, experimentsDir].filter((dir) => existsSync(dir));
       nuxt.options.watch.push(...watchedDirs);
-      nuxt.hook("builder:watch", (event, path) => {
+      nuxt.hook("builder:watch", (event: WatchEvent, path: string) => {
         const absolute = isAbsolute(path) ? path : resolvePath(nuxt.options.srcDir, path);
         if (watchedDirs.some((dir) => absolute.startsWith(`${dir}/`))) {
           logger.info(`${relative(rootDir, absolute)} ${event}; restarting`);
