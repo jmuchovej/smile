@@ -1,21 +1,32 @@
 // biome-ignore assist/source/organizeImports: Must be first to ensure zod extensions are loaded
 import "./database/zod";
 import {
-  addPlugin,
+  extendRouteRules,
   addServerPlugin,
   createResolver,
   defineNuxtModule,
+  addRouteMiddleware,
+  addComponentsDir,
+  addImportsDir,
+  addVitePlugin,
 } from "@nuxt/kit";
+
 import { defu } from "defu";
 import type { Nuxt } from "nuxt/schema";
 import { loadSmileConfig } from "./config";
-import { initializeDatabase } from "./database";
-import { spawnDrizzleStudio } from "./database/studio";
-import { injectRuntimeTools } from "./injections";
-import { generateRoutingTable } from "./router";
+import { generateInternalRoutes } from "./router";
+import { generateExperimentRoutes } from "./timelines";
 import { createSmileBuildConfig, type SmileBuildConfig } from "./types/build-config";
 import { devtools, useLogger, registerModule } from "./utils/module";
 import { SmileTemplates } from "./templates";
+import { getValidatedTable } from "./database/zod";
+import {
+  blockSchema,
+  participantSchema,
+  sessionSchema,
+  trialSchema,
+} from "./database/schemas";
+import type { SmileTable } from "./database/types";
 import type { NitroConfig } from "nitropack";
 import { join } from "pathe";
 import { existsSync } from "node:fs";
@@ -26,6 +37,7 @@ export {
   defineSmileConfig,
   defineStimuli,
 } from "./config";
+
 export * from "./types";
 
 // biome-ignore lint/suspicious/noEmptyInterface: <explanation>
@@ -44,7 +56,7 @@ export default defineNuxtModule<SmileModuleOptions>({
   async setup(_options: SmileModuleOptions, nuxt: Nuxt) {
     const logger = useLogger("module");
     const resolver = createResolver(import.meta.url);
-    const { resolve } = resolver;
+    const { resolve, resolvePath } = resolver;
     nuxt.options.alias["#smile"] = resolve("./runtime");
 
     nuxt.options.pages = nuxt.options.pages || {};
@@ -57,33 +69,22 @@ export default defineNuxtModule<SmileModuleOptions>({
     });
     nuxt.options.router.options.hashMode = true;
 
+    await registerModule(nuxt, "@nuxt/icon", "icon", {
+      cssLayer: "components",
+    });
     await registerModule(nuxt, "@nuxtjs/mdc", "mdc", {});
-    await registerModule(nuxt, "@nuxt/ui-pro", "ui", {
-      css: ["~assets/css/main.css"],
+
+    if (nuxt.options.builder === "@nuxt/vite-builder") {
+      const tailwindcss = (await import("@tailwindcss/vite")).default;
+      addVitePlugin(tailwindcss());
+    } else {
+      nuxt.options.postcss.plugins["@tailwindcss/postcss"] = {};
+    }
+
+    await registerModule(nuxt, "shadcn-nuxt", "shadcn", {
+      prefix: "UI",
+      componentDir: resolve("runtime", "components", "uikit"),
     });
-
-    // Add SmileJS CSS
-    nuxt.options.css = nuxt.options.css || [];
-    nuxt.options.css.push(resolve("./smile.css"));
-
-    // Add Vite alias for Tailwind v4 imports in module components
-    nuxt.hook("vite:extendConfig", (config) => {
-      config.resolve = config.resolve || {};
-      config.resolve.alias = config.resolve.alias || {};
-      // Allow @import "tailwindcss" in module components
-      // config.resolve.alias["tailwindcss"] = resolve("./smile.css");
-    });
-
-    // Extend Tailwind config to include SmileJS components
-    // nuxt.hook("tailwindcss:config:extend", (tailwindConfig) => {
-    //   tailwindConfig.content = tailwindConfig.content || [];
-    //   if (Array.isArray(tailwindConfig.content)) {
-    //     tailwindConfig.content.push(
-    //       resolve("./runtime/components/**/*.{js,vue,ts}"),
-    //       resolve("./runtime/pages/**/*.{js,vue,ts}")
-    //     );
-    //   }
-    // });
 
     nuxt.options.nitro = defu(nuxt.options.nitro, {
       experimental: {
@@ -134,13 +135,31 @@ export default defineNuxtModule<SmileModuleOptions>({
     await devtools(buildConfig);
     initializeDatabase(buildConfig);
     initializeMDXProcessor(buildConfig);
-    await spawnDrizzleStudio(buildConfig);
-    await generateRoutingTable(buildConfig);
-    await injectRuntimeTools(buildConfig);
+    await generateInternalRoutes(buildConfig);
+    await generateExperimentRoutes(buildConfig);
+    // const timelines = await initializeTimelines(buildConfig);
+
+    addRouteMiddleware({
+      name: "smile-timeline",
+      path: resolve("runtime/middleware/timeline"),
+      global: true,
+    });
+
+    addComponentsDir({
+      path: resolve("runtime/components"),
+      prefix: "Smile",
+      pathPrefix: false,
+      watch: true,
+    });
+
+    addImportsDir(resolve("runtime/composables"));
+
+    nuxt.options.alias["#smile:components"] =
+      SmileTemplates.mdxComponents(buildConfig).dst;
 
     // Check if user has defined app.vue, if not create one with SmileLayout
     nuxt.hook("app:resolve", async (app) => {
-      const userAppPath = join(nuxt.options.srcDir, "app.vue");
+      const userAppPath = resolve(join(nuxt.options.srcDir, "app.vue"));
 
       if (!existsSync(userAppPath)) {
         // User hasn't defined app.vue, create one for them
@@ -154,11 +173,48 @@ export default defineNuxtModule<SmileModuleOptions>({
         );
       }
     });
-
-    nuxt.options.alias["#smile:components"] =
-      SmileTemplates.mdxComponents(buildConfig).dst;
   },
 });
+
+function initializeDatabase(config: SmileBuildConfig) {
+  const logger = useLogger("database");
+
+  const {
+    nuxt,
+    resolver: { resolve },
+    experiments,
+  } = config;
+
+  nuxt.options.alias["#smile/database"] = SmileTemplates.database(config).dst;
+
+  const tables: Record<string, SmileTable> = {
+    participants: getValidatedTable(`participants`, participantSchema),
+    sessions: getValidatedTable(`sessions`, sessionSchema),
+    blocks: getValidatedTable(`blocks`, blockSchema),
+    trials: getValidatedTable(`trials`, trialSchema),
+  };
+  logger.debug(`Added all of Smile's "meta" tables!`);
+
+  for (const experiment of Object.values(experiments)) {
+    tables[experiment.tableName] = getValidatedTable(
+      experiment.tableName,
+      experiment.schema
+    );
+    logger.debug(`Adding the ${experiment.tableName} table!`);
+    const { stimuli } = experiment;
+    tables[stimuli.tableName] = getValidatedTable(stimuli.tableName, stimuli.schema);
+    logger.debug(`Adding the ${stimuli.tableName} table!`);
+  }
+
+  SmileTemplates.drizzleConfig(config);
+  nuxt.options.alias["#smile:db/schema"] = SmileTemplates.schema(config, tables).dst;
+
+  SmileTemplates.sqlTables(config, tables);
+  nuxt.options.alias["#smile:sql/tables"] = SmileTemplates.tsTables(config, tables).dst;
+  nuxt.options.alias["#smile:sql/seed"] = SmileTemplates.tsSeed(config, tables).dst;
+
+  addServerPlugin(resolve("runtime", "server", "plugins", "database.ts"));
+}
 
 function initializeMDXProcessor(config: SmileBuildConfig) {
   const {
