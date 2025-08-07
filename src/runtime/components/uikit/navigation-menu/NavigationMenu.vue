@@ -7,7 +7,7 @@ import {
 
   useForwardPropsEmits,
 } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import NavigationMenuViewport from "./NavigationMenuViewport.vue"
 
 const props = withDefaults(defineProps<NavigationMenuRootProps & {

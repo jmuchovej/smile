@@ -4,7 +4,7 @@ import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { ChevronRight } from "lucide-vue-next"
 import { MenubarSubTrigger, useForwardProps } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = defineProps<MenubarSubTriggerProps & { class?: HTMLAttributes["class"], inset?: boolean }>()
 

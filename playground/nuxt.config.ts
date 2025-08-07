@@ -6,6 +6,7 @@ const { resolve } = createResolver(import.meta.url);
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-29",
   modules: ["../src/module"], // "@nuxt/image", "@nuxt/fonts"],
+  css: ["~/assets/css/main.css"],
   devServer: {
     port: 7645,
   },

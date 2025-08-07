@@ -6,7 +6,7 @@ import type { toggleVariants } from '#smile/components/uikit/toggle'
 import { reactiveOmit } from "@vueuse/core"
 import { ToggleGroupRoot, useForwardPropsEmits } from "reka-ui"
 import { provide } from "vue"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 type ToggleGroupVariants = VariantProps<typeof toggleVariants>
 

@@ -3,7 +3,7 @@ import type { RangeCalendarGridProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { RangeCalendarGrid, useForwardProps } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = defineProps<RangeCalendarGridProps & { class?: HTMLAttributes["class"] }>()
 

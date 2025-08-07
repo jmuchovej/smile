@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { computed } from "vue"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { Skeleton } from '#smile/components/uikit/skeleton'
 
 const props = defineProps<{

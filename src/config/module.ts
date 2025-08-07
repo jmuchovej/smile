@@ -25,9 +25,7 @@ export interface SmileRuntimeConfig {
 }
 
 export interface SmilePublicRuntimeConfig {
-  database: {
-    studioPort: number;
-  };
+  database: {};
 }
 
 export interface SmileAppConfig {

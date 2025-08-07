@@ -8,7 +8,7 @@ import {
   PopoverPortal,
   useForwardPropsEmits,
 } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 defineOptions({
   inheritAttrs: false,

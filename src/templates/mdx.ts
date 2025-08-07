@@ -2,7 +2,7 @@ import type { SmileBuildConfig } from "@smile/types/build-config";
 import { genDynamicImport } from "knitwork";
 import type { NuxtTemplate } from "nuxt/schema";
 import { join, relative, isAbsolute } from "pathe";
-import { useLogger } from "../utils/module";
+import { useLogger } from "../runtime/internal";
 
 export const mdxTemplates = {
   componentManifest: "smile/components.ts",

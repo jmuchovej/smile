@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import TableCell from "./TableCell.vue"
 import TableRow from "./TableRow.vue"
 

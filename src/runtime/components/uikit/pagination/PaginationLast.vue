@@ -5,7 +5,7 @@ import type { ButtonVariants } from '#smile/components/uikit/button'
 import { reactiveOmit } from "@vueuse/core"
 import { ChevronRightIcon } from "lucide-vue-next"
 import { PaginationLast, useForwardProps } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { buttonVariants } from '#smile/components/uikit/button'
 
 const props = withDefaults(defineProps<PaginationLastProps & {

@@ -3,7 +3,7 @@ import { basename, dirname, extname, join } from "pathe";
 import { kebabCase } from "scule";
 import { type GlobOptions, globSync } from "tinyglobby";
 import { type ZodObject, z } from "zod";
-import { useLogger } from "../utils/module";
+import { useLogger } from "../runtime/internal";
 
 export type StimuliSource = string | string[];
 

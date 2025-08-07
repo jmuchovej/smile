@@ -8,7 +8,7 @@ import {
   SwitchThumb,
   useForwardPropsEmits,
 } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = defineProps<SwitchRootProps & { class?: HTMLAttributes["class"] }>()
 

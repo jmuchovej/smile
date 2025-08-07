@@ -6,7 +6,7 @@ import { hash } from "ohash";
 import { join, relative } from "pathe";
 import { glob } from "tinyglobby";
 import { defineNitroPlugin, type NitroApp, useRuntimeConfig, useStorage } from "#nitro";
-import { useLogger } from "#smile/internal/logger";
+import { useLogger } from "#smile/internal";
 
 interface ProcessedMdxContent extends ParsedContent {
   _path: string;

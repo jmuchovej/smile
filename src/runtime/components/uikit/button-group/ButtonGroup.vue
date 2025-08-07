@@ -2,7 +2,7 @@
 import { reactiveOmit } from '@vueuse/core'
 import { useForwardProps } from 'reka-ui'
 import { provide } from 'vue'
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = defineProps({
   disabled: { type: Boolean, required: false },

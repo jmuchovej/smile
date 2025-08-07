@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { LabelProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { Label } from '#smile/components/uikit/label'
 import { useFormField } from "./useFormField"
 

@@ -10,6 +10,7 @@
   "dependencies": {
     "@nuxtjs/mdc": "^0.17.2",
     "@smile/nuxt": "workspace:*",
+    "@tailwindcss/vite": "^4.1.11",
     "@vueuse/core": "^13.5.0",
     "@vueuse/nuxt": "^13.5.0",
     "nuxt": "^4.0.1",

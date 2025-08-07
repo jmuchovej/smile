@@ -8,7 +8,7 @@ import {
   HoverCardPortal,
   useForwardProps,
 } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = withDefaults(
   defineProps<HoverCardContentProps & { class?: HTMLAttributes["class"] }>(),

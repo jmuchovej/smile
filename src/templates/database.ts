@@ -10,7 +10,9 @@ import {
   getCreateTableQuery,
   getDropTableIfExistsQuery,
 } from "../database/sql";
-import { useLogger, indentLines } from "../utils/module";
+import { indentLines } from "../utils";
+import { useLogger } from "../runtime/internal";
+import { useNuxt } from "@nuxt/kit";
 
 export const databaseTemplates = {
   drizzle: "smile/database/drizzle.config.ts",
@@ -24,10 +26,8 @@ export const databaseTemplates = {
 export function drizzleConfigTemplate(config: SmileBuildConfig): NuxtTemplate {
   const logger = useLogger("database");
   const {
-    nuxt: {
-      options: { dev, nitro },
-    },
-  } = config;
+    options: { dev, nitro },
+  } = useNuxt();
   const database = dev ? (nitro.devDatabase ?? nitro.database) : nitro.database;
   const credentials = database?.smile?.options;
   const dbCredentials = indentLines(JSON.stringify(credentials, null, 2) ?? "", 2);

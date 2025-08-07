@@ -10,7 +10,7 @@ import {
   SelectItemText,
   useForwardProps,
 } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = defineProps<SelectItemProps & { class?: HTMLAttributes["class"] }>()
 

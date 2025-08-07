@@ -4,10 +4,10 @@ import {
   type WatchConfigOptions,
   watchConfig,
 } from "c12";
-import type { Nuxt, NuxtConfigLayer } from "nuxt/schema";
+import type { Nuxt } from "nuxt/schema";
 import { join, relative } from "pathe";
 import z from "zod";
-import { useLogger } from "../utils/module";
+import { useLogger } from "../runtime/internal";
 import {
   type DefinedExperiment,
   defineExperiment,

@@ -4,7 +4,7 @@ import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { ListboxGroup, ListboxGroupLabel, useId } from "reka-ui"
 import { computed, onMounted, onUnmounted } from "vue"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { provideCommandGroupContext, useCommand } from "."
 
 const props = defineProps<ListboxGroupProps & {

@@ -1,9 +1,9 @@
 import { existsSync, mkdirSync } from "node:fs";
-import type { Resolver } from "@nuxt/kit";
+import { useNuxt, type Resolver } from "@nuxt/kit";
 import type { Nuxt } from "nuxt/schema";
-import { dirname, join } from "pathe";
-import { logger } from "../utils/module";
+import { join } from "pathe";
 import type { ResolvedExperiment } from "../config";
+import { useLogger } from "../runtime/internal";
 
 export interface SmileBuildConfig {
   // Path configuration
@@ -23,17 +23,15 @@ export interface SmileBuildConfig {
     filename: string; // Database filename (e.g., 'smile.db')
   };
 
-  // Runtime configuration references
-  nuxt: Nuxt;
-
   resolver: Resolver;
 }
 
 export function createSmileBuildConfig(
-  nuxt: Nuxt,
   experiments: SmileBuildConfig["experiments"],
   resolver: Resolver
 ): SmileBuildConfig {
+  const nuxt = useNuxt();
+  const logger = useLogger("build-config");
   const buildDir = nuxt.options.buildDir;
   const rootDir = nuxt.options.rootDir;
   const sandbox = join(buildDir, "smile");
@@ -62,8 +60,6 @@ export function createSmileBuildConfig(
     database: {
       filename: "smile.db",
     },
-
-    nuxt,
 
     resolver,
   };

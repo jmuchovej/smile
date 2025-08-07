@@ -1,14 +1,15 @@
 import { join } from "pathe";
 import type { NuxtTemplate } from "@nuxt/schema";
 import type { SmileBuildConfig } from "../types/build-config";
-import { useLogger } from "../utils/module";
+import { useLogger } from "../runtime/internal";
+import { useNuxt } from "@nuxt/kit";
 
 export const appTemplates = {
   "app.vue": "app.vue",
 };
 
 export function appVueTemplate(config: SmileBuildConfig): NuxtTemplate {
-  const { nuxt } = config;
+  const nuxt = useNuxt();
   const logger = useLogger("templates", "app");
 
   return {

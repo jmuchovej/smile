@@ -1,10 +1,10 @@
-import defu from "defu";
+import { defu } from "defu";
 import { kebabCase } from "scule";
 import { type ZodObject, z } from "zod";
 import { existsSync } from "node:fs";
 import { join, basename, dirname } from "pathe";
 import type { ExperimentService } from "../types/service";
-import { logger, useLogger } from "../utils/module";
+import { useLogger } from "../runtime/internal";
 import type { DefinedStimuli, ResolvedStimuli } from "./stimuli";
 import { resolveStimuli } from "./stimuli";
 

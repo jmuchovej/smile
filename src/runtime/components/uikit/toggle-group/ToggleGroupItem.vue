@@ -5,7 +5,7 @@ import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { ToggleGroupItem, useForwardProps } from "reka-ui"
 import { inject } from "vue"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { toggleVariants } from '#smile/components/uikit/toggle'
 
 type ToggleGroupVariants = VariantProps<typeof toggleVariants>

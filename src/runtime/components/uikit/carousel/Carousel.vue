@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { CarouselEmits, CarouselProps, WithClassAsProps } from "./interface"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { useProvideCarousel } from "./useCarousel"
 
 const props = withDefaults(defineProps<CarouselProps & WithClassAsProps>(), {

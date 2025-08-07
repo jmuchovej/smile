@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 interface SkeletonProps {
   class?: HTMLAttributes["class"]

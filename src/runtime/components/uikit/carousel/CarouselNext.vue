@@ -2,7 +2,7 @@
 import type { WithClassAsProps } from "./interface"
 import type { ButtonVariants } from '#smile/components/uikit/button'
 import { ArrowRight } from "lucide-vue-next"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { Button } from '#smile/components/uikit/button'
 import { useCarousel } from "./useCarousel"
 

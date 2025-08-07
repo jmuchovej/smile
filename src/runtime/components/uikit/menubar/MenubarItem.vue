@@ -7,7 +7,7 @@ import {
 
   useForwardPropsEmits,
 } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = defineProps<MenubarItemProps & {
   class?: HTMLAttributes["class"]

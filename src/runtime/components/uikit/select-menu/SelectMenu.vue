@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Check, ChevronsUpDown, Search } from "lucide-vue-next"
 import { ref, computed } from "vue"
-import { cn } from "#smile/internal/utils"
+import { cn } from "#smile/internal"
 import { Button } from "#smile/components/uikit/button"
 import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger } from "#smile/components/uikit/combobox"
 

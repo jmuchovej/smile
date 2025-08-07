@@ -2,7 +2,7 @@ import type { SmileTable } from "../database/types";
 import { databaseTemplates } from "./database";
 import { appTemplates } from "./app";
 import { mdxTemplates } from "./mdx";
-import type { SmileBuildConfig } from "@smile/types/build-config";
+import type { SmileBuildConfig } from "../build-config";
 import { addTemplate } from "@nuxt/kit";
 
 import {

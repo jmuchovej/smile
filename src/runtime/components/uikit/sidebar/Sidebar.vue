@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SidebarProps } from "."
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { Sheet, SheetContent } from '#smile/components/uikit/sheet'
 import SheetDescription from '#smile/components/uikit/sheet/SheetDescription.vue'
 import SheetHeader from '#smile/components/uikit/sheet/SheetHeader.vue'

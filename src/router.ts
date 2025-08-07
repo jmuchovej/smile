@@ -3,7 +3,7 @@ import type { NuxtPage } from "@nuxt/schema";
 import type { RouterMethod } from "h3";
 import { extname, relative, parse, join } from "pathe";
 import type { SmileBuildConfig } from "./types/build-config";
-import { useLogger } from "./utils/module";
+import { useLogger } from "./runtime/internal";
 import {
   globTimelineFiles,
   type TimelineFile,
@@ -22,6 +22,12 @@ export async function generateInternalRoutes(config: SmileBuildConfig) {
       name: "smile-config",
       path: "/config",
       file: resolve("./runtime/pages/config.vue"),
+    });
+
+    pages.push({
+      name: "smile-admin-database",
+      path: "/admin/database",
+      file: resolve("./runtime/pages/admin/database/index.vue"),
     });
 
     pages.push({

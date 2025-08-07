@@ -3,7 +3,7 @@ import type { AlertDialogActionProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { AlertDialogAction } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 import { buttonVariants } from '#smile/components/uikit/button'
 
 const props = defineProps<AlertDialogActionProps & { class?: HTMLAttributes["class"] }>()

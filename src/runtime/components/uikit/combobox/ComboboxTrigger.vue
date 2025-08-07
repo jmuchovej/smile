@@ -3,7 +3,7 @@ import type { ComboboxTriggerProps } from "reka-ui"
 import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { ComboboxTrigger, useForwardProps } from "reka-ui"
-import { cn } from '#smile/internal/utils'
+import { cn } from '#smile/internal'
 
 const props = defineProps<ComboboxTriggerProps & { class?: HTMLAttributes["class"] }>()
 
