@@ -1,6 +1,6 @@
 import { join } from "pathe";
 import type { NuxtTemplate } from "@nuxt/schema";
-import type { SmileBuildConfig } from "@smile/types/build-config";
+import type { SmileBuildConfig } from "../types/build-config";
 import { useLogger } from "../utils/module";
 
 export const appTemplates = {

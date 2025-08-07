@@ -19,7 +19,7 @@ import {
   trialSchema,
 } from "./database/schemas";
 import { getValidatedTable } from "./database/zod";
-import { generateRoutingTable } from "./router";
+import { generateExperimentRoutes, generateInternalRoutes } from "./router";
 import { createSmileBuildConfig, type SmileBuildConfig } from "./types/build-config";
 import { devtools, useLogger, registerModule } from "./utils/module";
 import { SmileTemplates } from "./templates";
@@ -131,7 +131,8 @@ export default defineNuxtModule<SmileModuleOptions>({
     await devtools(buildConfig);
     initializeDatabase(buildConfig);
     initializeMDXProcessor(buildConfig);
-    await generateRoutingTable(buildConfig);
+    await generateInternalRoutes(buildConfig);
+    await generateExperimentRoutes(buildConfig);
 
     addRouteMiddleware({
       name: "smile-timeline",

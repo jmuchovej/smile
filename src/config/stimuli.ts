@@ -71,7 +71,12 @@ const parquetTransformer = defineStimuliTransformer({
   loader: (file: string) => pl.scanParquet(file).collect(),
 });
 
-const Transformers = [csvTransformer, tsvTransformer, jsonlTransformer, parquetTransformer];
+const Transformers = [
+  csvTransformer,
+  tsvTransformer,
+  jsonlTransformer,
+  parquetTransformer,
+];
 
 type Transformer = (typeof Transformers)[number];
 type TransformerFileType = Transformer["extensions"][number];
@@ -85,7 +90,10 @@ export const defineStimuli = (stimuli: StimuliBase): DefinedStimuli => {
   };
 };
 
-export function resolveStimuli(rootDir: string, stimuli: DefinedStimuli): ResolvedStimuli {
+export function resolveStimuli(
+  rootDir: string,
+  stimuli: DefinedStimuli
+): ResolvedStimuli {
   const logger = useLogger("config", "stimuli");
   const { source } = stimuli; // sugar
   const sources = Array.isArray(source) ? source : [source];
@@ -95,7 +103,7 @@ export function resolveStimuli(rootDir: string, stimuli: DefinedStimuli): Resolv
     absolute: true,
     onlyFiles: true,
     ignore: ["**/.DS_Store"],
-    cwd: join(dirname(rootDir), "stimuli"),
+    cwd: join(rootDir, "stimuli"),
   };
   logger.debug(`Searching with ${sources} in ${globOptions.cwd}`);
 
@@ -118,7 +126,8 @@ export function resolveStimuli(rootDir: string, stimuli: DefinedStimuli): Resolv
     });
   }
 
-  const isDefaultStimuli = stimuli.name === "silly-rabbit" && stimuli.source === "trix-are-for-kids.csv";
+  const isDefaultStimuli =
+    stimuli.name === "silly-rabbit" && stimuli.source === "trix-are-for-kids.csv";
   if (resolvedSources.length === 0 && !isDefaultStimuli) {
     throw new Error(`No files found for ${stimuli.name}`);
   }
