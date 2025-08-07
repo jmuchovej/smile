@@ -1,6 +1,7 @@
 // biome-ignore assist/source/organizeImports: Must be first to ensure zod extensions are loaded
 import "./database/zod";
 import {
+  addVitePlugin,
   addComponentsDir,
   addImportsDir,
   addRouteMiddleware,
@@ -64,33 +65,22 @@ export default defineNuxtModule<SmileModuleOptions>({
     });
     nuxt.options.router.options.hashMode = true;
 
+    await registerModule(nuxt, "@nuxt/icon", "icon", {
+      cssLayer: "components",
+    });
     await registerModule(nuxt, "@nuxtjs/mdc", "mdc", {});
-    await registerModule(nuxt, "@nuxt/ui-pro", "ui", {
-      css: ["~assets/css/main.css"],
+
+    if (nuxt.options.builder === "@nuxt/vite-builder") {
+      const tailwindcss = (await import("@tailwindcss/vite")).default;
+      addVitePlugin(tailwindcss());
+    } else {
+      nuxt.options.postcss.plugins["@tailwindcss/postcss"] = {};
+    }
+
+    await registerModule(nuxt, "shadcn-nuxt", "shadcn", {
+      prefix: "UI",
+      componentDir: resolve("./runtime/components/uikit"),
     });
-
-    // Add SmileJS CSS
-    nuxt.options.css = nuxt.options.css || [];
-    nuxt.options.css.push(resolve("./smile.css"));
-
-    // Add Vite alias for Tailwind v4 imports in module components
-    nuxt.hook("vite:extendConfig", (config) => {
-      config.resolve = config.resolve || {};
-      config.resolve.alias = config.resolve.alias || {};
-      // Allow @import "tailwindcss" in module components
-      // config.resolve.alias["tailwindcss"] = resolve("./smile.css");
-    });
-
-    // Extend Tailwind config to include SmileJS components
-    // nuxt.hook("tailwindcss:config:extend", (tailwindConfig) => {
-    //   tailwindConfig.content = tailwindConfig.content || [];
-    //   if (Array.isArray(tailwindConfig.content)) {
-    //     tailwindConfig.content.push(
-    //       resolve("./runtime/components/**/*.{js,vue,ts}"),
-    //       resolve("./runtime/pages/**/*.{js,vue,ts}")
-    //     );
-    //   }
-    // });
 
     nuxt.options.nitro = defu(nuxt.options.nitro, {
       experimental: {
@@ -204,6 +194,7 @@ function initializeDatabase(config: SmileBuildConfig) {
   const {
     nuxt,
     resolver: { resolve },
+    experiments,
   } = config;
 
   nuxt.options.alias["#smile/database"] = SmileTemplates.database(config).dst;
@@ -216,15 +207,15 @@ function initializeDatabase(config: SmileBuildConfig) {
   };
   logger.debug(`Added all of Smile's "meta" tables!`);
 
-  const { experiments } = config;
   for (const experiment of Object.values(experiments)) {
-    const { stimuli } = experiment;
     tables[experiment.tableName] = getValidatedTable(
       experiment.tableName,
       experiment.schema
     );
-    tables[stimuli.tableName] = getValidatedTable(stimuli.tableName, stimuli.schema);
     logger.debug(`Adding the \`${experiment.tableName}\` table!`);
+
+    const { stimuli } = experiment;
+    tables[stimuli.tableName] = getValidatedTable(stimuli.tableName, stimuli.schema);
     logger.debug(`Adding the \`${stimuli.tableName}\` table!`);
   }
 

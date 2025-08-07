@@ -1,0 +1,120 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./internal/styles/keyframes.css";
+@import "./internal/styles/colors.css";
+@import "./internal/styles/scrollbars.css";
+
+@variant light (&:where(.light, .light *));
+@variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-primary-button: var(--primary-button);
+  --color-primary-button-foreground: var(--primary-button-foreground);
+  --color-primary-button-light: var(--primary-button-light);
+  --color-primary-button-light-foreground: var(--primary-button-light-foreground);
+  --color-link-button: var(--link-button);
+  --color-link-button-foreground: var(--link-button-foreground);
+  --color-link-button-light: var(--link-button-light);
+  --color-link-button-light-foreground: var(--link-button-light-foreground);
+  --color-info-button: var(--info-button);
+  --color-info-button-foreground: var(--info-button-foreground);
+  --color-info-button-light: var(--info-button-light);
+  --color-info-button-light-foreground: var(--info-button-light-foreground);
+  --color-success-button: var(--success-button);
+  --color-success-button-foreground: var(--success-button-foreground);
+  --color-success-button-light: var(--success-button-light);
+  --color-success-button-light-foreground: var(--success-button-light-foreground);
+  --color-warning-button: var(--warning-button);
+  --color-warning-button-foreground: var(--warning-button-foreground);
+  --color-warning-button-light: var(--warning-button-light);
+  --color-warning-button-light-foreground: var(--warning-button-light-foreground);
+  --color-danger-button: var(--danger-button);
+  --color-danger-button-foreground: var(--danger-button-foreground);
+  --color-danger-button-light: var(--danger-button-light);
+  --color-danger-button-light-foreground: var(--danger-button-light-foreground);
+
+  --color-window-sizer-bg: var(--window-sizer-bg);
+  --color-window-sizer-text: var(--window-sizer-text);
+  --color-window-sizer-border: var(--window-sizer-border);
+  --color-window-sizer-input: var(--window-sizer-input);
+  --color-window-sizer-ring: var(--window-sizer-ring);
+
+  --color-withdraw-bg: var(--withdraw-bg);
+  --color-withdraw-text: var(--withdraw-text);
+  --color-withdraw-border: var(--withdraw-border);
+  --color-withdraw-ring: var(--withdraw-ring);
+
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-text: var(--warning-text);
+  --color-warning-border: var(--warning-border);
+  --color-warning-ring: var(--warning-ring);
+
+  --dev-bar-bg: var(--dev-bg);
+  --dev-bar-text: var(--dev-text);
+  --dev-bar-lines: var(--dev-lines);
+
+  --page-bg-color: var(--background);
+  --page-text-color: var(--foreground);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-family-base);
+    font-synthesis: auto;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+:root {
+  --font-family-base:
+    'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-family-mono: 'MonaSpice Kr', ui-monospace, 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  font-optical-sizing: auto;
+}
+
+/* .iconify {
+  @apply size-4 p-1;
+} */

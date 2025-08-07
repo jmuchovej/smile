@@ -1,0 +1,20 @@
+{
+  "$schema": "https://shadcn-vue.com/schema.json",
+  "style": "new-york",
+  "typescript": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/smile.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@smile/runtime/uikit/components",
+    "composables": "@smile/runtime/uikit/composables",
+    "utils": "@smile/runtime/uikit/lib/utils",
+    "ui": "@smile/runtime/uikit/components/ui",
+    "lib": "@smile/runtime/uikit/lib"
+  },
+  "iconLibrary": "lucide"
+}
