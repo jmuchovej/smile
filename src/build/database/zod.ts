@@ -21,11 +21,11 @@ import type {
   SmileColumnType,
   SmileTable,
 } from "./types";
-import { tableSchema } from "./types";
+import { TableSchema } from "./types";
 
 export function getValidatedTable(name: string, schema: ZodObject): SmileTable {
   const table = fromZod(name, schema);
-  tableSchema.parse(table);
+  TableSchema.parse(table);
   return table;
 }
 
@@ -64,6 +64,7 @@ export function fromZod(tableName: string, schema: ZodObject): SmileTable {
   const primaryKeyFields = buildCompositePrimaryKey(columns);
 
   return {
+    type: "base-table",
     name: tableName,
     columns,
     compositeKeys: {
@@ -192,7 +193,13 @@ function buildCompositePrimaryKey(columns: Record<string, SmileColumn>): string[
 
 declare module "zod" {
   interface GlobalMeta {
-    smile?: SmileColumnConstraints;
+    smile?: SmileColumnConstraints & {
+      properties?: {
+        trialID?: string;
+        blockID?: string;
+        conditionID?: string;
+      };
+    };
   }
 }
 
@@ -305,6 +312,30 @@ function addSmileConstraint(
   constraints: Partial<SmileColumnConstraints>
 ) {
   const existing = schema.meta() || {};
+  let parent: ZodType | undefined;
+  while (schema._zod.parent) {
+    parent = schema._zod.parent as ZodType;
+  }
+  if (parent) {
+    const parentMeta = parent.meta() || { smile: { properties: {} } };
+    const properties = Object.fromEntries(
+      Object.entries({
+        trialID: constraints.trialID ? existing.id : undefined,
+        blockID: constraints.blockID ? existing.id : undefined,
+        conditionID: constraints.conditionID ? existing.id : undefined,
+      }).filter(([_, value]) => value)
+    );
+    parent.meta({
+      smile: {
+        ...parentMeta.smile,
+        properties: {
+          ...parentMeta.smile?.properties,
+          ...properties,
+        },
+      },
+    });
+  }
+
   return schema.meta({
     ...existing,
     smile: {

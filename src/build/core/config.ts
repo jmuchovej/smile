@@ -1,13 +1,13 @@
+import { useNuxt } from "@nuxt/kit";
 import {
   createDefineConfig,
   loadConfig,
   type WatchConfigOptions,
   watchConfig,
 } from "c12";
-import type { Nuxt } from "nuxt/schema";
 import { join, relative } from "pathe";
 import { z } from "zod";
-import { useLogger } from "../runtime/internal";
+import { useLogger } from "../../runtime/internal";
 import {
   type DefinedExperiment,
   defineExperiment,
@@ -16,15 +16,7 @@ import {
 } from "./experiment";
 import { defineStimuli } from "./stimuli";
 
-export type * from "./experiment";
-export { defineExperiment } from "./experiment";
-export type * from "./module";
-export type * from "./randomizer";
-export type * from "./step";
-export type * from "./stimuli";
-export { defineStimuli } from "./stimuli";
-
-interface DefinedSmileConfig {
+export interface DefinedSmileConfig {
   activeExperiment: string;
   experiments: DefinedExperiment[];
 }
@@ -33,8 +25,6 @@ export interface ResolvedSmileConfig {
   activeExperiment: string;
   experiments: Record<string, ResolvedExperiment>;
 }
-
-type SmileExperimentConfig = DefinedSmileConfig["experiments"][number];
 
 const defaultConfig: DefinedSmileConfig = {
   activeExperiment: "default@experiment",
@@ -60,11 +50,13 @@ const defaultConfig: DefinedSmileConfig = {
   ],
 };
 
-export const defineSmileConfig = createDefineConfig<DefinedSmileConfig>();
-
+type SmileExperimentConfig = DefinedSmileConfig["experiments"][number];
 type ConfigLoader = typeof watchConfig;
 
-export async function loadSmileConfig(nuxt: Nuxt): Promise<ResolvedSmileConfig> {
+export const defineSmileConfig = createDefineConfig<DefinedSmileConfig>();
+
+export async function resolveSmileConfig(): Promise<ResolvedSmileConfig> {
+  const nuxt = useNuxt();
   const logger = useLogger("config");
   const devConfigLoader = (opts: WatchConfigOptions) =>
     watchConfig({

@@ -1,21 +1,28 @@
-import { useNuxt } from "@nuxt/kit";
-import type { NuxtTemplate } from "@nuxt/schema";
+import { addServerPlugin, addTemplate, useNuxt } from "@nuxt/kit";
 import type pl from "nodejs-polars";
+import type { NuxtTemplate } from "nuxt/schema";
+import { dirname, relative } from "pathe";
 import { camelCase } from "scule";
 import type { ZodObject } from "zod";
-import type { ResolvedStimuli, ResolvedStimuliSource } from "../config/stimuli";
+import { useLogger } from "../runtime/internal";
+import type { ResolvedStimuli, ResolvedStimuliSource } from "./core/stimuli";
+import {
+  blockSchema,
+  participantSchema,
+  sessionSchema,
+  trialSchema,
+} from "./database/schemas";
 import {
   getCreateIndexQueries,
   getCreateTableQuery,
   getDropTableIfExistsQuery,
-} from "../database/sql";
-import type { DFRecord, SmileColumn, SmileTable } from "../database/types";
-import { useLogger } from "../runtime/internal";
-import type { SmileBuildConfig } from "../types/build-config";
-import { indentLines } from "../utils";
+} from "./database/sql";
+import type { DFRecord, SmileColumn, SmileTable } from "./database/types";
+import { getValidatedTable } from "./database/zod";
+import { indentLines } from "./utils/misc";
+import { defineBuildStep, useSmile } from "./utils/runner";
 
 export const databaseTemplates = {
-  drizzle: "smile/database/drizzle.config.ts",
   schema: "smile/database/schema.ts",
   database: "smile/database/index.ts",
   tsSeed: "smile/database/sql/seed.ts",
@@ -23,43 +30,45 @@ export const databaseTemplates = {
   sqlTables: "smile/database/tables.sql",
 };
 
-export function drizzleConfigTemplate(config: SmileBuildConfig): NuxtTemplate {
-  const logger = useLogger("database");
-  const {
-    options: { dev, nitro },
-  } = useNuxt();
-  const database = dev ? (nitro.devDatabase ?? nitro.database) : nitro.database;
-  const credentials = database?.smile?.options;
-  const dbCredentials = indentLines(JSON.stringify(credentials, null, 2) ?? "", 2);
+export default defineBuildStep({
+  name: "database",
+  async setup({ runtimeResolve }) {
+    const logger = useLogger("database");
+    const nuxt = useNuxt();
 
-  return {
-    filename: databaseTemplates.drizzle,
-    options: {
-      dbCredentials,
-    },
-    getContents: ({ options }) => {
-      const { dbCredentials } = options;
-      return [
-        `import { defineConfig } from "drizzle-kit";`,
-        ``,
-        `export default defineConfig({`,
-        `  schema: "./schema.ts",`,
-        `  out: "./drizzle",`,
-        // TODO(?) support non-SQLite dialects
-        `  dialect: "sqlite",`,
-        `  dbCredentials: ${dbCredentials},`,
-        `});`,
-      ].join("\n");
-    },
-  } satisfies NuxtTemplate;
-}
+    nuxt.options.alias["#smile:db"] = addTemplate(databaseTemplate()).dst;
 
-export function schemaTemplate(
-  config: SmileBuildConfig,
-  tables: Record<string, SmileTable>
-): NuxtTemplate {
-  const logger = useLogger("database");
+    const tables: Record<string, SmileTable> = {
+      participants: getValidatedTable(`participants`, participantSchema),
+      sessions: getValidatedTable(`sessions`, sessionSchema),
+      blocks: getValidatedTable(`blocks`, blockSchema),
+      trials: getValidatedTable(`trials`, trialSchema),
+    };
+    logger.debug(`Added all of Smile's "meta" tables!`);
 
+    const { experiments } = useSmile();
+
+    for (const experiment of Object.values(experiments)) {
+      tables[experiment.tableName] = getValidatedTable(
+        experiment.tableName,
+        experiment.schema
+      );
+      logger.success(`Adding the ${experiment.tableName} table!`);
+      const { stimuli } = experiment;
+      tables[stimuli.tableName] = getValidatedTable(stimuli.tableName, stimuli.schema);
+      logger.success(`Adding the ${stimuli.tableName} table!`);
+    }
+
+    addTemplate(schemaTemplate(tables));
+    addTemplate(sqlTablesTemplate(tables));
+    addTemplate(tsTablesTemplate(tables));
+    addTemplate(tsSeedTemplate(tables));
+
+    addServerPlugin(runtimeResolve("./server/plugins/database.ts"));
+  },
+});
+
+function schemaTemplate(tables: Record<string, SmileTable>): NuxtTemplate {
   return {
     filename: databaseTemplates.schema,
     write: true,
@@ -148,11 +157,12 @@ function generateColumnDefinition(column: SmileColumn): string {
   return def;
 }
 
-export function databaseTemplate(config: SmileBuildConfig): NuxtTemplate {
+function databaseTemplate(): NuxtTemplate {
   return {
     filename: databaseTemplates.database,
     write: true,
     getContents: () => {
+      const basepath = dirname(databaseTemplates.database);
       return [
         `// Generated runtime database exports`,
         `// This file is auto-generated during build - do not edit manually`,
@@ -191,23 +201,24 @@ export function databaseTemplate(config: SmileBuildConfig): NuxtTemplate {
         `} from "drizzle-orm";`,
         ``,
         `// Re-export schema tables`,
-        `export * from "#smile:db/schema";`,
+        `export * from "./${relative(basepath, databaseTemplates.schema)}";`,
+        `export * as schemas from "./${relative(basepath, databaseTemplates.schema)}";`,
+        `export { tablesSQL } from "./${relative(basepath, databaseTemplates.tsTables)}";`,
+        `export { seeds } from "./${relative(basepath, databaseTemplates.tsSeed)}";`,
         ``,
       ].join("\n");
     },
   } satisfies NuxtTemplate;
 }
 
-export function tsSeedTemplate(
-  config: SmileBuildConfig,
-  tables: Record<string, SmileTable>
-): NuxtTemplate {
+function tsSeedTemplate(tables: Record<string, SmileTable>): NuxtTemplate {
+  const { experiments } = useSmile();
   return {
     filename: databaseTemplates.tsSeed,
     write: true,
     options: {
       experimentTables: tables,
-      experiments: config.experiments,
+      experiments: experiments,
     },
     getContents: async ({ options }) => {
       const { experimentTables, experiments } = options;
@@ -298,10 +309,7 @@ async function exportDataFrame(
   return records;
 }
 
-export function tsTablesTemplate(
-  config: SmileBuildConfig,
-  tables: Record<string, SmileTable>
-): NuxtTemplate {
+export function tsTablesTemplate(tables: Record<string, SmileTable>): NuxtTemplate {
   return {
     filename: databaseTemplates.tsTables,
     write: true,
@@ -338,10 +346,7 @@ export function tsTablesTemplate(
   } satisfies NuxtTemplate;
 }
 
-export function sqlTablesTemplate(
-  config: SmileBuildConfig,
-  tables: Record<string, SmileTable>
-): NuxtTemplate {
+export function sqlTablesTemplate(tables: Record<string, SmileTable>): NuxtTemplate {
   return {
     filename: databaseTemplates.sqlTables,
     write: true,

@@ -23,20 +23,19 @@ export const builtinRandomizers = {
 } as const;
 
 export type BuiltinRandomizerName = keyof typeof builtinRandomizers;
-export type BuiltinRandomizer = typeof builtinRandomizers[BuiltinRandomizerName];
+export type BuiltinRandomizer = (typeof builtinRandomizers)[BuiltinRandomizerName];
 
 // User-facing type that accepts shorthand strings or full objects
 export type DefinedRandomizer =
-  | BuiltinRandomizerName  // "null" | "shuffle"
-  | RandomizerBase          // Custom randomizer object
-  | string;                 // Any other string for custom randomizers
+  | BuiltinRandomizerName // "null" | "shuffle"
+  | RandomizerBase // Custom randomizer object
+  | string; // Any other string for custom randomizers
 
 export interface ResolvedRandomizer {
   name: string;
   options: Record<string, unknown>;
 }
 
-// Helper function to resolve randomizer definitions to ResolvedRandomizer
 export function resolveRandomizer(randomizer: DefinedRandomizer): ResolvedRandomizer {
   if (typeof randomizer === "string") {
     // Check if it's a built-in randomizer

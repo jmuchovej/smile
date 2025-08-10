@@ -1,14 +1,13 @@
-import { defu } from "defu";
+import { existsSync } from "node:fs";
+import { basename, dirname, join } from "pathe";
 import { kebabCase } from "scule";
 import { type ZodObject, z } from "zod";
-import { existsSync } from "node:fs";
-import { join, basename, dirname } from "pathe";
-import type { ExperimentService } from "../types/service";
-import { useLogger } from "../runtime/internal";
-import type { DefinedStimuli, ResolvedStimuli } from "./stimuli";
-import { resolveStimuli } from "./stimuli";
+import { useLogger } from "../../runtime/internal";
+import type { ExperimentService } from "../../runtime/types/services";
 import type { DefinedRandomizer, ResolvedRandomizer } from "./randomizer";
 import { nullRandomizer, resolveRandomizer } from "./randomizer";
+import type { DefinedStimuli, ResolvedStimuli } from "./stimuli";
+import { resolveStimuli } from "./stimuli";
 
 export type ExperimentSource = string | string[];
 
@@ -132,17 +131,17 @@ export function resolveExperiment(experiment: DefinedExperiment): ResolvedExperi
   // Resolve randomizer using the new resolver function
   const randomizer = resolveRandomizer(experiment.randomizer ?? "null");
 
-  return defu(experiment, {
+  return {
+    ...experiment,
     id,
     path,
     basename,
     tableName: getTableName(id),
     stimuli,
     randomizer,
-    allowRepeats: false,
-    autoSave: true,
-    extra: {},
-  });
+    allowRepeats: experiment.allowRepeats ?? false,
+    autoSave: experiment.autoSave ?? true,
+  };
 }
 
 /**

@@ -3,7 +3,9 @@ import { basename, dirname, extname, join } from "pathe";
 import { kebabCase } from "scule";
 import { type GlobOptions, globSync } from "tinyglobby";
 import { type ZodObject, z } from "zod";
-import { useLogger } from "../runtime/internal";
+import { getSmileConstraints } from "../../database/zod";
+import { useLogger } from "../../runtime/internal";
+import type { TimelineParameters } from "../../runtime/types/timeline";
 
 export type StimuliSource = string | string[];
 
@@ -32,6 +34,7 @@ export interface ResolvedStimuli {
   schema: DefinedStimuli["schema"];
 
   tableName: string;
+  parameters: TimelineParameters;
 }
 
 export interface ResolvedStimuliSource {
@@ -132,10 +135,31 @@ export function resolveStimuli(
     throw new Error(`No files found for ${stimuli.name}`);
   }
 
+  const parameters = Object.entries(stimuli.schema.shape).reduce(
+    (parameters, [key, value]) => {
+      const constraints = getSmileConstraints(value);
+      if (!constraints) return parameters;
+
+      const { trialID, blockID, conditionID } = constraints;
+      if (trialID && !Object.keys(parameters).includes("trialID")) {
+        parameters.trialID = key;
+      }
+      if (blockID && !Object.keys(parameters).includes("blockID")) {
+        parameters.blockID = key;
+      }
+      if (conditionID && !Object.keys(parameters).includes("conditionID")) {
+        parameters.conditionID = key;
+      }
+      return parameters;
+    },
+    { stimuli: stimuli.name } as Partial<TimelineParameters>
+  ) as TimelineParameters;
+
   return {
     name: stimuli.name,
     sources: resolvedSources,
     tableName: getTableName(stimuli.name),
     schema: stimuli.schema,
+    parameters,
   };
 }
