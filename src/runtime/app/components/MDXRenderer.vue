@@ -123,7 +123,7 @@ function resolveVueComponent(component: string | Renderable) {
     }
     else if (localComponents.includes(pascalCase(component))) {
       const loader: AsyncComponentLoader = () => {
-        return import("#smile/components")
+        return import("#smile:app/components")
           .then((m) => {
             const comp = m[pascalCase(component) as keyof typeof m] as unknown as () => unknown
             return comp ? comp() : undefined

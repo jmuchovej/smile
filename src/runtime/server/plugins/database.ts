@@ -1,11 +1,11 @@
-import { type DrizzleDatabase, drizzle } from "db0/integrations/drizzle";
+import type { DrizzleDatabase } from "db0/integrations/drizzle";
 import type { mysqlTable } from "drizzle-orm/mysql-core";
 import type { pgTable } from "drizzle-orm/pg-core";
 import type { sqliteTable } from "drizzle-orm/sqlite-core";
-import { defineNitroPlugin, type NitroApp, useDatabase } from "#nitro";
-import { tablesSQL } from "#smile:sql/tables";
-import { seeds } from "#smile:sql/seed";
+import { defineNitroPlugin, type NitroApp } from "#nitro";
 import { useLogger } from "#smile/internal";
+import { seeds, tablesSQL } from "#smile:db";
+import { useSmileDatabase } from "#smile:server/tools/database";
 
 type DrizzleTable = ReturnType<typeof sqliteTable | typeof pgTable | typeof mysqlTable>;
 
@@ -13,8 +13,7 @@ export default defineNitroPlugin(async (_nitroApp: NitroApp) => {
   const logger = useLogger("runtime", "server", "database");
   logger.debug("Starting nitro plugin...");
 
-  const db = useDatabase("smile");
-  const dz = drizzle(db);
+  const { db, dz } = useSmileDatabase();
 
   await db.sql`pragma defer_foreign_keys=true;`;
 

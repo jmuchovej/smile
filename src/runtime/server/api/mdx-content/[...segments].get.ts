@@ -1,6 +1,7 @@
 import type { H3Event } from "h3";
+import { createError, defineEventHandler, getRouterParam, setResponseHeaders, setResponseStatus } from "h3";
 import { extname } from "pathe";
-import { createError, setResponseStatus, setResponseHeaders, defineEventHandler, useStorage, useRuntimeConfig, getRouterParam } from "#imports";
+import { useStorage, useRuntimeConfig } from "#imports";
 
 export default defineEventHandler(async (event: H3Event) => {
   // For catch-all routes, the parameter is an array
@@ -8,8 +9,7 @@ export default defineEventHandler(async (event: H3Event) => {
   if (!segments) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Bad Request',
-      message: 'Missing `segments` parameter'
+      statusMessage: "Bad Request: Missing `segments` parameter",
     });
   }
 
@@ -32,13 +32,18 @@ export default defineEventHandler(async (event: H3Event) => {
         debug: {
           requestedPath: path,
           storageKey: `content:${path}`,
-          availableKeys: await storage.getKeys()
-        }
+          availableKeys: await storage.getKeys(),
+        },
       });
     }
 
-    console.log('MDX content found:', typeof processed);
-    console.log('First 200 chars:', typeof processed === 'string' ? processed.substring(0, 200) : JSON.stringify(processed).substring(0, 200));
+    console.log("MDX content found:", typeof processed);
+    console.log(
+      "First 200 chars:",
+      typeof processed === "string"
+        ? processed.substring(0, 200)
+        : JSON.stringify(processed).substring(0, 200)
+    );
 
     // Set response headers to ensure JSON
     setResponseHeaders(event, {
@@ -49,11 +54,11 @@ export default defineEventHandler(async (event: H3Event) => {
     // Ensure we're returning a proper JSON response
     return processed;
   } catch (error) {
-    console.error('MDX API Error:', error);
+    console.error("MDX API Error:", error);
     throw createError({
       statusCode: 500,
       message: `Failed to load MDX content: ${error}`,
-      stack: error.stack
+      stack: error.stack,
     });
   }
 });

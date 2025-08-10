@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "vue"
 import { PanelLeft } from "lucide-vue-next"
 import { Icon } from "#components";
 import { cn } from '#smile/internal'
-import { Button } from '#smile/components/uikit/button'
+import { Button } from '#smile:app/components/uikit/button'
 import { useSidebar } from "./utils"
 
 const props = defineProps<{

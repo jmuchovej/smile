@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { WithClassAsProps } from "./interface"
-import type { ButtonVariants } from '#smile/components/uikit/button'
+import type { ButtonVariants } from '#smile:app/components/uikit/button'
 import { ArrowRight } from "lucide-vue-next"
 import { cn } from '#smile/internal'
-import { Button } from '#smile/components/uikit/button'
+import { Button } from '#smile:app/components/uikit/button'
 import { useCarousel } from "./useCarousel"
 
 const props = withDefaults(defineProps<{

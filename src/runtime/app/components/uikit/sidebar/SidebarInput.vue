@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { cn } from '#smile/internal'
-import { Input } from '#smile/components/uikit/input'
+import { Input } from '#smile:app/components/uikit/input'
 
 const props = defineProps<{
   class?: HTMLAttributes["class"]

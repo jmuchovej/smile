@@ -2,7 +2,7 @@
 import type { HTMLAttributes } from "vue"
 import { computed } from "vue"
 import { cn } from '#smile/internal'
-import { Skeleton } from '#smile/components/uikit/skeleton'
+import { Skeleton } from '#smile:app/components/uikit/skeleton'
 
 const props = defineProps<{
   showIcon?: boolean

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from "vue";
 import { useRoute, useAppConfig, useFetch } from "#imports";
-import MdxRenderer from "#smile/components/MdxRenderer.vue"
+import MdxRenderer from "#smile:app/components/MdxRenderer.vue"
 
 const route = useRoute()
 const config = useAppConfig().smile

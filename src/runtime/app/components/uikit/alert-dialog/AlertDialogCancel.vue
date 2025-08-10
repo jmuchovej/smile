@@ -4,7 +4,7 @@ import type { HTMLAttributes } from "vue"
 import { reactiveOmit } from "@vueuse/core"
 import { AlertDialogCancel } from "reka-ui"
 import { cn } from '#smile/internal'
-import { buttonVariants } from '#smile/components/uikit/button'
+import { buttonVariants } from '#smile:app/components/uikit/button'
 
 const props = defineProps<AlertDialogCancelProps & { class?: HTMLAttributes["class"] }>()
 

@@ -5,7 +5,7 @@ import { reactiveOmit } from "@vueuse/core"
 import { ChevronRight } from "lucide-vue-next"
 import { CalendarNext, useForwardProps } from "reka-ui"
 import { cn } from '#smile/internal'
-import { buttonVariants } from '#smile/components/uikit/button'
+import { buttonVariants } from '#smile:app/components/uikit/button'
 
 const props = defineProps<CalendarNextProps & { class?: HTMLAttributes["class"] }>()
 

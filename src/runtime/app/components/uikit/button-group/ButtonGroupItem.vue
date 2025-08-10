@@ -3,7 +3,7 @@ import { reactiveOmit } from '@vueuse/core'
 import { useForwardProps } from 'reka-ui'
 import { inject } from 'vue'
 import { cn } from '#smile/internal'
-import { buttonVariants } from '#smile/components/uikit/button'
+import { buttonVariants } from '#smile:app/components/uikit/button'
 
 const props = defineProps({
   disabled: { type: Boolean, required: false },

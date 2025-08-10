@@ -2,8 +2,8 @@
 import { Check, ChevronsUpDown, Search } from "lucide-vue-next"
 import { ref, computed } from "vue"
 import { cn } from "#smile/internal"
-import { Button } from "#smile/components/uikit/button"
-import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger } from "#smile/components/uikit/combobox"
+import { Button } from "#smile:app/components/uikit/button"
+import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger } from "#smile:app/components/uikit/combobox"
 
 type SelectMenuItem = {
   value: string;

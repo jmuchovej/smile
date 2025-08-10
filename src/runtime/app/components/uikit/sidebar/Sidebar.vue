@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { SidebarProps } from "."
 import { cn } from '#smile/internal'
-import { Sheet, SheetContent } from '#smile/components/uikit/sheet'
-import SheetDescription from '#smile/components/uikit/sheet/SheetDescription.vue'
-import SheetHeader from '#smile/components/uikit/sheet/SheetHeader.vue'
-import SheetTitle from '#smile/components/uikit/sheet/SheetTitle.vue'
+import { Sheet, SheetContent } from '#smile:app/components/uikit/sheet'
+import SheetDescription from '#smile:app/components/uikit/sheet/SheetDescription.vue'
+import SheetHeader from '#smile:app/components/uikit/sheet/SheetHeader.vue'
+import SheetTitle from '#smile:app/components/uikit/sheet/SheetTitle.vue'
 import { SIDEBAR_WIDTH_MOBILE, useSidebar } from "./utils"
 
 defineOptions({

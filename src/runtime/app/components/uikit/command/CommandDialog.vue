@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DialogRootEmits, DialogRootProps } from "reka-ui"
 import { useForwardPropsEmits } from "reka-ui"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '#smile/components/uikit/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '#smile:app/components/uikit/dialog'
 import Command from "./Command.vue"
 
 const props = withDefaults(defineProps<DialogRootProps & {
