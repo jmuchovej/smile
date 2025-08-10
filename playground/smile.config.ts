@@ -1,4 +1,4 @@
-import { defineStimuli, defineExperiment, defineSmileConfig } from "@smile/nuxt";
+import { defineStimuli, defineExperiment, defineSmileConfig } from "smilelab";
 import { z } from "zod";
 
 // Stroop Task Stimuli
@@ -22,9 +22,9 @@ const stroopPilot = defineExperiment({
   duration: "2 minutes",
   stimuli: stroopStimuli,
   services: [{ type: "prolific", code: "STROOP_PILOT" }],
+  randomizer: "shuffle",
   allowRepeats: true, // Allow repeats for pilot testing
   autoSave: true,
-  maxTrials: 20, // Only 20 trials for pilot
   schema: z.object({
     index: z.number().trialID(),
     word: z.string(),
@@ -42,6 +42,7 @@ const stroopFull = defineExperiment({
   duration: "10 minutes",
   stimuli: stroopStimuli,
   services: [{ type: "prolific", code: "STROOP_FULL" }],
+  randomizer: "shuffle",
   allowRepeats: false,
   autoSave: true,
   schema: z.object({
@@ -76,6 +77,7 @@ const gonogoPilot = defineExperiment({
   compensation: "$0.50",
   duration: "3 minutes",
   services: [{ type: "prolific", code: "GONOGO_PILOT" }],
+  randomizer: "shuffle",
   allowRepeats: true,
   autoSave: true,
   stimuli: gonogoStimuli,
@@ -98,6 +100,7 @@ const gonogoFull = defineExperiment({
   compensation: "$2.50",
   duration: "12 minutes",
   services: [{ type: "prolific", code: "GONOGO_FULL" }],
+  randomizer: "shuffle",
   allowRepeats: false,
   autoSave: true,
   stimuli: gonogoStimuli,
@@ -122,7 +125,7 @@ const flankerStimuli = defineStimuli({
     target: z.enum(["left", "right"]),
     flankers: z.enum(["left", "right", "neutral"]),
     type: z.enum(["congruent", "incongruent", "neutral"]),
-    correct: z.enum(["ArrowLeft", "ArrowRight"]),
+    correct: z.enum(["left", "right"]),
     response_window: z.number(),
   }),
 });
@@ -135,6 +138,7 @@ const flankerPilot = defineExperiment({
   duration: "2 minutes",
   stimuli: flankerStimuli,
   services: [{ type: "prolific", code: "FLANKER_PILOT" }],
+  randomizer: "shuffle",
   allowRepeats: true,
   autoSave: true,
   schema: z.object({
@@ -142,7 +146,7 @@ const flankerPilot = defineExperiment({
     target: z.enum(["left", "right"]),
     flankers: z.enum(["left", "right", "neutral"]),
     type: z.enum(["congruent", "incongruent", "neutral"]),
-    correct: z.enum(["ArrowLeft", "ArrowRight"]),
+    correct: z.enum(["left", "right"]),
     response_window: z.number(),
   }),
 });
@@ -155,6 +159,7 @@ const flankerFull = defineExperiment({
   duration: "8 minutes",
   stimuli: flankerStimuli,
   services: [{ type: "prolific", code: "FLANKER_FULL" }],
+  randomizer: "shuffle",
   allowRepeats: false,
   autoSave: true,
   schema: z.object({
@@ -162,7 +167,7 @@ const flankerFull = defineExperiment({
     target: z.enum(["left", "right"]),
     flankers: z.enum(["left", "right", "neutral"]),
     type: z.enum(["congruent", "incongruent", "neutral"]),
-    correct: z.enum(["ArrowLeft", "ArrowRight"]),
+    correct: z.enum(["left", "right"]),
     response_window: z.number(),
   }),
 });

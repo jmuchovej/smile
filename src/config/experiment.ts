@@ -7,6 +7,8 @@ import type { ExperimentService } from "../types/service";
 import { useLogger } from "../runtime/internal";
 import type { DefinedStimuli, ResolvedStimuli } from "./stimuli";
 import { resolveStimuli } from "./stimuli";
+import type { DefinedRandomizer, ResolvedRandomizer } from "./randomizer";
+import { nullRandomizer, resolveRandomizer } from "./randomizer";
 
 export type ExperimentSource = string | string[];
 
@@ -24,6 +26,7 @@ export interface ExperimentBase {
   allowRepeats?: boolean;
   autoSave?: boolean;
 
+  randomizer?: DefinedRandomizer;
   stimuli: DefinedStimuli;
   schema: ZodObject;
 
@@ -42,6 +45,7 @@ export interface DefinedExperiment {
   allowRepeats?: ExperimentBase["allowRepeats"];
   autoSave?: ExperimentBase["autoSave"];
 
+  randomizer: NonNullable<ExperimentBase["randomizer"]>;
   stimuli: ExperimentBase["stimuli"];
   schema: ZodObject;
 
@@ -66,22 +70,26 @@ export interface ResolvedExperiment {
   compensation: DefinedExperiment["compensation"];
   services: DefinedExperiment["services"];
 
-  allowRepeats: Required<DefinedExperiment["allowRepeats"]>;
-  autoSave: Required<DefinedExperiment["autoSave"]>;
+  allowRepeats: NonNullable<DefinedExperiment["allowRepeats"]>;
+  autoSave: NonNullable<DefinedExperiment["autoSave"]>;
 
+  randomizer: ResolvedRandomizer;
   stimuli: ResolvedStimuli;
   schema: DefinedExperiment["schema"];
 
   tableName: string;
 
-  extra?: Required<DefinedExperiment["extra"]>;
+  extra?: NonNullable<DefinedExperiment["extra"]>;
 }
 
 export function defineExperiment(experiment: ExperimentBase): DefinedExperiment {
-  const schema = experiment.schema || z.object({});
+  const schema = experiment.schema ?? z.object({});
+
+  const randomizer = experiment.randomizer ?? nullRandomizer;
 
   return {
     ...experiment,
+    randomizer,
     searchPath: "",
     schema,
   };
@@ -121,14 +129,18 @@ export function resolveExperiment(experiment: DefinedExperiment): ResolvedExperi
   const layerRootDir = dirname(experiment.searchPath); // Get parent of "experiments" directory
   const stimuli = resolveStimuli(layerRootDir, experiment.stimuli);
 
+  // Resolve randomizer using the new resolver function
+  const randomizer = resolveRandomizer(experiment.randomizer ?? "null");
+
   return defu(experiment, {
     id,
     path,
     basename,
     tableName: getTableName(id),
     stimuli,
+    randomizer,
     allowRepeats: false,
-    autoSave: false,
+    autoSave: true,
     extra: {},
   });
 }
