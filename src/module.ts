@@ -33,8 +33,10 @@ import {
 } from "./database/schemas";
 import type { SmileTable } from "./database/types";
 import type { NitroConfig } from "nitropack";
-import { join, relative } from "pathe";
+import { basename, join, parse, relative } from "pathe";
 import { existsSync } from "node:fs";
+import { glob } from "tinyglobby";
+import { kebabCase } from "scule";
 
 export type * from "./config";
 export {
@@ -158,6 +160,29 @@ export default defineNuxtModule<SmileModuleOptions>({
     });
 
     addImportsDir(resolve("./runtime/app/composables"));
+
+    const layoutBasePath = resolve("./runtime/app/layouts");
+    const templatePaths: string[] = [];
+    const layouts = await glob(["**/*.vue"], {
+      dot: false,
+      onlyFiles: true,
+      absolute: true,
+      ignore: ["**/*.DS_Store"],
+      cwd: layoutBasePath,
+    });
+    for (const layout of layouts) {
+      const { name } = parse(layout);
+      const filename = join("smile/layouts", layout.replace(layoutBasePath, ""));
+      addLayout(
+        {
+          src: layout,
+          filename,
+          write: true,
+        },
+        `smile-${kebabCase(basename(name))}`
+      );
+      templatePaths.push(filename);
+    }
 
     nuxt.options.alias["#smile:components"] =
       SmileTemplates.mdxComponents(buildConfig).dst;
