@@ -9,6 +9,7 @@ import {
   addImportsDir,
   addServerPlugin,
   useNuxt,
+  addLayout,
 } from "@nuxt/kit";
 
 import { defu } from "defu";
@@ -17,7 +18,7 @@ import { loadSmileConfig } from "./config";
 import {
   generateInternalRoutes,
   generateExperimentRoutes,
-  addAPIRoute,
+  mkNitroRoute,
 } from "./router";
 import { createSmileBuildConfig, type SmileBuildConfig } from "./types/build-config";
 import { useLogger } from "./runtime/internal";
@@ -44,12 +45,12 @@ export {
 
 export * from "./types";
 
-// biome-ignore lint/suspicious/noEmptyInterface: <explanation>
+// biome-ignore lint/suspicious/noEmptyInterface: currently there aren't any Smile-specific options, but kept here for posterity
 export interface SmileModuleOptions {}
 
 export default defineNuxtModule<SmileModuleOptions>({
   meta: {
-    name: "@smile/nuxt",
+    name: "smilelab",
     configKey: "smile",
     compatibility: {
       nuxt: ">=4.0.1",
@@ -150,13 +151,13 @@ export default defineNuxtModule<SmileModuleOptions>({
     });
 
     addComponentsDir({
-      path: resolve("./runtime/components"),
+      path: resolve("./runtime/app/components"),
       prefix: "Smile",
       pathPrefix: false,
       watch: true,
     });
 
-    addImportsDir(resolve("./runtime/composables"));
+    addImportsDir(resolve("./runtime/app/composables"));
 
     nuxt.options.alias["#smile:components"] =
       SmileTemplates.mdxComponents(buildConfig).dst;
@@ -217,7 +218,7 @@ function initializeDatabase(config: SmileBuildConfig) {
   nuxt.options.alias["#smile:sql/tables"] = SmileTemplates.tsTables(config, tables).dst;
   nuxt.options.alias["#smile:sql/seed"] = SmileTemplates.tsSeed(config, tables).dst;
 
-  addServerPlugin(resolve("runtime", "server", "plugins", "database.ts"));
+  addServerPlugin(resolve("./runtime/server/plugins/database.ts"));
 }
 
 function initializeMDXProcessor(config: SmileBuildConfig) {
@@ -235,7 +236,7 @@ function initializeMDXProcessor(config: SmileBuildConfig) {
     };
   });
 
-  addServerPlugin(resolve("runtime", "server", "plugins", "mdx.ts"));
+  addServerPlugin(resolve("./runtime/server/plugins/mdx.ts"));
 }
 
 async function devtools(config: SmileBuildConfig) {
@@ -270,7 +271,7 @@ async function devtools(config: SmileBuildConfig) {
 
     // Handle API route additions
     if (event === "add" && path.includes("runtime/server/api/")) {
-      addAPIRoute(base, path);
+      mkNitroRoute(base, path);
       return;
     }
 

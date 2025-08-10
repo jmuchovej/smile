@@ -4,7 +4,7 @@ import { NuxtLink, Icon, USelectMenu, UNavigationMenu, UContainer } from "#compo
 import type { NavigationMenuItem, ContainerProps, SelectMenuProps } from "@nuxt/ui";
 import { useAppConfig, navigateTo, useRuntimeConfig } from "#imports";
 
-const resetLocalState = () => {};
+const resetLocalState = () => { };
 const route = useRoute();
 
 type RouteOption = {
@@ -332,20 +332,4 @@ const devBarBrand = {
   </UContainer>
 </template>
 
-<style lang="css">
-@reference "@/assets/css/main.css";
-
-#developer-navbar {
-  @apply py-4 sm:py-6 lg:py-8;
-  @apply min-w-xs;
-  @apply bg-slate-200;
-  @apply flex flex-col gap-y-4;
-
-  #devbar-brand {
-    @apply text-3xl;
-    @apply flex flex-row gap-2;
-    @apply items-center;
-    @apply pb-4;
-  }
-}
-</style>
+<style lang="css"></style>
