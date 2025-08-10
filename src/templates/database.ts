@@ -1,18 +1,18 @@
-import { camelCase } from "scule";
-import type pl from "nodejs-polars";
-import type { ZodObject } from "zod";
+import { useNuxt } from "@nuxt/kit";
 import type { NuxtTemplate } from "@nuxt/schema";
-import type { SmileBuildConfig } from "../types/build-config";
-import type { DFRecord, SmileTable, SmileColumn } from "../database/types";
+import type pl from "nodejs-polars";
+import { camelCase } from "scule";
+import type { ZodObject } from "zod";
 import type { ResolvedStimuli, ResolvedStimuliSource } from "../config/stimuli";
 import {
   getCreateIndexQueries,
   getCreateTableQuery,
   getDropTableIfExistsQuery,
 } from "../database/sql";
-import { indentLines } from "../utils";
+import type { DFRecord, SmileColumn, SmileTable } from "../database/types";
 import { useLogger } from "../runtime/internal";
-import { useNuxt } from "@nuxt/kit";
+import type { SmileBuildConfig } from "../types/build-config";
+import { indentLines } from "../utils";
 
 export const databaseTemplates = {
   drizzle: "smile/database/drizzle.config.ts",
@@ -59,7 +59,6 @@ export function schemaTemplate(
   tables: Record<string, SmileTable>
 ): NuxtTemplate {
   const logger = useLogger("database");
-  const { nuxt } = config;
 
   return {
     filename: databaseTemplates.schema,
@@ -72,6 +71,8 @@ export function schemaTemplate(
       const tables = Object.values(experimentTables).map((table) => ({
         tsName: camelCase(table.name.replace(/@/g, "-")),
         sqlName: table.name,
+        name: table.name.replace(/^_(\w+)-/, ""),
+        type: table.name.match(/^_(?<type>\w+)-/)?.groups?.type,
         columns: Object.entries(table.columns).map(([name, column]) => ({
           name,
           definition: generateColumnDefinition(column),
@@ -102,6 +103,18 @@ export function schemaTemplate(
             ``,
           ].join("\n")
         ),
+        ``,
+        `export const experiments = {`,
+        ...tables
+          .filter(({ type }) => type === "experiment")
+          .map(({ name, tsName }) => `  "${name}": ${tsName},`),
+        `};`,
+        ``,
+        `export const stimuli = {`,
+        ...tables
+          .filter(({ type }) => type === "stimuli")
+          .map(({ name, tsName }) => `  "${name}": ${tsName},`),
+        `};`,
       ].join("\n");
     },
   } satisfies NuxtTemplate;

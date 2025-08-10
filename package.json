@@ -93,6 +93,7 @@
 		"drizzle-kit": "^0.31.4",
 		"eslint": "^9.32.0",
 		"handlebars": "^4.7.8",
+		"json-schema-to-typescript": "^15.0.4",
 		"knitwork": "^1.2.0",
 		"minimark": "^0.2.0",
 		"nitropack": "^2.12.4",

@@ -184,6 +184,9 @@ export default defineNuxtModule<SmileModuleOptions>({
       templatePaths.push(filename);
     }
 
+    nuxt.options.alias["#smile:experiments"] =
+      SmileTemplates.experimentTypes(buildConfig).dst;
+
     nuxt.options.alias["#smile:components"] =
       SmileTemplates.mdxComponents(buildConfig).dst;
 
