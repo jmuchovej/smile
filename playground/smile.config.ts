@@ -1,4 +1,4 @@
-import { defineStimuli, defineExperiment, defineSmileConfig } from "smilelab";
+import { defineExperiment, defineSmileConfig, defineStimuli } from "smilelab";
 import { z } from "zod";
 
 // Stroop Task Stimuli

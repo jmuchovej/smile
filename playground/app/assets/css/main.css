@@ -1,2 +1,2 @@
 @import "tailwindcss" theme(static) source("../../../..");
-@import "@smile/nuxt";
+@import "smilelab";

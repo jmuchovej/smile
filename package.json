@@ -1,5 +1,5 @@
 {
-	"name": "@smile/nuxt",
+	"name": "smilelab",
 	"configKey": "smile",
 	"version": "0.1.0-DEV",
 	"description": "Smile as a Nuxt module",
@@ -101,13 +101,13 @@
 		"ofetch": "^1.4.1",
 		"ohash": "^2.0.11",
 		"scule": "^1.3.0",
-		"@smile/nuxt": "link:.",
+		"smilelab": "link:.",
 		"typescript": "~5.8.3",
 		"vitest": "^3.2.4",
 		"vue-tsc": "^3.0.4"
 	},
 	"resolutions": {
-		"@smile/nuxt": "workspace:*"
+		"smilelab": "workspace:*"
 	},
 	"stackblitz": {
 		"startCommand": "bun dev:prepare && bun dev"
