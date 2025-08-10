@@ -1,82 +1,96 @@
 import { addServerHandler, extendPages, resolveFiles } from "@nuxt/kit";
 import type { NuxtPage } from "@nuxt/schema";
 import type { RouterMethod } from "h3";
-import { extname, relative, parse, join } from "pathe";
-import type { SmileBuildConfig } from "./types/build-config";
+import type { NitroEventHandler } from "nitropack";
+import { extname, join, parse, relative } from "pathe";
+import {
+    cleanDoubleSlashes,
+    parseFilename,
+    withBase,
+    withLeadingSlash,
+    withTrailingSlash,
+} from "ufo";
 import { useLogger } from "./runtime/internal";
 import {
-  globTimelineFiles,
-  type TimelineFile,
-  refineURLMatcher,
-  refineURLPart,
+    globTimelineFiles,
+    refineURLMatcher,
+    refineURLPart,
+    type TimelineFile,
 } from "./timeline";
+import type { SmileBuildConfig } from "./types/build-config";
 
-export async function generateInternalRoutes(config: SmileBuildConfig) {
+export async function generateInternalRoutes(config: SmileBuildConfig): Promise<void> {
   const logger = useLogger("router", "internal");
   const {
     resolver: { resolve },
   } = config;
 
-  extendPages(async (pages) => {
-    pages.push({
-      name: "smile-config",
-      path: "/config",
-      file: resolve("./runtime/pages/config.vue"),
-    });
+  const pageBase = resolve("./runtime/app/pages");
+  const pageFiles = await resolveFiles(pageBase, "**/*.vue");
 
-    pages.push({
-      name: "smile-admin-database",
-      path: "/admin/database",
-      file: resolve("./runtime/pages/admin/database/index.vue"),
-    });
-
-    pages.push({
-      name: "smile-index",
-      path: "/",
-      file: resolve("./runtime/pages/index.vue"),
-    });
-
-    pages.push({
-      name: "smile-experiment-index",
-      path: "/experiment/:experiment",
-      file: resolve("./runtime/pages/experiment/[experiment]/index.vue"),
-    });
-    pages.push({
-      name: "smile-experiment-timeline",
-      path: "/experiment/:experiment/_timeline",
-      file: resolve("./runtime/pages/experiment/[experiment]/timeline.vue"),
-      meta: {
-        devOnly: true,
-      },
-    });
+  extendPages((pages: NuxtPage[]) => {
+    pages.push(
+      ...pageFiles
+      .filter((file) => [
+        "experiment/[experiment]/[...slug].vue",
+      ].every(path => !file.endsWith(path)))
+      .map((file) => mkNuxtRoute(pageBase, file))
+    );
   });
+  logger.success("Added Smile's built-in pages!");
 
   const apiBase = resolve("./runtime/server/api");
   const apiFiles = await resolveFiles(apiBase, "**/*.ts");
 
   for (const apiFile of apiFiles) {
-    addAPIRoute(apiBase, apiFile);
+    addServerHandler(mkNitroRoute(apiBase, apiFile));
   }
+  logger.success("Added Smile's built-in api routes!");
 }
 
-export function addAPIRoute(base: string, path: string) {
-  const relpath = relative(base, path);
-  const { dir, ext, name } = parse(relpath.replace(extname(relpath), ""));
+export function refineRoute(basepath: string, path: string): string {
+  const relpath = relative(basepath, path);
+  const { dir, name } = parse(relpath.replace(extname(relpath), ""));
 
-  // const route = refineURLMatcher(join(root, name).split("/").map(refineURLPart));
-  const rawRoute = join(dir, name);
-  const route = refineURLMatcher(rawRoute);
+  const route = refineURLMatcher(join(dir, name).split("/").map(refineURLPart));
 
-  const method = ext.replace(/^\./, "");
-  if (!route || !method) return;
+  return withTrailingSlash(withLeadingSlash(route));
+}
 
-  const finalRoute = `/api/smile/${route}`;
+export function mkNuxtRoute(base: string, file: string): NuxtPage {
+  const logger = useLogger("router", "page");
+  const route = refineRoute(base, file);
+  const isIndex = parseFilename(file)?.startsWith("index");
 
-  addServerHandler({
-    route: finalRoute,
+  const name = cleanDoubleSlashes(
+    ["smile", route, isIndex ? "index" : undefined].filter(Boolean).join("/")
+  ).replace(/\//g, "-");
+
+  return {
+    name,
+    path: cleanDoubleSlashes(route),
+    file,
+  } satisfies NuxtPage;
+}
+
+export function mkNitroRoute(base: string, path: string): NitroEventHandler {
+  const logger = useLogger("router", "server");
+  const route = withBase(refineRoute(base, path), "/api/s");
+  const method = extname(path.replace(extname(path), "")).replace(/^\./, "");
+  if (!method) {
+    logger.error(
+      `Attempted to add [method=${method}] for route=${route} to the Server API, but \`method\` is falsy!`
+    );
+    throw Error(
+      "API Routes must be defined and have an associated method in their filename..."
+    );
+  }
+
+  return {
+    route: cleanDoubleSlashes(withBase(withLeadingSlash(route), "/api/s")),
     method: method as RouterMethod,
     handler: path,
-  });
+  } satisfies NitroEventHandler;
 }
 
 export async function generateExperimentRoutes(config: SmileBuildConfig) {
@@ -119,7 +133,7 @@ export async function generateExperimentRoutes(config: SmileBuildConfig) {
       return;
     }
 
-    const file = resolve("./runtime/pages/experiment/[experiment]/[...slug].vue");
+    const file = resolve("./runtime/app/pages/experiment/[experiment]/[...slug].vue");
 
     // Generate timeline routes for each experiment
     for (const [experimentID, timeline] of experimentTimelines) {
