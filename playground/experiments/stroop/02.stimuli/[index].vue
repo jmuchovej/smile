@@ -64,8 +64,16 @@
 import { useStimulus } from "#imports";
 
 // Use the stimulus composable to get data for this route
-const { stimulusIndex, stimulusData, stimulusExists, totalStimuli, hasNext, hasPrevious, nextIndex, previousIndex } =
-  useStimulus("stroop");
+const {
+  stimulusIndex,
+  stimulusData,
+  stimulusExists,
+  totalStimuli,
+  hasNext,
+  hasPrevious,
+  nextIndex,
+  previousIndex,
+} = useStimulus("stroop");
 
 // Log stimulus data for debugging
 console.log("Stimulus Index:", stimulusIndex.value);
